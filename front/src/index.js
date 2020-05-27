@@ -6,6 +6,8 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import './static/css/normalizer.css'
 
+import Install from './components/app/install'
+
 export default class App extends Component {
     render() {
         return (
@@ -13,6 +15,7 @@ export default class App extends Component {
                 <Route exact path="/" render={() => (
                     <div>
                         سلام
+                        <Install/>
                     </div>
                 )}/>
                 {/*<Route exact path="/sth" component={}/>*/}

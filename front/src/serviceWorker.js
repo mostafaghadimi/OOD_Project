@@ -14,14 +14,16 @@ const isLocalhost = Boolean(
   window.location.hostname === 'localhost' ||
     // [::1] is the IPv6 localhost address.
     window.location.hostname === '[::1]' ||
-    // 127.0.0.1/8 is considered localhost for IPv4.
+    // localhost/8 is considered localhost for IPv4.
     window.location.hostname.match(
       /^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/
     )
 );
 
 export function register(config) {
-  if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  // TODO: correct this condition
+  // if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location.href);
     if (publicUrl.origin !== window.location.origin) {
@@ -133,3 +135,57 @@ export function unregister() {
     });
   }
 }
+
+const STATIC_CACHE_NAME = 'static-cache-v1'
+
+const FILES_TO_CACHE = [
+  './src/assets/css/app.css',
+  './src/assets/css/comment.css',
+  './src/assets/css/index.css',
+  './src/assets/css/navigation.css',
+  './src/assets/css/normalizer.css',
+  './src/assets/css/shop-submit.css',
+  './src/assets/css/shopinfo.css',
+  './src/assets/font/Yekan.eot',
+  './src/assets/font/Yekan.ttf',
+  './src/assets/font/Yekan.eot',
+  './src/assets/font/Yekan.woff',
+]
+
+window.addEventListener('install', (evt) => {
+  console.log('[ServiceWorker] Install');
+  // CODELAB: Precache static resources here.
+  evt.waitUntil(
+    caches.open(STATIC_CACHE_NAME).then((cache) => {
+      console.log('[ServiceWorker] Pre-caching offline page');
+      return cache.addAll(FILES_TO_CACHE);
+    })
+  );  
+  window.skipWaiting();
+});
+
+
+window.addEventListener('activate', (evt) => {
+  console.log('[ServiceWorker] Activate');
+  // CODELAB: Remove previous cached data from disk.
+  evt.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(keyList.map((key) => {
+        if (key !== STATIC_CACHE_NAME) {
+          console.log('[ServiceWorker] Removing old cache', key);
+          return caches.delete(key);
+        }
+      }));
+    })
+  );
+  window.clients.claim();
+});
+
+window.addEventListener('fetch', (evt) => {
+  console.log('[ServiceWorker] Fetch', evt.request.url);
+  // CODELAB: Add fetch event handler here.
+  if (evt.request.mode !== 'navigate') {
+    // Not a page navigation, bail.
+    return;
+  }
+})
