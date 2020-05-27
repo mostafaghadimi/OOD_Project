@@ -15,10 +15,9 @@ export default class App extends Component {
                 <Route exact path="/" render={() => (
                     <div>
                         سلام
-                        <Install/>
                     </div>
                 )}/>
-                {/*<Route exact path="/sth" component={}/>*/}
+                <Route exact path="/app" component={Install}/>
             </Switch>
         )
     }
