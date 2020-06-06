@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Menu, Icon, Modal, Input } from 'semantic-ui-react'
 
+import './navigation.css'
+
 export default class Navbar extends Component {
   state = { activeItem: 'خانه' }
 
@@ -10,7 +12,7 @@ export default class Navbar extends Component {
     const { activeItem } = this.state
 
     return (
-      <Menu size='large'>
+      <Menu size='large' className="navbar">
 
           <Menu.Item>
           <Modal trigger={
@@ -23,9 +25,9 @@ export default class Navbar extends Component {
                 </Button.Content>
               </Button>
           }>
-            <Modal.Header>ورود به سامانه</Modal.Header>
-            <Modal.Content image>
-              <Modal.Description>
+            <Modal.Header className="modal-header">ورود به سامانه</Modal.Header>
+            <Modal.Content>
+              <Modal.Description className="modal-description">
                 <p>
                   <Input icon='user' iconPosition='right' placeholder='نام کاربری' />
                 </p>

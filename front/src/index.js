@@ -7,7 +7,7 @@ import * as serviceWorker from './serviceWorker';
 import './static/css/normalizer.css'
 
 import 'semantic-ui-css/semantic.min.css'
-import Navbar from './components/navigation'
+import Navbar from './components/navigation/navigation'
 
 export default class App extends Component {
     render() {

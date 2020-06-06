@@ -1,0 +1,9 @@
+.modal-header, .modal-description {
+    direction: rtl;
+    text-align: right;
+}
+
+.modal-description  input{
+    text-align: right !important;
+    font-family: 'Yekan' !important;
+}
