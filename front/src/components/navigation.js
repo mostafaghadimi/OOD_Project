@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Menu, Icon, Modal, Header } from 'semantic-ui-react'
+import { Button, Menu, Icon, Modal, Input } from 'semantic-ui-react'
 
 export default class Navbar extends Component {
   state = { activeItem: 'خانه' }
@@ -15,23 +15,33 @@ export default class Navbar extends Component {
           <Menu.Item>
           <Modal trigger={
               <Button animated primary>
-              <Button.Content visible>
-                ورود
-              </Button.Content>
-              <Button.Content hidden>
-                <Icon name='arrow left' />
-              </Button.Content>
-            </Button>
+                <Button.Content visible>
+                  ورود
+                </Button.Content>
+                <Button.Content hidden>
+                  <Icon name='arrow left' />
+                </Button.Content>
+              </Button>
           }>
-            <Modal.Header>Select a Photo</Modal.Header>
+            <Modal.Header>ورود به سامانه</Modal.Header>
             <Modal.Content image>
               <Modal.Description>
-                <Header>Default Profile Image</Header>
                 <p>
-                  We've found the following gravatar image associated with your e-mail
-                  address.
+                  <Input icon='user' iconPosition='right' placeholder='نام کاربری' />
                 </p>
-                <p>Is it okay to use this photo?</p>
+                <p>
+                  <Input icon='key' iconPosition='right' placeholder='رمز عبور' type="password" />
+                </p>
+                <p>
+                  <Button animated primary>
+                    <Button.Content visible>
+                      ورود
+                    </Button.Content>
+                    <Button.Content hidden>
+                      <Icon name='arrow left' />
+                    </Button.Content>
+                  </Button>
+                </p>
               </Modal.Description>
             </Modal.Content>
           </Modal>
