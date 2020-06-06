@@ -6,18 +6,17 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import * as serviceWorker from './serviceWorker';
 import './static/css/normalizer.css'
 
-import Install from './components/app/install'
+import 'semantic-ui-css/semantic.min.css'
+import Navbar from './components/navigation'
 
 export default class App extends Component {
     render() {
         return (
             <Switch>
                 <Route exact path="/" render={() => (
-                    <div>
-                        سلام
-                    </div>
+                    <Navbar/>
                 )}/>
-                <Route exact path="/app" component={Install}/>
+                {/* <Route exact path="/app" component={Install}/> */}
             </Switch>
         )
     }
