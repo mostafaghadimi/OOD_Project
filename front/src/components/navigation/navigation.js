@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Button, Menu, Icon, Modal, Input } from 'semantic-ui-react'
 
+import { Link } from 'react-router-dom'
+
 import './navigation.css'
 
 export default class Navbar extends Component {
@@ -62,12 +64,13 @@ export default class Navbar extends Component {
           </Menu.Item>
 
         <Menu.Menu position='right'>
-          
-            <Menu.Item
-              name='درباره ما'
-              active={activeItem === 'درباره ما'}
-              onClick={this.handleItemClick}
-            />
+            <Link to='/app'>
+              <Menu.Item
+                name='اپلیکیشن'
+                active={activeItem === 'اپلیکیشن'}
+                onClick={this.handleItemClick}
+              />
+              </Link>
 
             <Menu.Item
               name='خانه'

@@ -9,6 +9,8 @@
 
 a {
     color: inherit;
+    text-decoration: none;
+    margin: 0;
 }
 
 
@@ -19,8 +21,3 @@ a {
     font-weight: normal;
     font-style: normal;
 }
-
-
-/* .modal > button {
-    text-align: center !important;
-} */
