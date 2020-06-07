@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Table, Button, Modal } from 'antd';
-import { CheckCircleTwoTone } from '@ant-design/icons';
+import { Table, Button, Modal, Tooltip, Input } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 
 import './user.css'
 
@@ -39,8 +39,10 @@ const columns = [
     },
 ];
 
+const { Search } = Input;
 
 export default class DriverList extends Component {
+
     showModal = () => {
         this.setState({
             visible: true,
@@ -63,19 +65,19 @@ export default class DriverList extends Component {
 
     
     render() {
-        const data = []
-
-        for (let i = 1; i <= 10; i++) {
-            data.push({
-                key: i,
-                driver: 'امیرهوشنگ اکبری',
-                status: 'در ماموریت',
-                location: <Button key={i} onClick={this.showModal}>مشاهده روی نقشه</Button>,
-                history: 'سلام',
-                score: 4.5
-            })
-        }
-        const title = () => 'لیست راننده‌ها';
+        const title = () => (
+            <div>
+                <p>
+                    لیست راننده‌ها
+                </p>
+                <Search
+                    placeholder="جست‌وجو در لیست راننده‌ها" 
+                    onSearch={value => console.log(value)} 
+                    enterButton 
+                    style={{width:400}}
+                />
+            </div>
+        );
 
         this.state = {
             visible: false,
@@ -90,8 +92,44 @@ export default class DriverList extends Component {
             tableLayout: undefined,
             top: 'none',
             bottom: 'bottomRight',
-          };
+        };
 
+        const data = []
+
+        for (let i = 1; i <= 10; i++) {
+            data.push({
+                key: i,
+                driver: 'امیرهوشنگ اکبری',
+                status: 
+                    <div className="driver-status">
+                        <span>
+                            در ماموریت
+                        </span>
+                        <Tooltip placement="top" title='ویرایش'>
+                            <Button key={i} shape="circle" onClick={this.showModal}>
+                                <EditOutlined />
+                            </Button>
+                            <Modal
+                                title="چرا نشون نمیده؟"
+                                visible={this.state.visible}
+                                onOk={this.handleOk}
+                                onCancel={this.handleCancel}
+                                okText="ورود"
+                                cancelText="لغو"
+                            >
+                            <p>
+                                salam
+                            </p>
+                            
+                            
+                        </Modal>
+                        </Tooltip>
+                    </div>,
+                location: <Button key={i} onClick={this.showModal}>مشاهده روی نقشه</Button>,
+                history: <Button key={i}>مشاهده تاریخچه</Button>,
+                score: 4
+            })
+        }
         
 
         return (
@@ -102,18 +140,27 @@ export default class DriverList extends Component {
                     dataSource={data}
                     scroll={this.scroll}
                 />
-                
-                {/* TODO: Modal doesn't work */}
-                <Modal
-                    title="Basic Modal"
-                    visible={this.state.visible}
-                    onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                >
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
-                </Modal>
+            </div>
+        )
+    }
+}
+
+
+class DedicateLoad extends Component {
+    render(){
+        return (
+            <div>
+                اختصاص دادن بار اگه آزاد بود
+            </div>
+        )
+    }
+}
+
+class ChangeStatus extends Component {
+    render() {
+        return (
+            <div>
+                تغییر وضعیت به تحویل داده اگه تو ماموریت بود! شایدم باید اتوماتیک باشه!
             </div>
         )
     }

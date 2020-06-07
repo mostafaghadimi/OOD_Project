@@ -31,6 +31,7 @@ const columns = [
           value: 'Shiraz',
         },
       ],
+      // TODO: make it work
       onFilter: (value, record) => record.address.indexOf(value) === 0,
     },
     {
@@ -76,7 +77,7 @@ export default class OrderList extends Component {
                 orderer: 'مصطفی قدیمی',
                 weight: 82 + i,
                 info: <Button key={i} onClick={this.showModal}>جزئیات سفارش</Button>,
-                address: 'دانشگاه شریف، مترو حبیب‌الله، روبه‌روی فلافلی عمو اکبر',
+                address: 'تهران، دانشگاه شریف، مترو حبیب‌الله، روبه‌روی فلافلی عمو اکبر',
             })
         }
         const title = () => 'سفارش‌های ثبت شده';

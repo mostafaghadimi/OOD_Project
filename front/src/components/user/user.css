@@ -10,3 +10,8 @@
     background-color: #fff;
     margin-bottom: 70px;
 }
+
+.driver-status button{
+    margin-right: 10px;
+    display: inline-block;
+}
