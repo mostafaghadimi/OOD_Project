@@ -5,5 +5,4 @@
 .nav-layout {
     padding: 24px;
     box-sizing: content-box;
-    height: calc(100% - 48px);
 }

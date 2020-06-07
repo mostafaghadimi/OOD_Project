@@ -81,7 +81,11 @@ export default class Sidebar extends Component {
                     
                     <Menu.Item key="9">تاریخچه بار</Menu.Item>
                     <Menu.Item key="10">اعلام حادثه</Menu.Item>
-                    <Menu.Item key="11">ثبت خودرو حمل‌بار جدید</Menu.Item>
+                    <Menu.Item key="11">
+                        <Link to='/vehicle/add'>
+                        ثبت خودرو حمل‌بار جدید
+                        </Link>
+                    </Menu.Item>
                 </SubMenu>
                 </Menu>
             </Sider>

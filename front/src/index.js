@@ -9,6 +9,8 @@ import * as serviceWorker from './serviceWorker';
 import "antd/dist/antd.css";
 import './static/css/normalizer.css'
 
+
+import AddVehicle from './components/vehicle/add-vehicle';
 import Register from './components/register/register';
 import Nav from './components/nav/nav';
 
@@ -22,6 +24,10 @@ export default class App extends Component {
                 
                 <Route exact path="/register" render={() => (
                     <Nav content={<Register/>}/>
+                )}/>
+
+                <Route exact path="/vehicle/add" render={() => (
+                    <Nav content={<AddVehicle/>}/>
                 )}/>
             </Switch>
 
