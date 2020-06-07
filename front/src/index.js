@@ -3,20 +3,22 @@ import ReactDOM from 'react-dom';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
+import { ConfigProvider } from 'antd';
+
 import * as serviceWorker from './serviceWorker';
+import "antd/dist/antd.css";
+
+
+import Nav from './components/nav/nav'
 import './static/css/normalizer.css'
-
-import 'semantic-ui-css/semantic.min.css'
-import Navbar from './components/navigation/navigation'
-
 export default class App extends Component {
     render() {
         return (
             <Switch>
                 <Route exact path="/" render={() => (
-                    <Navbar/>
+                    <Nav/>
                 )}/>
-                {/* <Route exact path="/app" component={Install}/> */}
+                
             </Switch>
         )
     }
@@ -25,7 +27,9 @@ export default class App extends Component {
 
 ReactDOM.render(
     <BrowserRouter>
-        <App />
+        <ConfigProvider direction='rtl'>
+            <App />
+        </ConfigProvider>
     </BrowserRouter>
     , document.getElementById('root')
 );
