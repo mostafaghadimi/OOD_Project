@@ -14,6 +14,7 @@ import CrashReport from './components/vehicle/crash-report';
 import AddVehicle from './components/vehicle/add-vehicle';
 import DriverList from './components/user/driver-list';
 import OrderList from './components/order/order-list';
+import AddOrder from './components/order/order-add';
 import Register from './components/user/register';
 import Profile from './components/user/profile';
 import Nav from './components/nav/nav';
@@ -29,6 +30,10 @@ export default class App extends Component {
 
                 <Route exact path="/order/list" render={() => (
                     <Nav content={<OrderList/>}/>
+                )}/>
+
+                <Route exact path="/order/add" render={() => (
+                    <Nav content={<AddOrder/>}/>
                 )}/>
                 
                 <Route exact path="/user/profile" render={() => (

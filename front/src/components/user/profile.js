@@ -18,6 +18,10 @@ const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 14 },
 };
+const editItemLayout = {
+    labelCol: { span: 2 },
+    wrapperCol: { span: 10 },
+}
 
 export default class Profile extends Component {
     render() {
@@ -47,7 +51,7 @@ export default class Profile extends Component {
                     </Col>
                     <Col span={15}>
                         <Form
-                            name="user registration"
+                            name="user profile"
                             {...formItemLayout}
                             onFinish={onFinish}
                         >
@@ -73,11 +77,14 @@ export default class Profile extends Component {
                         
                         </Form>
                     </Col>
+                    
 
                 </Row>
                 <Divider>ویرایش اطلاعات</Divider>
+                    
                 <Form
-                    style={{width:490}}
+                    {...editItemLayout}
+                    // style={{width:490}}
                 >
                     <Form.Item label="شماره تماس">
                         <Input value="09151231231" type="tel"/>
@@ -95,7 +102,7 @@ export default class Profile extends Component {
                         <Input.Password  placeholder=" تکرار رمز عبور جدید" prefix={<KeyOutlined />} />
                     </Form.Item>
 
-                    <Form.Item>
+                    <Form.Item label>
                         <Button type="primary" htmlType="submit">
                             ویرایش
                         </Button>

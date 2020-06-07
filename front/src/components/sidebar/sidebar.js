@@ -37,7 +37,7 @@ export default class Sidebar extends Component {
                 <Menu
                 mode="inline"
                 className="sidebar"
-                defaultSelectedKeys={['1']}
+                // defaultSelectedKeys={['1']}
                 defaultOpenKeys={['sub1']}
                 style={{ height: '100%', borderRight: 0 }}
                 >
@@ -53,7 +53,9 @@ export default class Sidebar extends Component {
                         </Link>
                     </Menu.Item>
                     <Menu.Item key="3">
-                        ثبت سفارش 
+                        <Link to="/order/add">
+                            ثبت سفارش 
+                        </Link>
                     </Menu.Item>
                     <Menu.Item key="4">
                         <Link to="/driver/list">
