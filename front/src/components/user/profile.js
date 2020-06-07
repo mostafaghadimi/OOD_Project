@@ -9,7 +9,7 @@ import {
     Rate,
     Button,
 } from 'antd';
-import { EditOutlined, EllipsisOutlined, KeyOutlined } from '@ant-design/icons';
+import { KeyOutlined } from '@ant-design/icons';
 
 import './user.css'
 

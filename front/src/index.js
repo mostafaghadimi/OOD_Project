@@ -12,6 +12,7 @@ import './static/css/normalizer.css'
 
 import CrashReport from './components/vehicle/crash-report';
 import AddVehicle from './components/vehicle/add-vehicle';
+import DriverList from './components/user/driver-list';
 import OrderList from './components/order/order-list';
 import Register from './components/user/register';
 import Profile from './components/user/profile';
@@ -45,9 +46,11 @@ export default class App extends Component {
                 <Route exact path="/driver/crash" render={ () => (
                     <Nav content={<CrashReport/>} />
                 )}/>
-            </Switch>
 
-            
+                <Route exact path="/driver/list" render={() => (
+                    <Nav content={<DriverList/>} />
+                )}/>
+            </Switch>
         )
     }
 }

@@ -2,50 +2,45 @@ import React, { Component } from 'react'
 import { Table, Button, Modal } from 'antd';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 
-import './order.css'
+import './user.css'
 
 const columns = [
     {
-      title: 'سفارش‌دهنده',
-      dataIndex: 'orderer',
+      title: 'نام راننده',
+      dataIndex: 'driver',
     },
     {
-      title: ' وزن بار',
-      dataIndex: 'weight',
-      sorter: (a, b) => a.weight - b.weight,
-    },
-    {
-        title: 'مشخصات',
-        dataIndex: 'info',
-    },
-    {
-      title: 'آدرس',
-      dataIndex: 'address',
+      title: 'وضعیت',
+      dataIndex: 'status',
       filters: [
         {
-          text: 'تهران',
-          value: 'Tehran',
+          text: 'در ماموریت',
+          value: 'on-duty',
         },
         {
-          text: 'شیراز',
-          value: 'Shiraz',
+          text: 'آزاد',
+          value: 'free',
         },
       ],
       onFilter: (value, record) => record.address.indexOf(value) === 0,
     },
     {
-      title: 'وضعیت',
-      dataIndex: 'status',
-      render: () => (
-        <span>
-            <CheckCircleTwoTone twoToneColor="#52c41a"/>
-        </span>
-      ),
+        title: 'موقعیت جغرافیایی',
+        dataIndex: 'location',
+    },
+    {
+      title: 'تاریخچه',
+      dataIndex: 'history',
+      
+    },
+    {
+      title: 'امتیاز',
+      dataIndex: 'score',
     },
 ];
 
 
-export default class OrderList extends Component {
+export default class DriverList extends Component {
     showModal = () => {
         this.setState({
             visible: true,
@@ -73,13 +68,14 @@ export default class OrderList extends Component {
         for (let i = 1; i <= 10; i++) {
             data.push({
                 key: i,
-                orderer: 'مصطفی قدیمی',
-                weight: 82 + i,
-                info: <Button key={i} onClick={this.showModal}>جزئیات سفارش</Button>,
-                address: 'دانشگاه شریف، مترو حبیب‌الله، روبه‌روی فلافلی عمو اکبر',
+                driver: 'امیرهوشنگ اکبری',
+                status: 'در ماموریت',
+                location: <Button key={i} onClick={this.showModal}>مشاهده روی نقشه</Button>,
+                history: 'سلام',
+                score: 4.5
             })
         }
-        const title = () => 'سفارش‌های ثبت شده';
+        const title = () => 'لیست راننده‌ها';
 
         this.state = {
             visible: false,

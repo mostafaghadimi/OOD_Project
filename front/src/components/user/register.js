@@ -47,7 +47,7 @@ export default class Register extends Component {
                 </Form.Item>
 
                 <Form.Item label="شماره تماس">
-                    <Input placeholder="۰۹۱۲۰۷۲۷۱۷۵" type="tel"/>
+                    <Input placeholder="09120727175" type="tel"/>
                 </Form.Item>
                 
                 <Form.Item label="کد ملی">

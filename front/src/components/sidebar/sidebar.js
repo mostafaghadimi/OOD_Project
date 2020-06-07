@@ -52,13 +52,19 @@ export default class Sidebar extends Component {
                             سفارشات
                         </Link>
                     </Menu.Item>
-                    <Menu.Item key="3">option3</Menu.Item>
-                    <Menu.Item key="4">option4</Menu.Item>
+                    <Menu.Item key="3">
+                        ثبت سفارش 
+                    </Menu.Item>
+                    <Menu.Item key="4">
+                        <Link to="/driver/list">
+                            لیست راننده‌ها
+                        </Link>
+                    </Menu.Item>
                 {/* </SubMenu> */}
                 
                 <SubMenu key="sub3" icon={<NotificationOutlined />} title="راننده">
                     <Menu.Item key="14">
-                        <Button block onClick={this.showModal}>
+                          <Button block onClick={this.showModal}>
                             ورود
                         </Button>‍
                         <Modal
