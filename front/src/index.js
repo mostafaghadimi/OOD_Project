@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
+import fa_IR from 'antd/es/locale/fa_IR'
 
 import * as serviceWorker from './serviceWorker';
 
@@ -12,7 +13,8 @@ import './static/css/normalizer.css'
 import CrashReport from './components/vehicle/crash-report';
 import AddVehicle from './components/vehicle/add-vehicle';
 import OrderList from './components/order/order-list';
-import Register from './components/register/register';
+import Register from './components/user/register';
+import Profile from './components/user/profile';
 import Nav from './components/nav/nav';
 
 
@@ -28,6 +30,10 @@ export default class App extends Component {
                     <Nav content={<OrderList/>}/>
                 )}/>
                 
+                <Route exact path="/user/profile" render={() => (
+                    <Nav content={<Profile/>}/>
+                )}/>
+
                 <Route exact path="/register" render={() => (
                     <Nav content={<Register/>}/>
                 )}/>
@@ -49,7 +55,7 @@ export default class App extends Component {
 
 ReactDOM.render(
     <BrowserRouter>
-        <ConfigProvider direction='rtl'>
+        <ConfigProvider direction='rtl' locale={fa_IR}>
             <App />
         </ConfigProvider>
     </BrowserRouter>

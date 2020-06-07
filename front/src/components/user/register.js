@@ -2,16 +2,15 @@ import React, { Component } from 'react'
 
 import {
     Form,
-    Select,
     Input,
     Button,
     Upload,
+    DatePicker,
 } from 'antd';
-import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 
-import './register.css'
+import './user.css'
 
-const { Option } = Select;
 
 const formItemLayout = {
     labelCol: { span: 6 },
@@ -25,7 +24,6 @@ const normFile = e => {
     }
     return e && e.fileList;
 };
-
 
 export default class Register extends Component {
     render() {
@@ -54,6 +52,10 @@ export default class Register extends Component {
                 
                 <Form.Item label="کد ملی">
                     <Input placeholder="0080080081" type="tel"/>
+                </Form.Item>
+
+                <Form.Item label="تاریخ تولد">
+                    <DatePicker/>
                 </Form.Item>
 
                 <Form.Item
