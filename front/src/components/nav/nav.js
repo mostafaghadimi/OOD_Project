@@ -26,7 +26,7 @@ export default class Nav extends Component {
                         <Content
                             className="site-layout-background"
                         >
-                        Content
+                        {this.props.content}
                         </Content>
                     </Layout>
                 </Layout>

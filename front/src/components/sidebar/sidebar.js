@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+import { Link } from 'react-router-dom';
 import { NotificationOutlined, UserOutlined, KeyOutlined } from '@ant-design/icons';
 import { Layout, Menu, Button, Modal, Input  } from 'antd';
 
@@ -71,9 +72,11 @@ export default class Sidebar extends Component {
                         </Modal>
                     </Menu.Item>
                     <Menu.Item key="13">
-                        <Button block>
-                            ثبت نام
-                        </Button>
+                        <Link to='/register'>
+                            <Button block>
+                                ثبت نام
+                            </Button>
+                        </Link>
                     </Menu.Item>
                     
                     <Menu.Item key="9">تاریخچه بار</Menu.Item>

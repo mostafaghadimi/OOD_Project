@@ -2,15 +2,16 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-
 import { ConfigProvider } from 'antd';
 
 import * as serviceWorker from './serviceWorker';
+
 import "antd/dist/antd.css";
-
-
-import Nav from './components/nav/nav'
 import './static/css/normalizer.css'
+
+import Register from './components/register/register';
+import Nav from './components/nav/nav';
+
 export default class App extends Component {
     render() {
         return (
@@ -19,7 +20,12 @@ export default class App extends Component {
                     <Nav/>
                 )}/>
                 
+                <Route exact path="/register" render={() => (
+                    <Nav content={<Register/>}/>
+                )}/>
             </Switch>
+
+            
         )
     }
 }
