@@ -11,6 +11,7 @@ import './static/css/normalizer.css'
 
 import CrashReport from './components/vehicle/crash-report';
 import AddVehicle from './components/vehicle/add-vehicle';
+import OrderList from './components/order/order-list';
 import Register from './components/register/register';
 import Nav from './components/nav/nav';
 
@@ -21,6 +22,10 @@ export default class App extends Component {
             <Switch>
                 <Route exact path="/" render={() => (
                     <Nav/>
+                )}/>
+
+                <Route exact path="/order/list" render={() => (
+                    <Nav content={<OrderList/>}/>
                 )}/>
                 
                 <Route exact path="/register" render={() => (
