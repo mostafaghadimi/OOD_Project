@@ -18,16 +18,6 @@ const formItemLayout = {
     wrapperCol: { span: 14 },
 };
 
-const normFile = e => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-        return e;
-    }
-    return e && e.fileList;
-};
-
-
-
 export default class AddVehicle extends Component {
     render() {
 
