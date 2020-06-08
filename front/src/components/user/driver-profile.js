@@ -10,14 +10,10 @@ import {
     Button,
 } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
+import DriverInfo from './driver-info';
 
 import './user.css'
 
-const { Meta } = Card;
-const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 14 },
-};
 const editItemLayout = {
     labelCol: { span: 2 },
     wrapperCol: { span: 10 },
@@ -25,13 +21,10 @@ const editItemLayout = {
 
 export default class DriverProfile extends Component {
     render() {
-        const onFinish = values => {
-            console.log('Received values of form: ', values);
-        };
         return (
             <div className="user-profile">
                 <Divider>مشخصات</Divider>
-                <Row>
+                {/* <Row>
                     <Col span={9}>
                         <Card
                             style={{ width: 320 }}
@@ -79,7 +72,8 @@ export default class DriverProfile extends Component {
                     </Col>
                     
 
-                </Row>
+                </Row> */}
+                <DriverInfo />
                 <Divider>ویرایش اطلاعات</Divider>
                     
                 <Form

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Table, Button, Modal } from 'antd';
 import { CheckCircleTwoTone } from '@ant-design/icons';
+import OrderDetail from './order-detail';
 
 import './order.css'
 
@@ -46,6 +47,25 @@ const columns = [
 ];
 
 export default class OrderList extends Component {
+    constructor(props) {
+        super(props);
+        const title = () => 'سفارش‌های ثبت شده';
+        this.state = {
+            visible: false,
+            bordered: true,
+            loading: false,
+            pagination: false,
+            size: 'default',
+            title,
+            showHeader: true,
+            rowSelection: {},
+            scroll: undefined,
+            tableLayout: undefined,
+            top: 'none',
+            bottom: 'bottomRight',
+          };
+    }
+
     showModal = () => {
         this.setState({
             visible: true,
@@ -79,24 +99,6 @@ export default class OrderList extends Component {
                 address: 'تهران، دانشگاه شریف، مترو حبیب‌الله، روبه‌روی فلافلی عمو اکبر',
             })
         }
-        const title = () => 'سفارش‌های ثبت شده';
-
-        this.state = {
-            visible: false,
-            bordered: true,
-            loading: false,
-            pagination: false,
-            size: 'default',
-            title,
-            showHeader: true,
-            rowSelection: {},
-            scroll: undefined,
-            tableLayout: undefined,
-            top: 'none',
-            bottom: 'bottomRight',
-          };
-
-        
 
         return (
             <div className="order-container">
@@ -109,14 +111,18 @@ export default class OrderList extends Component {
                 
                 {/* TODO: Modal doesn't work */}
                 <Modal
-                    title="Basic Modal"
+                    title="جزئیات سفارش"
                     visible={this.state.visible}
-                    onOk={this.handleOk}
+                    // onOk={this.handleOk}
                     onCancel={this.handleCancel}
+                    footer={null}
+                    width='80%'
+                    bodyStyle={{overflow: 'auto'}}
                 >
+                    {/* <p>Some contents...</p>
                     <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p>
+                    <p>Some contents...</p> */}
+                    <OrderDetail />
                 </Modal>
             </div>
         )

@@ -66,11 +66,11 @@ export default class Sidebar extends Component {
                         </Link>
                     </Menu.Item>
 
-                    <Menu.Item key="19">
+                    {/* <Menu.Item key="19">
                         <Link to="/order/detail">
                             جزئیات سفارش
                         </Link>
-                    </Menu.Item>
+                    </Menu.Item> */}
                 </SubMenu>
                 
                 <SubMenu key="sub3" icon={<CarOutlined />} title="راننده">
@@ -112,7 +112,11 @@ export default class Sidebar extends Component {
                         </Link>
                     </Menu.Item>
 
-                    <Menu.Item key="9">تاریخچه بار</Menu.Item>
+                    <Menu.Item key="9">
+                        <Link to='/driver/history'>
+                            تاریخچه بار
+                        </Link>
+                    </Menu.Item>
                     <Menu.Item key="10">
                         <Link to='/driver/crash'>
                             اعلام حادثه

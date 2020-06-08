@@ -1,18 +1,25 @@
 import React, { Component } from 'react'
 import {
     Form,
+    Divider, 
+    Row, 
+    Col,
     Input,
     Space,
     Button,
     message,
     Typography,
+    Select,
 } from 'antd';
 import mapboxgl from 'mapbox-gl';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder'
+import 'mapbox-gl/dist/mapbox-gl.css'
+import DriverInfo from '../user/driver-info';
 
 import './order.css'
 
 
+const { Option } = Select;
 const { Title } = Typography;
 const formItemLayout = {
     labelCol: { span: 6 },
@@ -28,6 +35,12 @@ const normFile = e => {
 };
 
 export default class OrderDetail extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selected: false,
+        }
+    }
     componentDidMount(){
         mapboxgl.accessToken = "pk.eyJ1IjoibW9zdGFmYWdoYWRpbWkiLCJhIjoiY2tiNXM5aDN1MWExMDJvcGE5OWZxZzZzaSJ9.PSVotM-8-Uz6-oAUFIxpRA";
 
@@ -54,17 +67,21 @@ export default class OrderDetail extends Component {
         };
 
         return (
+            <div className='order-container'>
+            <Divider>سفارش</Divider>
             <Form
-                className="order-container padding"
+                className="padding"
                 name="Add Order"
                 {...formItemLayout}
                 onFinish={onFinish}
             >
-                <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
+            <Row>
+            <Col span={15}>
+                {/* <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
                     <Title level={4}>
                         جزئیات سفارش
                     </Title>
-                </Form.Item>
+                </Form.Item> */}
                 
                 <Form.Item label="سفارش‌دهنده">
                     امیرحسن فتحی
@@ -101,9 +118,9 @@ export default class OrderDetail extends Component {
                     در حال ارسال
                 </Form.Item>
 
-                <Form.Item label="موقعیت">
+                {/* <Form.Item label="موقعیت">
                     <div id="map" style={{width:400, height:400}}></div>
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
                     <Space>
@@ -112,7 +129,35 @@ export default class OrderDetail extends Component {
                         </Button>
                     </Space>
                 </Form.Item>
+                </Col>
+                <Col span={9}>
+                    <div id="map" style={{width:400, height:400}}></div>
+                </Col>
+                </Row>
             </Form>
+            <Divider>راننده</Divider>
+            {this.state.selected ? 
+            <div>
+                <DriverInfo />
+                <br/>
+                <Button className='change-driver-btn' type="primary" onClick={(e) => this.setState({selected: false})}>تغییر راننده</Button>
+            </div>:
+            <div>
+                <Form layout='inline'>
+                    <Form.Item label="اختصاص راننده">
+                        <Select placeholder="راننده">
+                            <Option value="1">امیرحسن فتحی</Option>
+                        </Select>
+                    </Form.Item>
+                    <Form.Item >
+                        <Button type='primary' onClick={(e) => this.setState({selected: true})}>
+                            ثبت
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </div>
+            }
+            </div>
         )
     }
 }

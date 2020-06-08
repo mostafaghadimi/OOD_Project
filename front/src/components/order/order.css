@@ -16,3 +16,8 @@
 .mapbox-logo, .mapboxgl-ctrl-attrib-inner{
     display: none !important;
 }
+
+.change-driver-btn {
+    position: absolute;
+    right: 20%;
+}

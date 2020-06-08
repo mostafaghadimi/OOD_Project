@@ -20,6 +20,7 @@ import DriverList from './components/user/driver-list';
 import OrderList from './components/order/order-list';
 import AddOrder from './components/order/order-add';
 import Nav from './components/nav/nav';
+import DriverHistory from './components/user/driver-history';
 
 
 export default class App extends Component {
@@ -58,6 +59,10 @@ export default class App extends Component {
 
                 <Route exact path="/vehicle/add" render={() => (
                     <Nav content={<AddVehicle/>}/>
+                )}/>
+
+                <Route exact path="/driver/history" render={() => (
+                    <Nav content={<DriverHistory/>}/>
                 )}/>
 
                 <Route exact path="/driver/crash" render={ () => (
