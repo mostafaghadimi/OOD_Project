@@ -7,7 +7,6 @@ import './nav.css'
 
 const { Header, Content } = Layout;
 
-
 export default class Nav extends Component {
     render() {
         return (

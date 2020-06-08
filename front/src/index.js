@@ -10,13 +10,14 @@ import * as serviceWorker from './serviceWorker';
 import "antd/dist/antd.css";
 import './static/css/normalizer.css'
 
+import DriverProfile from './components/user/driver-profile';
 import CrashReport from './components/vehicle/crash-report';
 import AddVehicle from './components/vehicle/add-vehicle';
+import UserProfile from './components/user/user-profile';
 import DriverList from './components/user/driver-list';
 import OrderList from './components/order/order-list';
 import AddOrder from './components/order/order-add';
 import Register from './components/user/register';
-import Profile from './components/user/profile';
 import Nav from './components/nav/nav';
 
 
@@ -35,9 +36,13 @@ export default class App extends Component {
                 <Route exact path="/order/add" render={() => (
                     <Nav content={<AddOrder/>}/>
                 )}/>
-                
+
                 <Route exact path="/user/profile" render={() => (
-                    <Nav content={<Profile/>}/>
+                    <Nav content={<UserProfile/>}/>
+                )}/>
+                
+                <Route exact path="/driver/profile" render={() => (
+                    <Nav content={<DriverProfile/>}/>
                 )}/>
 
                 <Route exact path="/register" render={() => (

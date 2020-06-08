@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 import {
     Form,
     Select,
@@ -8,11 +7,9 @@ import {
     Radio,
 } from 'antd';
 
-
 import './vehicle.css'
 
 const { Option } = Select;
-
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 14 },
@@ -20,11 +17,9 @@ const formItemLayout = {
 
 export default class AddVehicle extends Component {
     render() {
-
         const onFinish = values => {
             console.log('Received values of form: ', values);
         };
-
 
         return (
             <Form

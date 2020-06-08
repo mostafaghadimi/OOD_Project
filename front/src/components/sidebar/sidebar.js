@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-
 import { Link } from 'react-router-dom';
-import { NotificationOutlined, UserOutlined, KeyOutlined } from '@ant-design/icons';
+import { CarOutlined, UserOutlined, KeyOutlined } from '@ant-design/icons';
 import { Layout, Menu, Button, Modal, Input  } from 'antd';
 
 import './sidebar.css'
@@ -41,7 +40,7 @@ export default class Sidebar extends Component {
                 defaultOpenKeys={['sub1']}
                 style={{ height: '100%', borderRight: 0 }}
                 >
-                {/* <SubMenu key="sub1" icon={<UserOutlined />} title="subnav 1"> */}
+                <SubMenu key="sub1" icon={<UserOutlined />} title="سفارش‌دهنده">
                     <Menu.Item key="1">
                         <Link to="/user/profile">
                             پروفایل
@@ -62,9 +61,10 @@ export default class Sidebar extends Component {
                             لیست راننده‌ها
                         </Link>
                     </Menu.Item>
-                {/* </SubMenu> */}
+                </SubMenu>
                 
-                <SubMenu key="sub3" icon={<NotificationOutlined />} title="راننده">
+                <SubMenu key="sub3" icon={<CarOutlined />} title="راننده">
+
                     <Menu.Item key="14">
                           <Button block onClick={this.showModal}>
                             ورود
@@ -87,6 +87,7 @@ export default class Sidebar extends Component {
                             
                         </Modal>
                     </Menu.Item>
+
                     <Menu.Item key="13">
                         <Link to='/register'>
                             <Button block>
@@ -94,7 +95,13 @@ export default class Sidebar extends Component {
                             </Button>
                         </Link>
                     </Menu.Item>
-                    
+
+                    <Menu.Item key="20">
+                        <Link to="/driver/profile">
+                            پروفایل
+                        </Link>
+                    </Menu.Item>
+
                     <Menu.Item key="9">تاریخچه بار</Menu.Item>
                     <Menu.Item key="10">
                         <Link to='/driver/crash'>

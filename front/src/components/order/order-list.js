@@ -45,7 +45,6 @@ const columns = [
     },
 ];
 
-
 export default class OrderList extends Component {
     showModal = () => {
         this.setState({

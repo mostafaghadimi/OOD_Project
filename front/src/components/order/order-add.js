@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
-
 import {
     Form,
     Input,
     Button,
     DatePicker,
 } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
 
 import './order.css'
 

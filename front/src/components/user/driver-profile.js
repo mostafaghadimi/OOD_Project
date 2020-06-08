@@ -23,7 +23,7 @@ const editItemLayout = {
     wrapperCol: { span: 10 },
 }
 
-export default class Profile extends Component {
+export default class DriverProfile extends Component {
     render() {
         const onFinish = values => {
             console.log('Received values of form: ', values);
