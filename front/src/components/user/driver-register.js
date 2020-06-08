@@ -24,7 +24,7 @@ const normFile = e => {
     return e && e.fileList;
 };
 
-export default class Register extends Component {
+export default class DriverRegister extends Component {
     render() {
         const onFinish = values => {
             console.log('Received values of form: ', values);

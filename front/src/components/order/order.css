@@ -8,3 +8,11 @@
 .padding {
     padding: 25px;
 }
+
+#map {
+    text-align: left;
+}
+
+.mapbox-logo, .mapboxgl-ctrl-attrib-inner{
+    display: none !important;
+}

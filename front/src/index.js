@@ -10,14 +10,15 @@ import * as serviceWorker from './serviceWorker';
 import "antd/dist/antd.css";
 import './static/css/normalizer.css'
 
+import DriverRegister from './components/user/driver-register';
 import DriverProfile from './components/user/driver-profile';
 import CrashReport from './components/vehicle/crash-report';
+import OrderDetail from './components/order/order-detail';
 import AddVehicle from './components/vehicle/add-vehicle';
 import UserProfile from './components/user/user-profile';
 import DriverList from './components/user/driver-list';
 import OrderList from './components/order/order-list';
 import AddOrder from './components/order/order-add';
-import Register from './components/user/register';
 import Nav from './components/nav/nav';
 
 
@@ -28,7 +29,8 @@ export default class App extends Component {
                 <Route exact path="/" render={() => (
                     <Nav/>
                 )}/>
-
+                
+                {/* Order */}
                 <Route exact path="/order/list" render={() => (
                     <Nav content={<OrderList/>}/>
                 )}/>
@@ -37,6 +39,11 @@ export default class App extends Component {
                     <Nav content={<AddOrder/>}/>
                 )}/>
 
+                <Route exact path="/order/detail" render={() => (
+                    <Nav content={<OrderDetail/>}/>
+                )}/>
+
+                {/* User */}
                 <Route exact path="/user/profile" render={() => (
                     <Nav content={<UserProfile/>}/>
                 )}/>
@@ -45,8 +52,8 @@ export default class App extends Component {
                     <Nav content={<DriverProfile/>}/>
                 )}/>
 
-                <Route exact path="/register" render={() => (
-                    <Nav content={<Register/>}/>
+                <Route exact path="/driver/register" render={() => (
+                    <Nav content={<DriverRegister/>}/>
                 )}/>
 
                 <Route exact path="/vehicle/add" render={() => (

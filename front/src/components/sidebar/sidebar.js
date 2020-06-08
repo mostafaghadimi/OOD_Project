@@ -41,24 +41,34 @@ export default class Sidebar extends Component {
                 style={{ height: '100%', borderRight: 0 }}
                 >
                 <SubMenu key="sub1" icon={<UserOutlined />} title="سفارش‌دهنده">
+                    
                     <Menu.Item key="1">
                         <Link to="/user/profile">
                             پروفایل
                         </Link>
                     </Menu.Item>
+                    
                     <Menu.Item key="2">
                         <Link to="/order/list">
                             سفارشات
                         </Link>
                     </Menu.Item>
+                    
                     <Menu.Item key="3">
                         <Link to="/order/add">
                             ثبت سفارش 
                         </Link>
                     </Menu.Item>
+                    
                     <Menu.Item key="4">
                         <Link to="/driver/list">
                             لیست راننده‌ها
+                        </Link>
+                    </Menu.Item>
+
+                    <Menu.Item key="19">
+                        <Link to="/order/detail">
+                            جزئیات سفارش
                         </Link>
                     </Menu.Item>
                 </SubMenu>
