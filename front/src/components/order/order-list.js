@@ -109,7 +109,6 @@ export default class OrderList extends Component {
                     scroll={this.scroll}
                 />
                 
-                {/* TODO: Modal doesn't work */}
                 <Modal
                     title="جزئیات سفارش"
                     visible={this.state.visible}
@@ -119,9 +118,6 @@ export default class OrderList extends Component {
                     width='80%'
                     bodyStyle={{overflow: 'auto'}}
                 >
-                    {/* <p>Some contents...</p>
-                    <p>Some contents...</p>
-                    <p>Some contents...</p> */}
                     <OrderDetail />
                 </Modal>
             </div>
