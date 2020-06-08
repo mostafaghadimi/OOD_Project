@@ -26,7 +26,7 @@ export default class DriverInfo extends Component {
                         style={{ width: 320 }}
                         cover={
                         <img
-                            alt="User Profile Picture"
+                            alt="User Profile"
                             src={require('../../static/images/avatar.jpeg')}
                         />
                         }

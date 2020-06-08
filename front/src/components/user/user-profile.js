@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { 
-    Card, 
     Divider, 
     Form,
     Input,
@@ -11,7 +10,6 @@ import { KeyOutlined } from '@ant-design/icons';
 
 import './user.css'
 
-const { Meta } = Card;
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 14 },
@@ -19,9 +17,6 @@ const formItemLayout = {
 
 export default class UserProfile extends Component {
     render() {
-        const onFinish = values => {
-            console.log('Received values of form: ', values);
-        };
         return (
             <div className="user-profile">
                 <Divider>ویرایش اطلاعات</Divider>

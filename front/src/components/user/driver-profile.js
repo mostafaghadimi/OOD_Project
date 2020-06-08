@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
 import { 
-    Card, 
     Divider, 
-    Row, 
-    Col,
     Form,
     Input,
-    Rate,
     Button,
 } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
