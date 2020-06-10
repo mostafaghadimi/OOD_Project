@@ -1,14 +1,23 @@
 import graphene
+from graphene import Mutation, Argument
 from graphene_django.types import DjangoObjectType
 
-from .models import UserModel
+from .models import Driver
 
-class UserType(DjangoObjectType):
+class DriverType(DjangoObjectType):
     class Meta:
-        model = UserModel
+        model = Driver
 
 class Query(object):
-    all_users = graphene.List(UserType)
+    all_drivers = graphene.List(DriverType)
 
-    def resolve_all_users(self, info, **kwargs):
-        return UserModel.objects.all()
+    def resolve_all_drivers(self, info, **kwargs):
+        return Driver.objects.all()
+
+
+
+# class CreateDriver(Mutation):
+#     driver = graphene.Field(DriverType)
+    
+#     class Argument():
+
