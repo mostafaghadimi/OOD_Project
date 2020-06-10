@@ -20,12 +20,12 @@ class Query(object):
 class CreateOrder(Mutation):
     id = graphene.ID()
     order_status = graphene.Int()
-    order_info = graphene.String()
-    transportation_cost = graphene.Float()
     delivery_status = graphene.Boolean()
-    source_address = graphene.String()
-    destination_address = graphene.String()
-    weight = graphene.Float()
+    weight = graphene.Float(required=True)
+    order_info = graphene.String(required=True)
+    source_address = graphene.String(required=True)
+    transportation_cost = graphene.Float(required=True)
+    destination_address = graphene.String(required=True)
 
     class Arguments:
         order_status = graphene.Int()
