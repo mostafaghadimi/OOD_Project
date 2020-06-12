@@ -2,11 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-class Driver(models.Model):
-    user = models.OneToOneField(
-        User, 
-        on_delete=models.CASCADE
-    )
+class Driver(User, models.Model):
     father_name = models.CharField(
         max_length=20, 
         blank=True, 
@@ -29,15 +25,18 @@ class Driver(models.Model):
     salary = models.FloatField(
         default=0
     )
-    verified = models.BooleanField(
-        default=False
+    is_verified = models.BooleanField(
+        default=False,
+        verbose_name="Verified"
     )
-
-    # TODO: profile picture
+    profile_picture = models.ImageField(
+        blank=True,
+        null=True
+    )
 
 
     def __str__(self):
-        return self.user.username + ' ' + self.user.last_name
+        return User.username + ' ' + User.last_name
 
 
 @receiver(post_save, sender=User)
