@@ -99,7 +99,7 @@ export default class Sidebar extends Component {
                     </Menu.Item>
 
                     <Menu.Item key="13">
-                        <Link to='/register'>
+                        <Link to='driver/register'>
                             <Button block>
                                 ثبت نام
                             </Button>
