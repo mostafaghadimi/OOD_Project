@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
-import { CarOutlined, UserOutlined, KeyOutlined } from '@ant-design/icons';
+import { CarOutlined, UserOutlined, KeyOutlined, InboxOutlined, CheckOutlined } from '@ant-design/icons';
 import { Layout, Menu, Button, Modal, Input  } from 'antd';
 
 import './sidebar.css'
@@ -40,7 +40,7 @@ export default class Sidebar extends Component {
                 defaultOpenKeys={['sub1']}
                 style={{ height: '100%', borderRight: 0 }}
                 >
-                <SubMenu key="sub1" icon={<UserOutlined />} title="سفارش‌دهنده">
+                <SubMenu key="sub1" icon={<InboxOutlined />} title="صاحب بار">
                     
                     <Menu.Item key="1">
                         <Link to="/user/profile">
@@ -72,7 +72,8 @@ export default class Sidebar extends Component {
                         </Link>
                     </Menu.Item> */}
                 </SubMenu>
-                
+                <SubMenu key='sub2' icon={<UserOutlined />} title="مدیر سامانه" >
+                </SubMenu>
                 <SubMenu key="sub3" icon={<CarOutlined />} title="راننده">
 
                     <Menu.Item key="14">
@@ -127,6 +128,9 @@ export default class Sidebar extends Component {
                         ثبت خودرو حمل‌بار جدید
                         </Link>
                     </Menu.Item>
+                </SubMenu>
+                <SubMenu key="sub4" icon={<CheckOutlined />} title="مدیر احراز هویت">
+
                 </SubMenu>
                 </Menu>
             </Sider>

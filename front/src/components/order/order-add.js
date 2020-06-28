@@ -28,7 +28,7 @@ export default class AddOrder extends Component {
                 {...formItemLayout}
                 onFinish={onFinish}
             >
-                <Form.Item label="سفارش‌دهنده">
+                <Form.Item label="صاحب بار">
                     <Input placeholder="امیرحسن فتحی" disabled/>
                 </Form.Item>
 

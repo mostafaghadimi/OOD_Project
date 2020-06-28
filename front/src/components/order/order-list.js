@@ -7,7 +7,7 @@ import './order.css'
 
 const columns = [
     {
-      title: 'سفارش‌دهنده',
+      title: 'صاحب بار',
       dataIndex: 'orderer',
     },
     {

@@ -61,7 +61,7 @@ export default class OrderDetail extends Component {
             <Row>
             <Col span={15}>
                 
-                <Form.Item label="سفارش‌دهنده">
+                <Form.Item label="صاحب بار">
                     امیرحسن فتحی
                 </Form.Item>
 
