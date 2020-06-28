@@ -3,7 +3,7 @@ import { Table } from 'antd';
 
 const columns = [
     {
-      title: 'سفارش‌دهنده',
+      title: 'صاحب بار',
       dataIndex: 'orderer',
     },
     {

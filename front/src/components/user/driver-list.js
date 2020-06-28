@@ -40,8 +40,38 @@ const columns = [
 ];
 
 const { Search } = Input;
-
+const title = () => (
+    <div>
+        <p>
+            لیست راننده‌ها
+        </p>
+        <Search
+            placeholder="جست‌وجو در لیست راننده‌ها" 
+            onSearch={value => console.log(value)} 
+            enterButton 
+            style={{width:400}}
+        />
+    </div>
+);
 export default class DriverList extends Component {
+    
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: false,
+            bordered: true,
+            loading: false,
+            pagination: false,
+            size: 'default',
+            title,
+            showHeader: true,
+            rowSelection: {},
+            scroll: undefined,
+            tableLayout: undefined,
+            top: 'none',
+            bottom: 'bottomRight',
+        };
+    }
 
     showModal = () => {
         this.setState({
@@ -65,34 +95,9 @@ export default class DriverList extends Component {
 
     
     render() {
-        const title = () => (
-            <div>
-                <p>
-                    لیست راننده‌ها
-                </p>
-                <Search
-                    placeholder="جست‌وجو در لیست راننده‌ها" 
-                    onSearch={value => console.log(value)} 
-                    enterButton 
-                    style={{width:400}}
-                />
-            </div>
-        );
+        
 
-        this.state = {
-            visible: false,
-            bordered: true,
-            loading: false,
-            pagination: false,
-            size: 'default',
-            title,
-            showHeader: true,
-            rowSelection: {},
-            scroll: undefined,
-            tableLayout: undefined,
-            top: 'none',
-            bottom: 'bottomRight',
-        };
+       
 
         const data = []
 
@@ -146,22 +151,22 @@ export default class DriverList extends Component {
 }
 
 
-class DedicateLoad extends Component {
-    render(){
-        return (
-            <div>
-                اختصاص دادن بار اگه آزاد بود
-            </div>
-        )
-    }
-}
+// class DedicateLoad extends Component {
+//     render(){
+//         return (
+//             <div>
+//                 اختصاص دادن بار اگه آزاد بود
+//             </div>
+//         )
+//     }
+// }
 
-class ChangeStatus extends Component {
-    render() {
-        return (
-            <div>
-                تغییر وضعیت به تحویل داده اگه تو ماموریت بود! شایدم باید اتوماتیک باشه!
-            </div>
-        )
-    }
-}
+// class ChangeStatus extends Component {
+//     render() {
+//         return (
+//             <div>
+//                 تغییر وضعیت به تحویل داده اگه تو ماموریت بود! شایدم باید اتوماتیک باشه!
+//             </div>
+//         )
+//     }
+// }

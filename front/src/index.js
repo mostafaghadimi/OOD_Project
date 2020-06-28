@@ -57,9 +57,6 @@ export default class App extends Component {
                     <Nav content={<DriverRegister/>}/>
                 )}/>
 
-                <Route exact path="/vehicle/add" render={() => (
-                    <Nav content={<AddVehicle/>}/>
-                )}/>
 
                 <Route exact path="/driver/history" render={() => (
                     <Nav content={<DriverHistory/>}/>
@@ -72,6 +69,11 @@ export default class App extends Component {
                 <Route exact path="/driver/list" render={() => (
                     <Nav content={<DriverList/>} />
                 )}/>
+
+                <Route exact path="/vehicle/add" render={() => (
+                    <Nav content={<AddVehicle/>}/>
+                )}/>
+                
             </Switch>
         )
     }

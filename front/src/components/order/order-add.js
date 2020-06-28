@@ -14,13 +14,6 @@ const formItemLayout = {
     wrapperCol: { span: 14 },
 };
 const { TextArea } = Input;
-const normFile = e => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-        return e;
-    }
-    return e && e.fileList;
-};
 
 export default class AddOrder extends Component {
     render() {
@@ -35,7 +28,7 @@ export default class AddOrder extends Component {
                 {...formItemLayout}
                 onFinish={onFinish}
             >
-                <Form.Item label="سفارش‌دهنده">
+                <Form.Item label="صاحب بار">
                     <Input placeholder="امیرحسن فتحی" disabled/>
                 </Form.Item>
 
