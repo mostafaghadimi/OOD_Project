@@ -100,7 +100,11 @@ export default class Sidebar extends Component {
                     </Menu.Item>
 
                     <Menu.Item key="13">
+<<<<<<< HEAD
+                        <Link to='driver/register'>
+=======
                         <Link to='/driver/register'>
+>>>>>>> 486355d21da7cacbc13026a08d20afa9462900c6
                             <Button block>
                                 ثبت نام
                             </Button>
