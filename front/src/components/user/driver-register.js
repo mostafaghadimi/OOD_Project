@@ -4,7 +4,7 @@ import {
     Input,
     Button,
     Upload,
-    DatePicker,
+    DatePicker, Modal,
 } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 
@@ -25,6 +25,20 @@ const normFile = e => {
 };
 
 export default class DriverRegister extends Component {
+    state = { visible: false };
+    handleRegistger = () => {
+        this.setState({
+            visible: true,
+        });
+    };
+
+    handleOk = e => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
+    };
+
     render() {
         const onFinish = values => {
             console.log('Received values of form: ', values);
@@ -71,10 +85,18 @@ export default class DriverRegister extends Component {
                 </Form.Item>
 
                 <Form.Item wrapperCol={{ span: 12, offset: 6 }}>
-                    <Button type="primary" htmlType="submit">
-                        ثبت کن
+                    <Button onClick = {this.handleRegister} type="primary" htmlType="submit">
+                        کیر کن
                     </Button>
+                     <Modal
+                        title=" ثبت نام راننده در سامانه موفقیت آمیز بود"
+                        visible={this.state.visible}
+                        onOk={this.handleOk}
+                        okText="باشه"
+                        >
+                    </Modal>
                 </Form.Item>
+
             </Form>
         )
     }

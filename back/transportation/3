@@ -1,2 +1,0 @@
-Requirement already satisfied: django in /home/mostafa/Desktop/Work/OOD_Project/back/venv/lib/python3.6/site-packages (2.1.4)
-Requirement already satisfied: pytz in /home/mostafa/Desktop/Work/OOD_Project/back/venv/lib/python3.6/site-packages (from django) (2020.1)

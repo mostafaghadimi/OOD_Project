@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { 
-    Divider, 
+import {
+    Divider,
     Form,
     Input,
     Button,
@@ -13,7 +13,7 @@ import './user.css'
 const editItemLayout = {
     labelCol: { span: 2 },
     wrapperCol: { span: 10 },
-}
+};
 
 export default class DriverProfile extends Component {
     render() {
@@ -63,15 +63,15 @@ export default class DriverProfile extends Component {
                             <Form.Item label="امتیاز">
                                 <Rate disabled defaultValue={4} />
                             </Form.Item>
-                        
+
                         </Form>
                     </Col>
-                    
+
 
                 </Row> */}
                 <DriverInfo />
                 <Divider>ویرایش اطلاعات</Divider>
-                    
+
                 <Form
                     {...editItemLayout}
                     // style={{width:490}}
@@ -79,7 +79,7 @@ export default class DriverProfile extends Component {
                     <Form.Item label="شماره تماس">
                         <Input value="09151231231" type="tel"/>
                     </Form.Item>
-                    
+
                     <Form.Item label="رمز عبور قبلی">
                         <Input.Password  placeholder="رمز عبور قبلی" prefix={<KeyOutlined />} />
                     </Form.Item>
@@ -87,7 +87,7 @@ export default class DriverProfile extends Component {
                     <Form.Item label="رمز عبور جدید">
                         <Input.Password  placeholder="رمز عبور جدید" prefix={<KeyOutlined />} />
                     </Form.Item>
-                    
+
                     <Form.Item label="تکرار رمز عبور">
                         <Input.Password  placeholder=" تکرار رمز عبور جدید" prefix={<KeyOutlined />} />
                     </Form.Item>
