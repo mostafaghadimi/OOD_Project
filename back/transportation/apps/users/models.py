@@ -11,7 +11,7 @@ class Usermodel(User, models.Model):
     )
 
     def __str__(self):
-        return User.username + ' ' + User.last_name
+        return self.username
 
     
 class Driver(Usermodel, models.Model):
