@@ -58,10 +58,29 @@ class CreateDriver(Mutation):
             driver=driver
         )
 
-# class UpdateDriver(Mutation):
-#     class Arguments:
-#         pass
+class UpdateDriver(Mutation):
+    class Arguments:
+        id = graphene.ID()
+        driver_data = DriverInput()
+    
+    driver = graphene.Field(DriverType)
+
+    def mutate(self, info, id, driver_data=None):
+        #TODO: Error handling if the id not exists
+        driver = Driver.objects.get(pk=id)
+
+        driver.first_name = driver_data.first_name
+        driver.last_name = driver_data.last_name
+        driver.email = driver_data.email
+        driver.username = driver_data.username
+        driver.phone_no = driver_data.phone_no
+        driver.national_id = driver_data.national_id
+        driver.password = driver_data.password
+        driver.save()
+
+        return UpdateDriver(driver=driver)
+
 
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()
-    # update_driver = UpdateDriver.Field()
+    update_driver = UpdateDriver.Field()
