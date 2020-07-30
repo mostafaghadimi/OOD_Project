@@ -51,12 +51,7 @@ class CreateDriver(Mutation):
         driver.save()
 
         return CreateDriver(
-            first_name,
-            last_name,
-            email,
-            username,
-            phone_no,
-            national_id
+            driver=driver
         )
 
 
