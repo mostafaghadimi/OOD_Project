@@ -25,27 +25,40 @@ class Query(ObjectType):
             return Driver.objects.get(pk=id)
 
 
-# class CreateDriver(Mutation):
-#     class Arguments:
-#         first_name = graphene.String()
-#         last_name = graphene.String()
-#         email = graphene.String()
-#         username = graphene.String()
-#         phone_no = graphene.String()
-#         national_id = graphene.String()
+class CreateDriver(Mutation):
+    class Arguments:
+        first_name = graphene.String()
+        last_name = graphene.String()
+        email = graphene.String()
+        username = graphene.String()
+        phone_no = graphene.String()
+        national_id = graphene.String()
+        password = graphene.String()
         
-#     driver = graphene.Field(DriverType)
+    driver = graphene.Field(DriverType)
 
-#     def mutate(self, info, first_name, last_name, email, username, phone_no, national_id):
-#         return CreateDriver(
-#             first_name,
-#             last_name,
-#             email,
-#             username,
-#             phone_no,
-#             national_id
-#         )
+    def mutate(self, info, first_name, last_name, email, username, phone_no, national_id, password):
+        driver = Driver(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            username=username,
+            phone_no=phone_no,
+            national_id=national_id,
+            password=password
+        )
+
+        driver.save()
+
+        return CreateDriver(
+            first_name,
+            last_name,
+            email,
+            username,
+            phone_no,
+            national_id
+        )
 
 
-# class Mutations(ObjectType):
-#     create_driver = CreateDriver.Field()
+class Mutations(ObjectType):
+    create_driver = CreateDriver.Field()
