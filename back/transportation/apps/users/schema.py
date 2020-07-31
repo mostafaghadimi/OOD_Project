@@ -8,6 +8,9 @@ class DriverType(DjangoObjectType):
     class Meta:
         model = Driver
 
+class AuthorizerType(DjangoObjectType):
+    class Meta:
+        model = Authorizer
 
 class Query(ObjectType):
     driver = graphene.Field(
@@ -15,7 +18,13 @@ class Query(ObjectType):
         id = graphene.ID()
     )
 
+    authorizer = graphene.Field(
+        AuthorizerType,
+        id = graphene.ID()
+    )
+
     all_drivers = graphene.List(DriverType)
+    all_authorizers = graphene.List(AuthorizerType)
 
     def resolve_all_drivers(self, info, **kwargs):
         return Driver.objects.all()
@@ -24,6 +33,14 @@ class Query(ObjectType):
         id = kwargs.get('id')
         if id is not None:
             return Driver.objects.get(pk=id)
+
+    def resolve_authorizer(self, info, **kwargs):
+        id = kwargs.get('id')
+        if id is not None:
+            return Driver.objects.get(pk=id)
+
+    def resolve_all_authorizers(self, info, **kwargs):
+        return Authorizer.objects.all()
 
 
 class DriverInput(InputObjectType):
@@ -80,6 +97,32 @@ class UpdateDriver(Mutation):
 
         return UpdateDriver(driver=driver)
 
+
+class AuthorizerInput(InputObjectType):
+    first_name = graphene.String()
+    last_name = graphene.String()
+    email = graphene.String()
+    username = graphene.String()
+    phone_no = graphene.String()
+    password = graphene.String()
+
+class CreateAuthorizer(Mutation):
+    class Arguments:
+        authorizer_data = AuthorizerInput()
+
+    authorizer = graphene.Field(AuthorizerInput)
+
+    def mutate(self, info, authorizer_data=None):
+        authorizer = Authorizer(
+            firstname=authorizer_data.first_name,
+            last_name=authorizer_data.last_name,
+            email=authorizer_data.email,
+            username=authorizer_data.username,
+            phone_no=authorizer_data.phone_no,
+            password=authorizer_data.password
+        )
+        authorizer.save()
+        return CreateAuthorizer(authorizer=authorizer)
 
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()

@@ -48,17 +48,17 @@ class Driver(Usermodel, models.Model):
         verbose_name = 'Driver'
         verbose_name_plural = 'Drivers'
 
-class Authorizer(User, models.Model):
+class Authorizer(Usermodel, models.Model):
     class Meta:
         verbose_name = 'Authorizer'
         verbose_name_plural = 'Authorizers'
 
-class Customer(User, models.Model):
+class Customer(Usermodel, models.Model):
     class Meta:
         verbose_name = 'Customer'
         verbose_name_plural = 'Customers'
 
-class Administrator(User, models.Model):
+class Administrator(Usermodel, models.Model):
     class Meta:
         verbose_name='Adminsitrator'
         verbose_name_plural='Administrators'

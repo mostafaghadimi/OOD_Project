@@ -11,5 +11,4 @@ class Mutations(UserMutation):
 schema = graphene.Schema(
     query=Query,
     mutation=Mutations
-    
 )
