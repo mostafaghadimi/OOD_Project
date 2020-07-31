@@ -124,6 +124,23 @@ class CreateAuthorizer(Mutation):
         authorizer.save()
         return CreateAuthorizer(authorizer=authorizer)
 
+class UpdateDriver(Mutation):
+    class Arguments:
+        authorizer_data = graphene.Field(AuthorizerInput)
+    
+    authorizer = graphene.Field(AuthorizerType)
+    
+    def mutate(self, info, id, authorizer_data=None):
+        authorizer = Authorizer.objects.get(pk=id)
+        authorizer.first_name = authorizer_data.first_name
+        authorizer.last_name = authorizer_data.last_name
+        authorizer.email = authorizer_data.email
+        authorizer.username = authorizer_data.username
+        authorizer.password = authorizer_data.password
+        authorizer.save()
+
+        return UpdateDriver(authorizer=authorizer)
+
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()
     update_driver = UpdateDriver.Field()
