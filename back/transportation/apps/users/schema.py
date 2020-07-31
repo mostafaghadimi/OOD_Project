@@ -52,6 +52,14 @@ class DriverInput(InputObjectType):
     national_id = graphene.String()
     password = graphene.String()
 
+
+class AuthorizerInput(InputObjectType):
+    first_name = graphene.String()
+    last_name = graphene.String()
+    email = graphene.String()
+    username = graphene.String()
+    phone_no = graphene.String()
+    password = graphene.String()
 class CreateDriver(Mutation):
     class Arguments:
         driver_data = DriverInput()
@@ -126,7 +134,8 @@ class CreateAuthorizer(Mutation):
 
 class UpdateDriver(Mutation):
     class Arguments:
-        authorizer_data = graphene.Field(AuthorizerInput)
+        id = graphene.ID()
+        authorizer_data = AuthorizerInput()
     
     authorizer = graphene.Field(AuthorizerType)
     
