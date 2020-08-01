@@ -132,7 +132,7 @@ class CreateAuthorizer(Mutation):
         authorizer.save()
         return CreateAuthorizer(authorizer=authorizer)
 
-class UpdateDriver(Mutation):
+class UpdateAuthorizer(Mutation):
     class Arguments:
         id = graphene.ID()
         authorizer_data = AuthorizerInput()
