@@ -31,7 +31,7 @@ class Driver(Usermodel, models.Model):
         ('2', 'Busy')
     ]
 
-    status = models.CharField(
+    driver_status = models.CharField(
         max_length=1,
         choices=STATUS_CHOICES
     )

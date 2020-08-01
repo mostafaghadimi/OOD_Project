@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'graphene_django',
+    'graphql_auth',
     'apps.users',
     'apps.orders',
     'apps.vehicles',
@@ -69,7 +70,6 @@ AUTHENTICATION_BACKENDS = [
 
 GRAPHQL_JWT = {
     "JWT_VERIFY_EXPIRATION": True,
-
     # optional
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 }
