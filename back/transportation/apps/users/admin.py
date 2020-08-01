@@ -1,4 +1,12 @@
 from django.contrib import admin
-from .models import Driver
-# Register your models here.
-admin.site.register(Driver)
+from django.apps import AppConfig
+from apps.users.models import Driver, Customer, Authorizer, Administrator
+
+models = [
+    Driver,
+    Customer,
+    Authorizer,
+    Administrator,
+]
+
+admin.site.register(models)

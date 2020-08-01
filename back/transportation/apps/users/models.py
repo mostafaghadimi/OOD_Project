@@ -1,49 +1,64 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-class Driver(User, models.Model):
-    father_name = models.CharField(
-        max_length=20, 
-        blank=True, 
-        verbose_name="Father's Name"
-    )
-    national_id = models.CharField(
-        max_length=10, 
-        blank=True, 
-        verbose_name="National ID"
-    )
+
+
+# Create your models here.
+class Usermodel(User, models.Model):
     phone_no = models.CharField(
         max_length=11,
         blank=True,
         verbose_name="Phone Number"
     )
-    birth_date = models.DateField(
-        null=True, 
-        blank=True
+
+    def __str__(self):
+        return self.username
+
+    
+class Driver(Usermodel, models.Model):
+    national_id = models.CharField(
+        max_length=10, 
+        blank=True, 
+        verbose_name="National ID"
     )
-    salary = models.FloatField(
-        default=0
-    )
-    is_verified = models.BooleanField(
-        default=False,
-        verbose_name="Verified"
-    )
+
     profile_picture = models.ImageField(
         blank=True,
         null=True
     )
 
+    STATUS_CHOICES = [
+        ('1', 'Free'),
+        ('2', 'Busy')
+    ]
 
-    def __str__(self):
-        return User.username + ' ' + User.last_name
+    status = models.CharField(
+        max_length=1,
+        choices=STATUS_CHOICES
+    )
 
+    rating = models.FloatField(
+        default=-1
+    )
 
-@receiver(post_save, sender=User)
-def create_driver(sender, instance, created, **kwargs):
-    if created:
-        Driver.objects.create(user=instance)
+    ranking = models.IntegerField(
+        default=-1
+    )
 
-@receiver(post_save, sender=User)
-def save_driver(sender, instance, **kwargs):
-    instance.driver.save()
+    class Meta:
+        verbose_name = 'Driver'
+        verbose_name_plural = 'Drivers'
+
+class Authorizer(Usermodel, models.Model):
+    class Meta:
+        verbose_name = 'Authorizer'
+        verbose_name_plural = 'Authorizers'
+
+class Customer(Usermodel, models.Model):
+    class Meta:
+        verbose_name = 'Customer'
+        verbose_name_plural = 'Customers'
+
+class Administrator(Usermodel, models.Model):
+    class Meta:
+        verbose_name='Adminsitrator'
+        verbose_name_plural='Administrators'
