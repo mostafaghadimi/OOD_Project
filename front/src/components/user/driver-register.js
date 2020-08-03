@@ -55,19 +55,19 @@ const DriverRegister = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [familyName, setFamilyName] = useState("");
-  const [melliCode, setMelliCode] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [nationalId, setNationalId] = useState("");
   const [birthDay, setBirthDay] = useState(new Date());
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNo, setPhoneNo] = useState("");
   const [visible, setVisible] = useState(false);
 
 
 
-  const handleSubmit = (event, createUser) => {
-    event.preventDefault();
-    console.log("pouya kosshere");
-    createUser();
+  const handleSubmit = (event, createDriver) => {
+      console.log("In the handleSubmit");
+      event.preventDefault();
+    createDriver();
   };
 
   return (
@@ -76,33 +76,43 @@ const DriverRegister = () => {
 
         <Mutation
           mutation={REGISTER_MUTATION}
-          variables={{ username, email, password,  }}
+          variables={{
+             "driverData" : {
+               "firstName":firstName,
+               "lastName":lastName,
+               "username":username,
+                 "email":email,
+                 "phoneNo":phoneNo,
+                 "nationalId":nationalId,
+                 "password":password
+          }
+          }}
           onCompleted={data => {
             console.log({ data });
             setVisible(true);
           }}
         >
-          {(createUser, { loading, error }) => {
+          {(createDriver, { loading, error }) => {
             return (
               <Form
                 className="registration-form"
                 name="user registration"
                 {...formItemLayout}
-                onSubmit={event => handleSubmit(event, createUser)}
+                // onSubmit={event => handleSubmit(event, createUser)}
               >
 
 
                   <Form.Item label="نام">
                     <Input
                         id = "name"
-                        onChange={event => setName(event.target.value)}
+                        onChange={event => setFirstName(event.target.value)}
                         placeholder="مصطفی"/>
                   </Form.Item>
 
                   <Form.Item label="نام خانوادگی">
                     <Input
                         id = "familyName"
-                        onChange={event => setFamilyName(event.target.value)}
+                        onChange={event => setLastName(event.target.value)}
                         placeholder="خمینی"/>
                   </Form.Item>
 
@@ -127,14 +137,14 @@ const DriverRegister = () => {
                   <Form.Item label="شماره تماس">
                     <Input
                         id = "phoneNumber"
-                        onChange={event => setPhoneNumber(event.target.value)}
+                        onChange={event => setPhoneNo(event.target.value)}
                         placeholder= "09092929912"/>
                     </Form.Item>
 
                   <Form.Item label="کد ملی">
                     <Input
-                        id = "melliCode"
-                        onChange={event => setMelliCode(event.target.value)}
+                        id = "nationalId"
+                        onChange={event => setNationalId(event.target.value)}
                         placeholder="0020996519"/>
                   </Form.Item>
 
@@ -162,15 +172,16 @@ const DriverRegister = () => {
                         htmlType="submit"
                         disabled={
                             loading ||
-                            !name.trim() ||
-                            !familyName.trim() ||
+                            !firstName.trim() ||
+                            !lastName.trim() ||
                             !username.trim() ||
-                            !melliCode.trim() ||
+                            !nationalId.trim() ||
                             // !birthDay.valueOf()||
                             !email.trim() ||
-                            !password.trim()||
-                            !phoneNumber.trim()
-                          }
+                            !password.trim() ||
+                            !phoneNo.trim()
+                        }
+                        onClick={event => handleSubmit(event, createDriver)}
                     >
                         {loading ? "در حال ثبت کردن..." : "ثبت کن"}
                     </Button>
@@ -223,14 +234,14 @@ const DriverRegister = () => {
 };
 
 const REGISTER_MUTATION = gql`
-  mutation($username: String!, $email: String!, $password: String!) {
-    createUser(username: $username, email: $email, password: $password) {
-      user {
-        username
-        email
-      }
+  mutation ($driverData: DriverInput!) {
+  createDriver(driverData: $driverData) {
+    driver{
+      firstName
+      lastName
     }
   }
+}
 `;
 
 
