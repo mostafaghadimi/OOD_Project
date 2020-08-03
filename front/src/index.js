@@ -21,6 +21,19 @@ import OrderList from './components/order/order-list';
 import AddOrder from './components/order/order-add';
 import Nav from './components/nav/nav';
 import DriverHistory from './components/user/driver-history';
+// import {
+//   ApolloClient,
+//   InMemoryCache,
+//   HttpLink,
+//   ApolloProvider,
+// } from "@apollo/client";
+import { ApolloProvider, Query } from "react-apollo";
+import ApolloClient, { gql } from "apollo-boost";
+
+
+const client = new ApolloClient({
+    uri: "http://localhost:8000/graphql/",
+});
 
 
 export default class App extends Component {
@@ -81,11 +94,13 @@ export default class App extends Component {
 
 
 ReactDOM.render(
-    <BrowserRouter>
-        <ConfigProvider direction='rtl' locale={fa_IR}>
-            <App />
-        </ConfigProvider>
-    </BrowserRouter>
+    <ApolloProvider client={client}>
+        <BrowserRouter>
+            <ConfigProvider direction='rtl' locale={fa_IR}>
+                <App />
+            </ConfigProvider>
+        </BrowserRouter>
+    </ApolloProvider>
     , document.getElementById('root')
 );
 
