@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { CarOutlined, UserOutlined, KeyOutlined, InboxOutlined, CheckOutlined } from '@ant-design/icons';
 import { Layout, Menu, Button, Modal, Input  } from 'antd';
-
+import { Mutation } from "react-apollo";
+import { gql } from "apollo-boost";
+import Error from "../shared/Error";
 import './sidebar.css'
 
 import { Mutation } from "react-apollo";
