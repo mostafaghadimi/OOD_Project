@@ -2,7 +2,9 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { CarOutlined, UserOutlined, KeyOutlined, InboxOutlined, CheckOutlined } from '@ant-design/icons';
 import { Layout, Menu, Button, Modal, Input  } from 'antd';
-
+import { Mutation } from "react-apollo";
+import { gql } from "apollo-boost";
+import Error from "../shared/Error";
 import './sidebar.css'
 
 const { SubMenu } = Menu;
@@ -83,7 +85,7 @@ export default class Sidebar extends Component {
                         <Modal
                             title="ورود راننده به سامانه"
                             visible={this.state.visible}
-                            onOk={this.handleOk}
+                            // onOk={() => setNewUser(true)}
                             onCancel={this.handleCancel}
                             okText="ورود"
                             cancelText="لغو"
@@ -137,3 +139,17 @@ export default class Sidebar extends Component {
         )
     }
 }
+
+
+const LOGIN_MUTATION = gql`
+  mutation($username: String!, $password: String!) {
+    tokenAuth(username: $username, password: $password) {
+      token
+    }
+  }
+`;
+
+
+
+
+

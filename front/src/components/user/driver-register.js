@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Component } from 'react'
 import { Mutation } from "react-apollo";
 import { gql } from "apollo-boost";
-// import Error from "../Shared/Error";
+import Error from "../shared/Error";
 
 import {
     Form,
@@ -43,13 +43,6 @@ const formItemLayout = {
     wrapperCol: { span: 14 },
 };
 
-const normFile = e => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-        return e;
-    }
-    return e && e.fileList;
-};
 
 const DriverRegister = () => {
   const [username, setUsername] = useState("");
@@ -58,10 +51,10 @@ const DriverRegister = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [nationalId, setNationalId] = useState("");
-  const [birthDay, setBirthDay] = useState(new Date());
+  const [birthDay, setBirthDay] = useState(null);
   const [phoneNo, setPhoneNo] = useState("");
   const [visible, setVisible] = useState(false);
-
+  const [image, setImage] = useState(null);
 
 
   const handleSubmit = (event, createDriver) => {
@@ -69,6 +62,16 @@ const DriverRegister = () => {
       event.preventDefault();
     createDriver();
   };
+
+  const normFile = e => {
+    console.log('Upload event:', e.file);
+    setImage(e.file);
+    if (Array.isArray(e)) {
+        return e;
+    }
+    return e && e.fileList;
+  };
+
 
   return (
     <div>
@@ -81,10 +84,10 @@ const DriverRegister = () => {
                "firstName":firstName,
                "lastName":lastName,
                "username":username,
-                 "email":email,
-                 "phoneNo":phoneNo,
-                 "nationalId":nationalId,
-                 "password":password
+               "email":email,
+               "phoneNo":phoneNo,
+               "nationalId":nationalId,
+               "password":password
           }
           }}
           onCompleted={data => {
@@ -149,7 +152,8 @@ const DriverRegister = () => {
                   </Form.Item>
 
                   <Form.Item label="تاریخ تولد">
-                    <DatePicker id = "birthDay" onChange={date => setBirthDay(date)}/>
+                    <DatePicker id = "birthDay" onChange=
+                        {date => setBirthDay(date)}/>
                   </Form.Item>
 
                   <Form.Item
@@ -176,7 +180,7 @@ const DriverRegister = () => {
                             !lastName.trim() ||
                             !username.trim() ||
                             !nationalId.trim() ||
-                            // !birthDay.valueOf()||
+                            !birthDay||
                             !email.trim() ||
                             !password.trim() ||
                             !phoneNo.trim()
@@ -201,7 +205,7 @@ const DriverRegister = () => {
                     </Modal>
                 </Form.Item>
                 {/* Error Handling */}
-
+                {error && <Error error={error} />}
               </Form>
             );
           }}
