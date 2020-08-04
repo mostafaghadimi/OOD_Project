@@ -7,9 +7,6 @@ import { gql } from "apollo-boost";
 import Error from "../shared/Error";
 import './sidebar.css'
 
-import { Mutation } from "react-apollo";
-import { gql } from "apollo-boost";
-
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 

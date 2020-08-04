@@ -134,20 +134,42 @@ const DriverRegister = () => {
                   <Form.Item label="ایمیل">
                     <Input
                         id = "email"
-                        onChange={event => setEmail(event.target.value)}/>
+                        onChange={event => {
+                            if(event.target.value.match("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[a-zA-Z]{2,4}$") != null){
+                                setEmail(event.target.value);
+                            }
+                            else {
+                                setEmail("");
+                                console.log("SAG");
+                            }
+                        }}/>
                   </Form.Item>
 
                   <Form.Item label="شماره تماس">
                     <Input
                         id = "phoneNumber"
-                        onChange={event => setPhoneNo(event.target.value)}
+                        onChange={event => {
+                            if(event.target.value.match("^[0-9]{8,11}$") != null){
+                                setPhoneNo(event.target.value);
+                            }
+                            else {
+                                setPhoneNo("");
+                            }
+                        }}
                         placeholder= "09092929912"/>
                     </Form.Item>
 
                   <Form.Item label="کد ملی">
                     <Input
                         id = "nationalId"
-                        onChange={event => setNationalId(event.target.value)}
+                        onChange={event => {
+                            if(event.target.value.match("^[0-9]{10}$") != null){
+                                setNationalId(event.target.value);
+                            }
+                            else {
+                                setNationalId("")
+                            }
+                        }}
                         placeholder="0020996519"/>
                   </Form.Item>
 
