@@ -18,6 +18,11 @@ class Usermodel(AbstractUser, models.Model):
 
     
 class Driver(Usermodel, models.Model):
+    is_verified = models.BooleanField(
+        default=False,
+        verbose_name="Is Verified"
+    )
+
     national_id = models.CharField(
         max_length=10, 
         blank=True, 
@@ -26,7 +31,9 @@ class Driver(Usermodel, models.Model):
 
     profile_picture = models.ImageField(
         blank=True,
-        null=True
+        null=True,
+        upload_to="./static/profile_pictures",
+        verbose_name="Profile Picture"
     )
 
     STATUS_CHOICES = [
@@ -36,15 +43,29 @@ class Driver(Usermodel, models.Model):
 
     driver_status = models.CharField(
         max_length=1,
-        choices=STATUS_CHOICES
+        choices=STATUS_CHOICES,
+        default='1',
+        verbose_name="Driver Status"
     )
 
     rating = models.FloatField(
-        default=-1
+        default=-1,
+        verbose_name="Rating"
     )
 
     ranking = models.IntegerField(
-        default=-1
+        default=-1,
+        verbose_name="Ranking"
+    )
+
+    latitude = models.FloatField(
+        default=-1,
+        verbose_name="Latitude"
+    )
+
+    longitude = models.FloatField(
+        default=-1,
+        verbose_name="Longitude"
     )
 
     class Meta:
