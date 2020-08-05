@@ -99,7 +99,7 @@ export default class DriverList extends Component {
 
        
 
-        const data = []
+        const data = [];
 
         for (let i = 1; i <= 10; i++) {
             data.push({

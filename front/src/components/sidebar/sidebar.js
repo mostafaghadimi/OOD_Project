@@ -175,7 +175,7 @@ export default class Sidebar extends Component {
                     </Menu.Item>
 
                     <Menu.Item key="22">
-                        <Link to='/authorizer/registeredDro'>
+                        <Link to='/authorizer/authorizeDrivers'>
                             لیست درخواست های ثبت نام
                         </Link>
                     </Menu.Item>
