@@ -39,6 +39,17 @@ class Query(ObjectType):
         UserType
     )
 
+    is_username_unique = graphene.Boolean(
+        username=graphene.String()
+    )
+
+    def resolve_is_username_unique(self, info, username):
+        try:
+            User.objects.get(username=username)
+            return False
+        except:
+            return True
+
     def resolve_me(self, info, **kwargs):
         user = info.context.user
         if user.is_anonymous:
@@ -126,6 +137,16 @@ class UpdateDriver(Mutation):
 
         return UpdateDriver(driver=driver)
 
+class DeleteDriver(Mutation):
+    class Arguments:
+        id = graphene.ID()
+    
+    def mutate(self, info, id):
+        driver = Driver.objects.get(pk=id)
+        driver.delete()
+
+        return DeleteDriver
+
 
 class AuthorizerInput(InputObjectType):
     first_name = graphene.String()
@@ -174,3 +195,4 @@ class UpdateAuthorizer(Mutation):
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()
     update_driver = UpdateDriver.Field()
+    # delete_driver = DeleteDriver.Field()
