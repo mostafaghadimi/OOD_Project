@@ -1,8 +1,12 @@
 import graphene
 from graphene import Mutation, ObjectType, InputObjectType
-from .models import Driver, Authorizer, Customer, Administrator
+from .models import Driver, Authorizer, Customer, Administrator, Usermodel
 from graphene_django.types import DjangoObjectType
 
+
+class UserType(DjangoObjectType):
+    class Meta:
+        model = Usermodel
 
 class DriverType(DjangoObjectType):
     class Meta:
@@ -23,8 +27,24 @@ class Query(ObjectType):
         id = graphene.ID()
     )
 
-    all_drivers = graphene.List(DriverType)
-    all_authorizers = graphene.List(AuthorizerType)
+    all_drivers = graphene.List(
+        DriverType
+    )
+
+    all_authorizers = graphene.List(
+        AuthorizerType
+    )
+
+    me = graphene.Field(
+        UserType
+    )
+
+    def resolve_me(self, info, **kwargs):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception('You need to login first')
+        
+        return user
 
     def resolve_all_drivers(self, info, **kwargs):
         return Driver.objects.all()
@@ -76,9 +96,8 @@ class CreateDriver(Mutation):
             username=driver_data.username,
             phone_no=driver_data.phone_no,
             national_id=driver_data.national_id,
-            password=driver_data.password
         )
-
+        driver.set_password(driver_data.password)
         driver.save()
 
         return CreateDriver(
@@ -102,7 +121,7 @@ class UpdateDriver(Mutation):
         driver.username = driver_data.username
         driver.phone_no = driver_data.phone_no
         driver.national_id = driver_data.national_id
-        driver.password = driver_data.password
+        driver.set_password(driver_data.password)
         driver.save()
 
         return UpdateDriver(driver=driver)
@@ -129,12 +148,12 @@ class CreateAuthorizer(Mutation):
             email=authorizer_data.email,
             username=authorizer_data.username,
             phone_no=authorizer_data.phone_no,
-            password=authorizer_data.password
         )
+        authorizer.set_password(authorizer_data.password)
         authorizer.save()
         return CreateAuthorizer(authorizer=authorizer)
 
-class UpdateDriver(Mutation):
+class UpdateAuthorizer(Mutation):
     class Arguments:
         id = graphene.ID()
         authorizer_data = AuthorizerInput()
@@ -147,10 +166,10 @@ class UpdateDriver(Mutation):
         authorizer.last_name = authorizer_data.last_name
         authorizer.email = authorizer_data.email
         authorizer.username = authorizer_data.username
-        authorizer.password = authorizer_data.password
+        authorizer.set_password(authorizer_data.password)
         authorizer.save()
 
-        return UpdateDriver(authorizer=authorizer)
+        return UpdateAuthorizer(authorizer=authorizer)
 
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()

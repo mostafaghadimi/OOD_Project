@@ -1,15 +1,18 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
-class Usermodel(User, models.Model):
+class Usermodel(AbstractUser, models.Model):
     phone_no = models.CharField(
         max_length=11,
         blank=True,
         verbose_name="Phone Number"
     )
 
+    USERNAME_FIELD = "username"   # e.g: "username", "email"
+    EMAIL_FIELD = "email"         # e.g: "email", "primary_email"
+    
     def __str__(self):
         return self.username
 
