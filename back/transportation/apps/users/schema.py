@@ -138,14 +138,15 @@ class UpdateDriver(Mutation):
         return UpdateDriver(driver=driver)
 
 class DeleteDriver(Mutation):
+    id = graphene.ID()
     class Arguments:
-        id = graphene.ID()
+        id = graphene.ID(required=True)
     
     def mutate(self, info, id):
         driver = Driver.objects.get(pk=id)
         driver.delete()
-
-        return DeleteDriver
+        drivers = Driver.objects.all()
+        return DeleteDriver(id=id)
 
 
 class AuthorizerInput(InputObjectType):
@@ -195,4 +196,4 @@ class UpdateAuthorizer(Mutation):
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()
     update_driver = UpdateDriver.Field()
-    # delete_driver = DeleteDriver.Field()
+    delete_driver = DeleteDriver.Field()
