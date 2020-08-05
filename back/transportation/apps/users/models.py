@@ -32,6 +32,7 @@ class Driver(Usermodel, models.Model):
     profile_picture = models.ImageField(
         blank=True,
         null=True,
+        upload_to="./static/profile_pictures",
         verbose_name="Profile Picture"
     )
 
