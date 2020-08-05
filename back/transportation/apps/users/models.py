@@ -44,6 +44,7 @@ class Driver(Usermodel, models.Model):
     driver_status = models.CharField(
         max_length=1,
         choices=STATUS_CHOICES,
+        default='1',
         verbose_name="Driver Status"
     )
 
@@ -55,6 +56,16 @@ class Driver(Usermodel, models.Model):
     ranking = models.IntegerField(
         default=-1,
         verbose_name="Ranking"
+    )
+
+    latitude = models.FloatField(
+        default=-1,
+        verbose_name="Latitude"
+    )
+
+    longitude = models.FloatField(
+        default=-1,
+        verbose_name="Longitude"
     )
 
     class Meta:
