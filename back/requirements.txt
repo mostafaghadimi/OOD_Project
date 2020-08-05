@@ -9,7 +9,6 @@ graphene-django==2.12.1
 graphql-core==2.3.2
 graphql-relay==2.0.1
 Pillow==7.2.0
-pkg-resources==0.0.0
 promise==2.3
 PyJWT==1.7.1
 pytz==2020.1
@@ -18,3 +17,4 @@ singledispatch==3.4.0.3
 six==1.15.0
 sqlparse==0.3.1
 Unidecode==1.1.1
+django-cors-headers==3.4.0

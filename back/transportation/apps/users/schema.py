@@ -80,6 +80,8 @@ class AuthorizerInput(InputObjectType):
     username = graphene.String()
     phone_no = graphene.String()
     password = graphene.String()
+
+
 class CreateDriver(Mutation):
     class Arguments:
         driver_data = DriverInput()
