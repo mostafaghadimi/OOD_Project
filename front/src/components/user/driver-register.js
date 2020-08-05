@@ -17,7 +17,6 @@ import { UploadOutlined } from '@ant-design/icons';
 import './user.css'
 
 
-
 const DRIVERS_QUERY = gql`
   mutation {
   createDriver(
@@ -46,15 +45,24 @@ const formItemLayout = {
 
 const DriverRegister = () => {
   const [username, setUsername] = useState("");
+  const [usernameState, setUsernameState] = useState(false);
   const [email, setEmail] = useState("");
+  const [emailState, setEmailState] = useState(false);
   const [password, setPassword] = useState("");
+  const [passwordState, setPasswordState] = useState(false);
   const [firstName, setFirstName] = useState("");
+  const [firstNameState, setFirstNameState] = useState(false);
   const [lastName, setLastName] = useState("");
+  const [lastNameState, setLastNameState] = useState(false);
   const [nationalId, setNationalId] = useState("");
+  const [NationalIdState, setNationalIdState] = useState(false);
   const [birthDay, setBirthDay] = useState(null);
+  const [birthDayState, setBirthDayState] = useState(false);
   const [phoneNo, setPhoneNo] = useState("");
+  const [phoneNoState, setPhoneNoState] = useState(false);
   const [visible, setVisible] = useState(false);
   const [image, setImage] = useState(null);
+  const [imageState, setImageState] = useState(false);
 
 
   const handleSubmit = (event, createDriver) => {
@@ -108,39 +116,59 @@ const DriverRegister = () => {
                   <Form.Item label="نام">
                     <Input
                         id = "name"
-                        onChange={event => setFirstName(event.target.value)}
+                        onChange={event => {
+                                setFirstName(event.target.value);
+                                setFirstNameState(true);
+                            }
+                        }
                         placeholder="مصطفی"/>
                   </Form.Item>
 
                   <Form.Item label="نام خانوادگی">
                     <Input
                         id = "familyName"
-                        onChange={event => setLastName(event.target.value)}
+                        onChange={event => {
+                                setLastName(event.target.value);
+                                setLastNameState(true);
+                            }
+                        }
                         placeholder="خمینی"/>
                   </Form.Item>
 
                   <Form.Item label="نام کاربری">
                     <Input
                         id = "username"
-                        onChange={event => setUsername(event.target.value)}/>
+                        onChange={event => {
+                                setUsername(event.target.value);
+                                setUsernameState(true);
+                            }
+                        } />
+
                   </Form.Item>
 
                   <Form.Item label="رمز عبور">
                     <Input
                         id = "password"
-                        onChange={event => setPassword(event.target.value)}/>
+                        onChange={event => {
+                                setPassword(event.target.value);
+                                setPasswordState(true);
+                            }
+                        }/>
+
                   </Form.Item>
 
-                  <Form.Item label="ایمیل">
+                  <Form.Item label="ایمیل" >
                     <Input
                         id = "email"
                         onChange={event => {
-                            if(event.target.value.match("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[a-zA-Z]{2,4}$") != null){
+                            if(event.target.value.match("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,}$") != null){
                                 setEmail(event.target.value);
+                                setEmailState(true);
+                                document.getElementById("email").style.backgroundColor = 'white';
                             }
                             else {
-                                setEmail("");
-                                console.log("SAG");
+                                setEmailState(false);
+                                document.getElementById("email").style.backgroundColor = 'pink';
                             }
                         }}/>
                   </Form.Item>
@@ -151,9 +179,12 @@ const DriverRegister = () => {
                         onChange={event => {
                             if(event.target.value.match("^[0-9]{8,11}$") != null){
                                 setPhoneNo(event.target.value);
+                                setPhoneNoState(true);
+                                document.getElementById("phoneNumber").style.backgroundColor = 'white';
                             }
                             else {
-                                setPhoneNo("");
+                                setPhoneNoState(false);
+                                document.getElementById("phoneNumber").style.backgroundColor = 'pink';
                             }
                         }}
                         placeholder= "09092929912"/>
@@ -165,9 +196,12 @@ const DriverRegister = () => {
                         onChange={event => {
                             if(event.target.value.match("^[0-9]{10}$") != null){
                                 setNationalId(event.target.value);
+                                setNationalIdState(true);
+                                document.getElementById("nationalId").style.backgroundColor = 'white';
                             }
                             else {
-                                setNationalId("")
+                                document.getElementById("nationalId").style.backgroundColor = 'pink';
+                                setNationalIdState(false);
                             }
                         }}
                         placeholder="0020996519"/>
@@ -175,7 +209,11 @@ const DriverRegister = () => {
 
                   <Form.Item label="تاریخ تولد">
                     <DatePicker id = "birthDay" onChange=
-                        {date => setBirthDay(date)}/>
+                        {date => {
+                                setBirthDay(date);
+                                setBirthDayState(true);
+                            }
+                        }/>
                   </Form.Item>
 
                   <Form.Item
@@ -198,14 +236,14 @@ const DriverRegister = () => {
                         htmlType="submit"
                         disabled={
                             loading ||
-                            !firstName.trim() ||
-                            !lastName.trim() ||
-                            !username.trim() ||
-                            !nationalId.trim() ||
-                            !birthDay||
-                            !email.trim() ||
-                            !password.trim() ||
-                            !phoneNo.trim()
+                            !firstNameState ||
+                            !lastNameState ||
+                            !usernameState ||
+                            !NationalIdState ||
+                            !birthDayState||
+                            !emailState ||
+                            !passwordState ||
+                            !phoneNoState
                         }
                         onClick={event => handleSubmit(event, createDriver)}
                     >
