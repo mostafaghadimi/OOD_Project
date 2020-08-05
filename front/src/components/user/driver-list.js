@@ -75,21 +75,21 @@ export default class DriverList extends Component {
 
     showModal = () => {
         this.setState({
-            visible: true,
+            visibleDriver: true,
         });
     };
 
     handleOk = e => {
         console.log(e);
         this.setState({
-            visible: false,
+            visibleDriver: false,
         });
     };
 
     handleCancel = e => {
         console.log(e);
         this.setState({
-            visible: false,
+            visibleDriver: false,
         });
     };
 
@@ -116,7 +116,7 @@ export default class DriverList extends Component {
                             </Button>
                             <Modal
                                 title="چرا نشون نمیده؟"
-                                visible={this.state.visible}
+                                visible={this.state.visibleDriver}
                                 onOk={this.handleOk}
                                 onCancel={this.handleCancel}
                                 okText="ورود"

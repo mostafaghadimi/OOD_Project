@@ -12,26 +12,44 @@ const { Sider } = Layout;
 
 export default class Sidebar extends Component {
 
-    state = { visible: false };
-    showModal = () => {
+    state = { visibleDriver: false ,
+        visibleAuthorizer:false,
+    };
+
+    showDriverModal = () => {
         this.setState({
-            visible: true,
+            visibleDriver: true,
         });
     };
 
     handleOk = e => {
         console.log(e);
         this.setState({
-            visible: false,
+            visibleDriver: false,
         });
     };
 
-    handleCancel = e => {
+    handleDriverCancel = e => {
         console.log(e);
         this.setState({
-            visible: false,
+            visibleDriver: false,
         });
     };
+
+
+    showAuthorizerModal = () => {
+        this.setState({
+            visibleAuthorizer: true,
+        });
+    };
+
+    handleAuthorizerCancel = e => {
+        console.log(e);
+        this.setState({
+            visibleAuthorizer: false,
+        });
+    };
+
     render() {
         return (
             <Sider width={250} className="site-layout-background">
@@ -79,14 +97,14 @@ export default class Sidebar extends Component {
                 <SubMenu key="sub3" icon={<CarOutlined />} title="راننده">
 
                     <Menu.Item key="14">
-                          <Button block onClick={this.showModal}>
+                          <Button block onClick={this.showDriverModal}>
                             ورود
                         </Button>‍
                         <Modal
                             title="ورود راننده به سامانه"
-                            visible={this.state.visible}
+                            visible={this.state.visibleDriver}
                             // onOk={() => setNewUser(true)}
-                            onCancel={this.handleCancel}
+                            onCancel={this.handleDriverCancel}
                             okText="ورود"
                             cancelText="لغو"
                             >
@@ -131,7 +149,37 @@ export default class Sidebar extends Component {
                         </Link>
                     </Menu.Item>
                 </SubMenu>
+
                 <SubMenu key="sub4" icon={<CheckOutlined />} title="مدیر احراز هویت">
+                    <Menu.Item key="21">
+                          <Button block onClick={this.showAuthorizerModal}>
+                            ورود
+                        </Button>‍
+                        <Modal
+                            title="ورود مدیر احراز هویت به سامانه"
+                            visible={this.state.visibleAuthorizer}
+                            // onOk={() => setNewUser(true)}
+                            onCancel={this.handleAuthorizerCancel}
+                            okText="ورود"
+                            cancelText="لغو"
+                            >
+                            <p>
+                                <Input size="large" placeholder="نام کاربری" prefix={<UserOutlined />} />
+                            </p>
+                            <p>
+                                <Input.Password  size="large" placeholder="رمز عبور" prefix={<KeyOutlined />} />
+
+                            </p>
+
+                        </Modal>
+                    </Menu.Item>
+
+                    <Menu.Item key="22">
+                        <Link to='/authorizer/registeredDro'>
+                            لیست درخواست های ثبت نام
+                        </Link>
+                    </Menu.Item>
+
 
                 </SubMenu>
                 </Menu>

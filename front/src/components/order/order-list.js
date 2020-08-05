@@ -68,21 +68,21 @@ export default class OrderList extends Component {
 
     showModal = () => {
         this.setState({
-            visible: true,
+            visibleDriver: true,
         });
     };
 
     handleOk = e => {
         console.log(e);
         this.setState({
-            visible: false,
+            visibleDriver: false,
         });
     };
 
     handleCancel = e => {
         console.log(e);
         this.setState({
-            visible: false,
+            visibleDriver: false,
         });
     };
 
@@ -111,7 +111,7 @@ export default class OrderList extends Component {
                 
                 <Modal
                     title="جزئیات سفارش"
-                    visible={this.state.visible}
+                    visible={this.state.visibleDriver}
                     // onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     footer={null}
