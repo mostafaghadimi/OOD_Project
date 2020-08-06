@@ -4,7 +4,8 @@ import { CarOutlined, UserOutlined, KeyOutlined, InboxOutlined, CheckOutlined } 
 import { Layout, Menu, Button, Modal, Input  } from 'antd';
 import { Mutation } from "react-apollo";
 import { gql } from "apollo-boost";
-import Error from "../shared/Error";
+import DriverLogin from "../user/driver-login"
+
 import './sidebar.css'
 
 const { SubMenu } = Menu;
@@ -12,28 +13,8 @@ const { Sider } = Layout;
 
 export default class Sidebar extends Component {
 
-    state = { visibleDriver: false ,
+    state = {
         visibleAuthorizer:false,
-    };
-
-    showDriverModal = () => {
-        this.setState({
-            visibleDriver: true,
-        });
-    };
-
-    handleOk = e => {
-        console.log(e);
-        this.setState({
-            visibleDriver: false,
-        });
-    };
-
-    handleDriverCancel = e => {
-        console.log(e);
-        this.setState({
-            visibleDriver: false,
-        });
     };
 
 
@@ -49,6 +30,8 @@ export default class Sidebar extends Component {
             visibleAuthorizer: false,
         });
     };
+
+
 
     render() {
         return (
@@ -97,26 +80,9 @@ export default class Sidebar extends Component {
                 <SubMenu key="sub3" icon={<CarOutlined />} title="راننده">
 
                     <Menu.Item key="14">
-                          <Button block onClick={this.showDriverModal}>
-                            ورود
-                        </Button>‍
-                        <Modal
-                            title="ورود راننده به سامانه"
-                            visible={this.state.visibleDriver}
-                            // onOk={() => setNewUser(true)}
-                            onCancel={this.handleDriverCancel}
-                            okText="ورود"
-                            cancelText="لغو"
-                            >
-                            <p>
-                                <Input size="large" placeholder="نام کاربری" prefix={<UserOutlined />} />  
-                            </p>
-                            <p>
-                                <Input.Password  size="large" placeholder="رمز عبور" prefix={<KeyOutlined />} />
+                        <DriverLogin>
 
-                            </p>
-                            
-                        </Modal>
+                        </DriverLogin>
                     </Menu.Item>
 
                     <Menu.Item key="13">
@@ -189,10 +155,3 @@ export default class Sidebar extends Component {
 }
 
 
-const LOGIN_MUTATION = gql`
-  mutation($username: String!, $password: String!) {
-    tokenAuth(username: $username, password: $password) {
-      token
-    }
-  }
-`;
