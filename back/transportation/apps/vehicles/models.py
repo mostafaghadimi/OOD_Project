@@ -16,7 +16,6 @@ class Vehicle(models.Model):
     plate_no = models.CharField(
         max_length=8,
         unique=True,
-        blank=True,
         null=True,
     )
 
