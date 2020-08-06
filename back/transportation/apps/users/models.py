@@ -25,7 +25,8 @@ class Driver(Usermodel, models.Model):
 
     national_id = models.CharField(
         max_length=10, 
-        blank=True, 
+        blank=True,
+        null=True,
         verbose_name="National ID"
     )
 

@@ -151,7 +151,7 @@ class UpdateDriver(Mutation):
         return UpdateDriver(driver=driver)
 
 class DeleteDriver(Mutation):
-    id = graphene.ID()
+    driver = graphene.Field(DriverType)
     class Arguments:
         id = graphene.ID(required=True)
     
@@ -161,7 +161,7 @@ class DeleteDriver(Mutation):
         return DeleteDriver(id=id)
 
 class VerifyDriver(Mutation):
-    id = graphene.ID()
+    driver = graphene.Field(DriverType)
 
     class Arguments:
         id = graphene.ID(required=True)
