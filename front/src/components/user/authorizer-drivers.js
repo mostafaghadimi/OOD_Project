@@ -46,10 +46,16 @@ const AuthorizeDrivers = (Props) => {
     const allInfo = [];
 
 
-    const handleSubmit = (event, createDriver) => {
-                        console.log("In the handleSubmit");
+    const handleSubmitAuthorize = (event, verifyDriver) => {
+                        // console.log("In the handleSubmit");
                         event.preventDefault();
-                        createDriver();
+                        verifyDriver();
+                    };
+
+    const handleSubmitDelete = (event, deleteDriver) => {
+                        // console.log("In the handleSubmit");
+                        event.preventDefault();
+                        deleteDriver();
                     };
 
     const [visible, setVisible] = useState(false);
@@ -66,7 +72,7 @@ const AuthorizeDrivers = (Props) => {
                 if(loading) return <div> is loading </div>;
                 if (error) return <div> is error </div>;
 
-                {data.allDrivers.map( driver => {
+                {data.unverifiedDrivers.map( driver => {
                     // setModalConfirmTitle("هویت ".concat(driver.firstName).concat(" تایید شد"));
                     // setModalRejectTitle(driver.firstName.concat(" رد شد"));
 
@@ -81,66 +87,52 @@ const AuthorizeDrivers = (Props) => {
                         verifyRemove:
                             <div className="driver-status">
                                 <Mutation mutation={AUTHORIZE_MUTATION}
-                                          variables={{
-                                              "driverData": {
-                                                  "firstName": driver.firstName,
-                                                  "lastName": driver.lastName,
-                                                  "username": driver.username + "1",
-                                                  "email": driver.email,
-                                                  "phoneNo": driver.phoneNo,
-                                                  "nationalId": driver.nationalId,
-                                                  "password": driver.password
+                                          variables={
+                                              {
+                                              "id" : driver.id
                                               }
-                                          }}
+                                          }
                                           onCompleted={data => {
                                               console.log({data});
                                               setVisible(true);
                                           }}
-                                >{(createDriver, {loading, error}) => {
+                                >{(verifyDriver, {loading, error}) => {
                                     return (
                                         <div>
-                                            <Button onClick={event => handleSubmit(event, createDriver)}>تایید</Button>
+                                            <Button onClick={event => handleSubmitAuthorize(event, verifyDriver)}>تایید</Button>
                                             <Modal
 
-                                                title= {modalConfirmTitle}
+                                                title= "هویت راننده تایید شد"
                                                 visible={visible}
                                                 onCancel={() => {
                                                     setVisible(false);
-                                                }
-                                                }
+                                                }}
                                                 onOk={() => {
                                                     setVisible(false);
-                                                }
-                                                }
+                                                }}
                                             >
                                             </Modal>
                                         </div>
                                     )
                                 }}
                                 </Mutation>
-                                <Mutation mutation={AUTHORIZE_MUTATION}
-                                          variables={{
-                                              "driverData": {
-                                                  "firstName": driver.firstName,
-                                                  "lastName": driver.lastName,
-                                                  "username": driver.username + "2",
-                                                  "email": driver.email,
-                                                  "phoneNo": driver.phoneNo,
-                                                  "nationalId": driver.nationalId,
-                                                  "password": driver.password
+                                <Mutation mutation={REMOVE_MUTATION}
+                                          variables={
+                                              {
+                                                  "id" : driver.id
                                               }
-                                          }}
+                                          }
                                           onCompleted={data => {
                                               console.log({data});
                                               setVisible(true);
                                           }}
-                                >{(createDriver, {loading, error}) => {
+                                >{(deleteDriver, {loading, error}) => {
                                     return (
                                         <div>
-                                            <Button onClick={event => handleSubmit(event, createDriver)}>رد</Button>
+                                            <Button onClick={event => handleSubmitDelete(event, deleteDriver)}>رد</Button>
                                             <Modal
 
-                                                title= {modalRejectTitle}
+                                                title= "هویت راننده رد شد"
                                                 visible={visible}
                                                 onCancel={() => {
                                                     setVisible(false);
@@ -190,7 +182,7 @@ const AuthorizeDrivers = (Props) => {
 
 export const GET_DRIVERS = gql`
   {
-    allDrivers {
+    unverifiedDrivers {
       id,
       firstName,
       lastName,
@@ -198,7 +190,6 @@ export const GET_DRIVERS = gql`
       email,
       phoneNo,
       nationalId,
-      password,
     }
   }
 `;
@@ -206,13 +197,20 @@ export const GET_DRIVERS = gql`
 
 // This mutation is supposed to update the Driver Auhtorization state. However, we didn't have it in back. Now we just add new.
 const AUTHORIZE_MUTATION = gql`
-  mutation ($driverData: DriverInput!) {
-  createDriver(driverData: $driverData) {
-    driver{
-      firstName
-      lastName
+mutation($id: ID!){
+    verifyDriver (id:$id){
+      id
     }
-  }
 }
 `;
+
+
+const REMOVE_MUTATION = gql`
+mutation($id: ID!){
+     deleteDriver (id:$id){
+      id
+    }
+}
+`;
+
 export default (AuthorizeDrivers);
