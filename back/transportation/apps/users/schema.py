@@ -9,13 +9,16 @@ class UserType(DjangoObjectType):
     class Meta:
         model = Usermodel
 
+
 class DriverType(DjangoObjectType):
     class Meta:
         model = Driver
 
+
 class AuthorizerType(DjangoObjectType):
     class Meta:
         model = Authorizer
+
 
 class Query(ObjectType):
     driver = graphene.Field(
@@ -213,6 +216,19 @@ class UpdateAuthorizer(Mutation):
 
         return UpdateAuthorizer(authorizer=authorizer)
 
+
+class DeleteAuthorizer(Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
+    
+    id = graphene.ID()
+
+    def mutate(self, info, id):
+        authorizer = Authorizer.objects.get(pk=id)
+        authorizer.delete()
+        return DeleteAuthorizer(id=id)
+
+
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()
     update_driver = UpdateDriver.Field()
@@ -221,3 +237,4 @@ class Mutations(ObjectType):
 
     create_authorizer = CreateAuthorizer.Field()
     update_authorizer = UpdateAuthorizer.Field()
+    delete_authorizer = DeleteAuthorizer.Field()
