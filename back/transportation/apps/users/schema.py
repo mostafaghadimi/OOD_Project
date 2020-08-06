@@ -220,3 +220,4 @@ class Mutations(ObjectType):
     verify_driver = VerifyDriver.Field()
 
     create_authorizer = CreateAuthorizer.Field()
+    update_authorizer = UpdateAuthorizer.Field()
