@@ -1,4 +1,5 @@
 import graphene
+
 from graphene import Mutation, ObjectType, InputObjectType
 from .models import Driver, Authorizer, Customer, Administrator, Usermodel
 from graphene_django.types import DjangoObjectType
@@ -42,6 +43,13 @@ class Query(ObjectType):
     is_username_unique = graphene.Boolean(
         username=graphene.String()
     )
+
+    unverified_drivers = graphene.List(
+        DriverType
+    )
+
+    def resolve_unverified_drivers(self, info):
+        return Driver.objects.filter(is_verified=False).all()
 
     def resolve_is_username_unique(self, info, username):
         try:
