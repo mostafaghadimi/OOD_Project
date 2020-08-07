@@ -10,6 +10,21 @@ class Usermodel(AbstractUser, models.Model):
         verbose_name="Phone Number"
     )
 
+    is_driver = models.BooleanField(
+        default=False,
+        verbose_name="Is Driver",
+    )
+
+    is_authorizer = models.BooleanField(
+        default=False,
+        verbose_name="Is Authorizer",
+    )
+
+    is_customer = models.BooleanField(
+        default=False,
+        verbose_name="Is Customer",
+    )
+
     USERNAME_FIELD = "username"   # e.g: "username", "email"
     EMAIL_FIELD = "email"         # e.g: "email", "primary_email"
     
@@ -79,6 +94,11 @@ class Driver(models.Model):
         verbose_name= "Birthday",
     )
 
+    is_driver = models.BooleanField(
+        default=True,
+        verbose_name="Is Driver",
+    )
+
     class Meta:
         verbose_name = 'Driver'
         verbose_name_plural = 'Drivers'
@@ -93,6 +113,11 @@ class Authorizer(models.Model):
         on_delete=models.CASCADE,
     )
 
+    is_authorizer = models.BooleanField(
+        default=True,
+        verbose_name="Is Authorizer",
+    )
+
     class Meta:
         verbose_name = 'Authorizer'
         verbose_name_plural = 'Authorizers'
@@ -102,6 +127,11 @@ class Customer(models.Model):
         Usermodel,
         related_name="customer",
         on_delete=models.CASCADE,
+    )
+
+    is_customer = models.BooleanField(
+        default=True,
+        verbose_name="Is Customer",
     )
 
     birthday = models.DateField(

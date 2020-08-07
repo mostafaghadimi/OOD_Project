@@ -151,17 +151,29 @@ class UpdateDriver(Mutation):
     driver = graphene.Field(DriverType)
 
     def mutate(self, info, id, driver_data=None):
-        #TODO: Error handling if the id not exists
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first.")
+        
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this action")
+
         driver = Driver.objects.get(pk=id)
 
-        driver.first_name = driver_data.first_name
-        driver.last_name = driver_data.last_name
-        driver.email = driver_data.email
-        driver.username = driver_data.username
-        driver.phone_no = driver_data.phone_no
+        user_id = driver.user.id
+        user = Usermodel.objects.get(pk=user_id)
+        user.first_name = driver_data.user.first_name
+        user.last_name = driver_data.user.last_name
+        user.email = driver_data.user.email
+        user.username = driver_data.user.username
+        user.phone_no = driver_data.user.phone_no
+        user.set_password(driver_data.user.password)
+
         driver.national_id = driver_data.national_id
         driver.birthday = driver_data.birthday
-        driver.set_password(driver_data.password)
+
+        user.save()
         driver.save()
 
         return UpdateDriver(driver=driver)
