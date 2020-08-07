@@ -122,13 +122,13 @@ class CreateDriver(Mutation):
 
     def mutate(self, info, driver_data=None):
         user = Usermodel (
-            first_name=driver_data.first_name,
-            last_name=driver_data.last_name,
-            email=driver_data.email,
-            username=driver_data.username,
-            phone_no=driver_data.phone_no,
+            first_name=driver_data.user.first_name,
+            last_name=driver_data.user.last_name,
+            email=driver_data.user.email,
+            username=driver_data.user.username,
+            phone_no=driver_data.user.phone_no,
         )
-        user.set_password(driver_data.password)
+        user.set_password(driver_data.user.password)
         user.save()
 
         driver = Driver(    
