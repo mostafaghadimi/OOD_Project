@@ -20,6 +20,10 @@ class AuthorizerType(DjangoObjectType):
         model = Authorizer
 
 
+class CustomerType(DjangoObjectType):
+    class Meta:
+        model = Customer
+
 class Query(ObjectType):
     driver = graphene.Field(
         DriverType,
@@ -95,6 +99,7 @@ class DriverInput(InputObjectType):
     phone_no = graphene.String()
     national_id = graphene.String()
     password = graphene.String()
+    birthday = graphene.Date()
 
 
 class AuthorizerInput(InputObjectType):
@@ -105,6 +110,15 @@ class AuthorizerInput(InputObjectType):
     phone_no = graphene.String()
     password = graphene.String()
 
+
+class CustomerInput(InputObjectType):
+    first_name = graphene.String()
+    last_name = graphene.String()
+    email = graphene.String()
+    username = graphene.String()
+    phone_no = graphene.String()
+    birthday=graphene.Date()
+    password = graphene.String()
 
 class CreateDriver(Mutation):
     class Arguments:
@@ -120,6 +134,7 @@ class CreateDriver(Mutation):
             username=driver_data.username,
             phone_no=driver_data.phone_no,
             national_id=driver_data.national_id,
+            birthday=driver_data.birthday,
         )
         driver.set_password(driver_data.password)
         driver.save()
@@ -145,6 +160,7 @@ class UpdateDriver(Mutation):
         driver.username = driver_data.username
         driver.phone_no = driver_data.phone_no
         driver.national_id = driver_data.national_id
+        driver.birthday = driver_data.birthday
         driver.set_password(driver_data.password)
         driver.save()
 
@@ -230,6 +246,25 @@ class DeleteAuthorizer(Mutation):
         authorizer.delete()
         return DeleteAuthorizer(id=id)
 
+class CreateCustomer(Mutation):
+    class Arguments:
+        customer_data = CustomerInput()
+
+    customer = graphene.Field(CustomerType)
+
+    def mutate(self, info, customer_data=None):
+        customer = Customer (
+            first_name=customer_data.first_name,
+            last_name=customer_data.last_name,
+            username=customer_data.username,
+            email=customer_data.email,
+            birthday=customer_data.birthday
+        )
+
+        customer.set_password(customer_data.password)
+        customer.save()
+
+        return CreateCustomer(customer=Customer)
 
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()
@@ -240,3 +275,5 @@ class Mutations(ObjectType):
     create_authorizer = CreateAuthorizer.Field()
     update_authorizer = UpdateAuthorizer.Field()
     delete_authorizer = DeleteAuthorizer.Field()
+
+    create_customer = CreateCustomer.Field()

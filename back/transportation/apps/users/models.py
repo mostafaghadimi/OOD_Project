@@ -69,6 +69,11 @@ class Driver(Usermodel, models.Model):
         verbose_name="Longitude"
     )
 
+    birthday = models.DateField(
+        null=True,
+        verbose_name= "Birthday",
+    )
+
     class Meta:
         verbose_name = 'Driver'
         verbose_name_plural = 'Drivers'
@@ -79,6 +84,10 @@ class Authorizer(Usermodel, models.Model):
         verbose_name_plural = 'Authorizers'
 
 class Customer(Usermodel, models.Model):
+    birthday = models.DateField(
+        null=True,
+        verbose_name= "Birthday",
+    )
     class Meta:
         verbose_name = 'Customer'
         verbose_name_plural = 'Customers'
