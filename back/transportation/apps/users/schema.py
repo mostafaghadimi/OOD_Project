@@ -88,37 +88,31 @@ class Query(ObjectType):
     def resolve_all_authorizers(self, info, **kwargs):
         return Authorizer.objects.all()
 
-
-class DriverInput(InputObjectType):
+class UserInput(InputObjectType):
     first_name = graphene.String()
     last_name = graphene.String()
     email = graphene.String()
     username = graphene.String()
+    phone_no = graphene.String()
+    password = graphene.String()
+
+class DriverInput(InputObjectType):
+    user = graphene.Field(UserInput)
     latitude = graphene.Float()
     longitude = graphene.Float()
-    phone_no = graphene.String()
     national_id = graphene.String()
-    password = graphene.String()
     birthday = graphene.Date()
 
 
 class AuthorizerInput(InputObjectType):
-    first_name = graphene.String()
-    last_name = graphene.String()
-    email = graphene.String()
-    username = graphene.String()
+    user = graphene.Field(UserInput)
     phone_no = graphene.String()
-    password = graphene.String()
 
 
 class CustomerInput(InputObjectType):
-    first_name = graphene.String()
-    last_name = graphene.String()
-    email = graphene.String()
-    username = graphene.String()
+    user = graphene.Field(UserInput)
     phone_no = graphene.String()
     birthday=graphene.Date()
-    password = graphene.String()
 
 class CreateDriver(Mutation):
     class Arguments:
@@ -127,16 +121,22 @@ class CreateDriver(Mutation):
     driver = graphene.Field(DriverType)
 
     def mutate(self, info, driver_data=None):
-        driver = Driver(
+        user = Usermodel (
             first_name=driver_data.first_name,
             last_name=driver_data.last_name,
             email=driver_data.email,
             username=driver_data.username,
             phone_no=driver_data.phone_no,
+        )
+        user.set_password(driver_data.password)
+        user.save()
+
+        driver = Driver(    
+            user=user,    
             national_id=driver_data.national_id,
             birthday=driver_data.birthday,
         )
-        driver.set_password(driver_data.password)
+
         driver.save()
 
         return CreateDriver(

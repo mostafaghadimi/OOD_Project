@@ -15,9 +15,14 @@ class Usermodel(AbstractUser, models.Model):
     
     def __str__(self):
         return self.username
-
     
-class Driver(Usermodel, models.Model):
+class Driver(models.Model):
+    user = models.OneToOneField(
+        Usermodel,
+        related_name="driver",
+        on_delete=models.CASCADE,
+    )
+    
     is_verified = models.BooleanField(
         default=False,
         verbose_name="Is Verified"
@@ -78,12 +83,24 @@ class Driver(Usermodel, models.Model):
         verbose_name = 'Driver'
         verbose_name_plural = 'Drivers'
 
-class Authorizer(Usermodel, models.Model):
+class Authorizer(models.Model):
+    user = models.OneToOneField(
+        Usermodel,
+        related_name="authorizer",
+        on_delete=models.CASCADE,
+    )
+
     class Meta:
         verbose_name = 'Authorizer'
         verbose_name_plural = 'Authorizers'
 
-class Customer(Usermodel, models.Model):
+class Customer(models.Model):
+    user = models.OneToOneField(
+        Usermodel,
+        related_name="customer",
+        on_delete=models.CASCADE,
+    )
+
     birthday = models.DateField(
         null=True,
         verbose_name= "Birthday",
@@ -92,7 +109,13 @@ class Customer(Usermodel, models.Model):
         verbose_name = 'Customer'
         verbose_name_plural = 'Customers'
 
-class Administrator(Usermodel, models.Model):
+class Administrator(models.Model):
+    user = models.OneToOneField(
+        Usermodel,
+        related_name="administrator",
+        on_delete=models.CASCADE,
+
+    )
     class Meta:
         verbose_name='Adminsitrator'
         verbose_name_plural='Administrators'
