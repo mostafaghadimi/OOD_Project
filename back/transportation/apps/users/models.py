@@ -83,6 +83,9 @@ class Driver(models.Model):
         verbose_name = 'Driver'
         verbose_name_plural = 'Drivers'
 
+    def __str__(self):
+        return self.user.username
+
 class Authorizer(models.Model):
     user = models.OneToOneField(
         Usermodel,
