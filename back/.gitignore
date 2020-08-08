@@ -21,10 +21,12 @@ media
 .idea/**/dynamic.xml 
 .idea/**/uiDesigner.xml 
 .idea/**/gradle.xml 
-.idea/**/libraries 
-*.iws /out/ 
+.idea/**/libraries
+*.iws /out/
 
-# Python # 
+/node_modules
+
+# Python #
 *.py[cod] 
 *$py.class 
 
