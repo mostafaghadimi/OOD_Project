@@ -1,8 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
-# Create your models here.
 class Usermodel(AbstractUser, models.Model):
     phone_no = models.CharField(
         max_length=11,
@@ -148,7 +146,7 @@ class Administrator(models.Model):
         related_name="administrator",
         on_delete=models.CASCADE,
     )
-    
+
     class Meta:
         verbose_name='Adminsitrator'
         verbose_name_plural='Administrators'

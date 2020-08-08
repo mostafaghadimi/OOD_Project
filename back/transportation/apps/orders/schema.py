@@ -9,18 +9,17 @@ class OrderType(DjangoObjectType):
     class Meta:
         model = Order
 
-# class CustomerType(DjangoObjectType):
-#     class Meta:
-#         model = Customer
+class CustomerType(DjangoObjectType):
+    class Meta:
+        model = Customer
 
-# class VehicleType(DjangoObjectType):
-#     class Meta:
-#         model = Vehicle
+class VehicleType(DjangoObjectType):
+    class Meta:
+        model = Vehicle
 
 class Query(ObjectType):
     all_orders = graphene.List(
-        OrderType,
-
+        OrderType
     )
 
     def resolve_all_orders(self, info):

@@ -28,7 +28,7 @@ class Query(ObjectType):
     driver = graphene.Field(
         DriverType,
         id = graphene.ID()
-    )
+    ) #done
 
     authorizer = graphene.Field(
         AuthorizerType,
@@ -37,7 +37,7 @@ class Query(ObjectType):
 
     all_drivers = graphene.List(
         DriverType
-    )
+    ) #done
 
     all_authorizers = graphene.List(
         AuthorizerType
@@ -56,6 +56,14 @@ class Query(ObjectType):
     )
 
     def resolve_unverified_drivers(self, info):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser or not user.is_authorizer:
+            raise Exception("You are not allowed to do this action")
+
         return Driver.objects.filter(is_verified=False).all()
 
     def resolve_is_username_unique(self, info, username):
@@ -73,11 +81,23 @@ class Query(ObjectType):
         return user
 
     def resolve_all_drivers(self, info, **kwargs):
+        user = info.context.user_id
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this action")
+
         return Driver.objects.all()
 
     def resolve_driver(self, info, **kwargs):
+        user = info.context.user
         id = kwargs.get('id')
+
         if id is not None:
+            driver = Driver.objects.get(pk=id)
+
+            if user != driver.user:
+                raise Exception("You are not allowed to do this action")
+
             return Driver.objects.get(pk=id)
 
     def resolve_authorizer(self, info, **kwargs):
@@ -210,7 +230,7 @@ class VerifyDriver(Mutation):
 
         elif not user.is_authorizer or not user.is_superuser:
             raise Exception("You are not allowed to do this action")
-        
+
         driver = Driver.objects.get(pk=id)
         driver.is_verified = True
         driver.save()
@@ -270,6 +290,14 @@ class DeleteAuthorizer(Mutation):
     id = graphene.ID()
 
     def mutate(self, info, id):
+        user = info.context.user
+        
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this action")
+
         authorizer = Authorizer.objects.get(pk=id)
         authorizer.delete()
         return DeleteAuthorizer(id=id)
