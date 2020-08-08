@@ -68,7 +68,7 @@ class Query(ObjectType):
     def resolve_me(self, info, **kwargs):
         user = info.context.user
         if user.is_anonymous:
-            raise Exception('You need to login first')
+            raise Exception('You need to login first!')
         
         return user
 
@@ -154,7 +154,7 @@ class UpdateDriver(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first.")
+            raise Exception("You need to login first!")
         
         if not user.is_superuser:
             raise Exception("You are not allowed to do this action")
@@ -179,12 +179,18 @@ class UpdateDriver(Mutation):
         return UpdateDriver(driver=driver)
 
 class DeleteDriver(Mutation):
-    # user = graphene.Field(UserType)
     id = graphene.ID()
     class Arguments:
         id = graphene.ID(required=True)
     
     def mutate(self, info, id):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        elif not user.is_authorizer or not user.is_superuser:
+            raise Exception("You are not allowed to do this action")
+
         driver = Driver.objects.get(pk=id)
         user_id = driver.user.id
         Usermodel.objects.get(pk=user_id).delete()
@@ -198,6 +204,13 @@ class VerifyDriver(Mutation):
         id = graphene.ID(required=True)
 
     def mutate(self, info, id):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        elif not user.is_authorizer or not user.is_superuser:
+            raise Exception("You are not allowed to do this action")
+        
         driver = Driver.objects.get(pk=id)
         driver.is_verified = True
         driver.save()

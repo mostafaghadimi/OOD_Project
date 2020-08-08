@@ -147,8 +147,8 @@ class Administrator(models.Model):
         Usermodel,
         related_name="administrator",
         on_delete=models.CASCADE,
-
     )
+    
     class Meta:
         verbose_name='Adminsitrator'
         verbose_name_plural='Administrators'
