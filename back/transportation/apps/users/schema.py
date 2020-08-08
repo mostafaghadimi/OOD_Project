@@ -1,7 +1,7 @@
 import graphene
 
 from graphene import Mutation, ObjectType, InputObjectType
-from .models import Driver, Authorizer, Customer, Administrator, Usermodel
+from .models import Driver, Authorizer, Customer, Usermodel
 from graphene_django.types import DjangoObjectType
 
 
@@ -81,7 +81,7 @@ class Query(ObjectType):
         return user
 
     def resolve_all_drivers(self, info, **kwargs):
-        user = info.context.user_id
+        user = info.context.user
 
         if not user.is_superuser:
             raise Exception("You are not allowed to do this action")
