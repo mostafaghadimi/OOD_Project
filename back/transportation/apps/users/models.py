@@ -1,13 +1,26 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-
-# Create your models here.
 class Usermodel(AbstractUser, models.Model):
     phone_no = models.CharField(
         max_length=11,
         blank=True,
         verbose_name="Phone Number"
+    )
+
+    is_driver = models.BooleanField(
+        default=False,
+        verbose_name="Is Driver",
+    )
+
+    is_authorizer = models.BooleanField(
+        default=False,
+        verbose_name="Is Authorizer",
+    )
+
+    is_customer = models.BooleanField(
+        default=False,
+        verbose_name="Is Customer",
     )
 
     USERNAME_FIELD = "username"   # e.g: "username", "email"
@@ -79,15 +92,28 @@ class Driver(models.Model):
         verbose_name= "Birthday",
     )
 
+    is_driver = models.BooleanField(
+        default=True,
+        verbose_name="Is Driver",
+    )
+
     class Meta:
         verbose_name = 'Driver'
         verbose_name_plural = 'Drivers'
+
+    def __str__(self):
+        return self.user.username
 
 class Authorizer(models.Model):
     user = models.OneToOneField(
         Usermodel,
         related_name="authorizer",
         on_delete=models.CASCADE,
+    )
+
+    is_authorizer = models.BooleanField(
+        default=True,
+        verbose_name="Is Authorizer",
     )
 
     class Meta:
@@ -99,6 +125,11 @@ class Customer(models.Model):
         Usermodel,
         related_name="customer",
         on_delete=models.CASCADE,
+    )
+
+    is_customer = models.BooleanField(
+        default=True,
+        verbose_name="Is Customer",
     )
 
     birthday = models.DateField(
@@ -114,8 +145,8 @@ class Administrator(models.Model):
         Usermodel,
         related_name="administrator",
         on_delete=models.CASCADE,
-
     )
+
     class Meta:
         verbose_name='Adminsitrator'
         verbose_name_plural='Administrators'
