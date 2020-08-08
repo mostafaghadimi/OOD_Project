@@ -139,14 +139,3 @@ class Customer(models.Model):
     class Meta:
         verbose_name = 'Customer'
         verbose_name_plural = 'Customers'
-
-class Administrator(models.Model):
-    user = models.OneToOneField(
-        Usermodel,
-        related_name="administrator",
-        on_delete=models.CASCADE,
-    )
-
-    class Meta:
-        verbose_name='Adminsitrator'
-        verbose_name_plural='Administrators'
