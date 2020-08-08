@@ -33,7 +33,7 @@ class Query(ObjectType):
     authorizer = graphene.Field(
         AuthorizerType,
         id = graphene.ID()
-    )
+    ) #done
 
     all_drivers = graphene.List(
         DriverType
@@ -41,7 +41,7 @@ class Query(ObjectType):
 
     all_authorizers = graphene.List(
         AuthorizerType
-    )
+    ) #done
 
     me = graphene.Field(
         UserType
@@ -53,7 +53,7 @@ class Query(ObjectType):
 
     unverified_drivers = graphene.List(
         DriverType
-    )
+    ) #done
 
     def resolve_unverified_drivers(self, info):
         user = info.context.user
@@ -101,11 +101,24 @@ class Query(ObjectType):
             return Driver.objects.get(pk=id)
 
     def resolve_authorizer(self, info, **kwargs):
+        user = info.context.user
         id = kwargs.get('id')
         if id is not None:
+            driver = Driver.objects.get(pk=id)
+            if user != driver.user or not user.is_superuser:
+                raise Exception("You are not allowed to do this action")
+
             return Driver.objects.get(pk=id)
 
     def resolve_all_authorizers(self, info, **kwargs):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this action")
+
         return Authorizer.objects.all()
 
 class UserInput(InputObjectType):
