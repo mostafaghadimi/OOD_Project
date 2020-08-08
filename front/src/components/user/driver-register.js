@@ -17,25 +17,8 @@ import { UploadOutlined } from '@ant-design/icons';
 import './user.css'
 
 
-const DRIVERS_QUERY = gql`
-  mutation {
-  createDriver(
-    driverData: {
-      firstName: "Amir Hasan",
-      lastName: "Fathi",
-      email: "amirmail1376@yahoo.com",
-      username: "AmirHasanFathi",
-      phoneNo: "0912****175",
-      nationalId: "00123103",
-      password: "asdf"
-    }
-  ){
-    driver {
-      username
-    }
-   }
-  }
-`;
+
+
 
 const formItemLayout = {
     labelCol: { span: 6 },

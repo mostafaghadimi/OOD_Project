@@ -17,3 +17,5 @@ singledispatch==3.4.0.3
 six==1.15.0
 sqlparse==0.3.1
 Unidecode==1.1.1
+django-cors-headers==3.4.0
+

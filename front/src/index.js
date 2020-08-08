@@ -21,6 +21,7 @@ import OrderList from './components/order/order-list';
 import AddOrder from './components/order/order-add';
 import Nav from './components/nav/nav';
 import DriverHistory from './components/user/driver-history';
+import AuthorizeDrivers from './components/user/authorizer-drivers'
 // import {
 //   ApolloClient,
 //   InMemoryCache,
@@ -85,6 +86,10 @@ export default class App extends Component {
 
                 <Route exact path="/vehicle/add" render={() => (
                     <Nav content={<AddVehicle/>}/>
+                )}/>
+
+                <Route exact path="/authorizer/authorizeDrivers" render={() => (
+                    <Nav content={<AuthorizeDrivers/>}/>
                 )}/>
                 
             </Switch>
