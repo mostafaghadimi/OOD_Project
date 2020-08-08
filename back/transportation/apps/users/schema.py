@@ -139,12 +139,10 @@ class DriverInput(InputObjectType):
 
 class AuthorizerInput(InputObjectType):
     user = graphene.Field(UserInput)
-    phone_no = graphene.String()
 
 
 class CustomerInput(InputObjectType):
     user = graphene.Field(UserInput)
-    phone_no = graphene.String()
     birthday=graphene.Date()
 
 class CreateDriver(Mutation):
@@ -251,14 +249,6 @@ class VerifyDriver(Mutation):
         return VerifyDriver(driver=driver)
 
 
-class AuthorizerInput(InputObjectType):
-    first_name = graphene.String()
-    last_name = graphene.String()
-    email = graphene.String()
-    username = graphene.String()
-    phone_no = graphene.String()
-    password = graphene.String()
-
 class CreateAuthorizer(Mutation):
     class Arguments:
         authorizer_data = AuthorizerInput()
@@ -266,14 +256,25 @@ class CreateAuthorizer(Mutation):
     authorizer = graphene.Field(AuthorizerType)
 
     def mutate(self, info, authorizer_data=None):
-        authorizer = Authorizer(
-            first_name=authorizer_data.first_name,
-            last_name=authorizer_data.last_name,
-            email=authorizer_data.email,
-            username=authorizer_data.username,
-            phone_no=authorizer_data.phone_no,
+        current_user = info.context.user
+        if not current_user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
+
+        user = User (
+            first_name=authorizer_data.user.first_name,
+            last_name=authorizer_data.user.last_name,
+            email=authorizer_data.user.email,
+            username=authorizer_data.user.username,
+            phone_no=authorizer_data.user.phone_no,
         )
-        authorizer.set_password(authorizer_data.password)
+
+        user.set_password(authorizer_data.user.password)
+        
+        authorizer = Authorizer(
+            user=user
+        )
+
+        user.save()
         authorizer.save()
         return CreateAuthorizer(authorizer=authorizer)
 
@@ -286,14 +287,25 @@ class UpdateAuthorizer(Mutation):
     
     def mutate(self, info, id, authorizer_data=None):
         authorizer = Authorizer.objects.get(pk=id)
-        authorizer.first_name = authorizer_data.first_name
-        authorizer.last_name = authorizer_data.last_name
-        authorizer.email = authorizer_data.email
-        authorizer.username = authorizer_data.username
-        authorizer.set_password(authorizer_data.password)
-        authorizer.save()
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        print(user.username, user.is_superuser)
+        print(authorizer.user.username)
+        if user == authorizer.user or user.is_superuser:
+            authorizer.user.first_name = authorizer_data.user.first_name
+            authorizer.user.last_name = authorizer_data.user.last_name
+            authorizer.user.email = authorizer_data.user.email
+            authorizer.user.username = authorizer_data.user.username
+            authorizer.user.set_password(authorizer_data.user.password)
 
-        return UpdateAuthorizer(authorizer=authorizer)
+            authorizer.user.save()
+            authorizer.save()
+
+            return UpdateAuthorizer(authorizer=authorizer)
+        else:
+            raise Exception("You are not allowed to do this operation")
 
 
 class DeleteAuthorizer(Mutation):
