@@ -1,7 +1,7 @@
 import graphene
 
 from graphene import Mutation, ObjectType, InputObjectType
-from .models import Driver, Authorizer, Customer, Administrator, Usermodel
+from .models import Driver, Authorizer, Customer, Usermodel
 from graphene_django.types import DjangoObjectType
 
 
@@ -33,7 +33,7 @@ class Query(ObjectType):
     authorizer = graphene.Field(
         AuthorizerType,
         id = graphene.ID()
-    )
+    ) #done
 
     all_drivers = graphene.List(
         DriverType
@@ -41,7 +41,7 @@ class Query(ObjectType):
 
     all_authorizers = graphene.List(
         AuthorizerType
-    )
+    ) #done
 
     me = graphene.Field(
         UserType
@@ -53,7 +53,7 @@ class Query(ObjectType):
 
     unverified_drivers = graphene.List(
         DriverType
-    )
+    ) #done
 
     def resolve_unverified_drivers(self, info):
         user = info.context.user
@@ -68,7 +68,7 @@ class Query(ObjectType):
 
     def resolve_is_username_unique(self, info, username):
         try:
-            User.objects.get(username=username)
+            Usermodel.objects.get(username=username)
             return False
         except:
             return True
@@ -81,7 +81,7 @@ class Query(ObjectType):
         return user
 
     def resolve_all_drivers(self, info, **kwargs):
-        user = info.context.user_id
+        user = info.context.user
 
         if not user.is_superuser:
             raise Exception("You are not allowed to do this action")
@@ -101,11 +101,24 @@ class Query(ObjectType):
             return Driver.objects.get(pk=id)
 
     def resolve_authorizer(self, info, **kwargs):
+        user = info.context.user
         id = kwargs.get('id')
         if id is not None:
+            driver = Driver.objects.get(pk=id)
+            if user != driver.user or not user.is_superuser:
+                raise Exception("You are not allowed to do this action")
+
             return Driver.objects.get(pk=id)
 
     def resolve_all_authorizers(self, info, **kwargs):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this action")
+
         return Authorizer.objects.all()
 
 class UserInput(InputObjectType):
@@ -126,12 +139,10 @@ class DriverInput(InputObjectType):
 
 class AuthorizerInput(InputObjectType):
     user = graphene.Field(UserInput)
-    phone_no = graphene.String()
 
 
 class CustomerInput(InputObjectType):
     user = graphene.Field(UserInput)
-    phone_no = graphene.String()
     birthday=graphene.Date()
 
 class CreateDriver(Mutation):
@@ -238,14 +249,6 @@ class VerifyDriver(Mutation):
         return VerifyDriver(driver=driver)
 
 
-class AuthorizerInput(InputObjectType):
-    first_name = graphene.String()
-    last_name = graphene.String()
-    email = graphene.String()
-    username = graphene.String()
-    phone_no = graphene.String()
-    password = graphene.String()
-
 class CreateAuthorizer(Mutation):
     class Arguments:
         authorizer_data = AuthorizerInput()
@@ -253,14 +256,25 @@ class CreateAuthorizer(Mutation):
     authorizer = graphene.Field(AuthorizerType)
 
     def mutate(self, info, authorizer_data=None):
-        authorizer = Authorizer(
-            first_name=authorizer_data.first_name,
-            last_name=authorizer_data.last_name,
-            email=authorizer_data.email,
-            username=authorizer_data.username,
-            phone_no=authorizer_data.phone_no,
+        current_user = info.context.user
+        if not current_user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
+
+        user = Usermodel (
+            first_name=authorizer_data.user.first_name,
+            last_name=authorizer_data.user.last_name,
+            email=authorizer_data.user.email,
+            username=authorizer_data.user.username,
+            phone_no=authorizer_data.user.phone_no,
         )
-        authorizer.set_password(authorizer_data.password)
+
+        user.set_password(authorizer_data.user.password)
+        
+        authorizer = Authorizer(
+            user=user
+        )
+
+        user.save()
         authorizer.save()
         return CreateAuthorizer(authorizer=authorizer)
 
@@ -273,14 +287,25 @@ class UpdateAuthorizer(Mutation):
     
     def mutate(self, info, id, authorizer_data=None):
         authorizer = Authorizer.objects.get(pk=id)
-        authorizer.first_name = authorizer_data.first_name
-        authorizer.last_name = authorizer_data.last_name
-        authorizer.email = authorizer_data.email
-        authorizer.username = authorizer_data.username
-        authorizer.set_password(authorizer_data.password)
-        authorizer.save()
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        print(user.username, user.is_superuser)
+        print(authorizer.user.username)
+        if user == authorizer.user or user.is_superuser:
+            authorizer.user.first_name = authorizer_data.user.first_name
+            authorizer.user.last_name = authorizer_data.user.last_name
+            authorizer.user.email = authorizer_data.user.email
+            authorizer.user.username = authorizer_data.user.username
+            authorizer.user.set_password(authorizer_data.user.password)
 
-        return UpdateAuthorizer(authorizer=authorizer)
+            authorizer.user.save()
+            authorizer.save()
+
+            return UpdateAuthorizer(authorizer=authorizer)
+        else:
+            raise Exception("You are not allowed to do this operation")
 
 
 class DeleteAuthorizer(Mutation):
@@ -309,18 +334,72 @@ class CreateCustomer(Mutation):
     customer = graphene.Field(CustomerType)
 
     def mutate(self, info, customer_data=None):
+        user = Usermodel (
+            first_name=customer_data.user.first_name,
+            last_name=customer_data.user.last_name,
+            username=customer_data.user.username,
+            email=customer_data.user.email,
+        )
+
+        user.set_password(customer_data.user.password)
+
         customer = Customer (
-            first_name=customer_data.first_name,
-            last_name=customer_data.last_name,
-            username=customer_data.username,
-            email=customer_data.email,
+            user=user,
             birthday=customer_data.birthday
         )
 
-        customer.set_password(customer_data.password)
+        user.save()
         customer.save()
 
         return CreateCustomer(customer=Customer)
+
+class UpdateCustomer(Mutation):
+    class Arguments:
+        customer_data = CustomerInput()
+
+    customer = graphene.Field(CustomerType)
+
+    def mutate(self, info, id, customer_data=None):
+        customer = Customer.objects.get(pk=id)
+        user_id = customer.user.id
+        user = Usermodel.objects.get(pk=user_id)
+        current_user = info.context.user
+        if current_user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if user == current_user or current_user.is_superuser:
+            customer.user.first_name = customer_data.user.first_name
+            customer.user.last_name = customer_data.user.last_name
+            customer.user.email = customer_data.user.email
+            customer.user.set_password(customer_data.user.password)
+            customer.user.save()
+            customer.save()
+            return UpdateCustomer(customer=customer)
+        
+        raise Exception("You are not allowed to do this operation")
+
+class DeleteCustomer(Mutation):
+    class Arguments:
+        id = graphene.ID(required=True)
+
+    id = graphene.ID()
+
+    def mutate(self, info, id):
+        user = info.context.user
+        customer = Customer.objects.get(pk=id)
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if user != customer.user:
+            raise Exception("You are not allowed to do this operation")
+        
+        user_id = customer.user.id
+        Usermodel.models.get(pk=user_id).delete()
+
+        return DeleteCustomer(id=id)
+        
+        
 
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()
@@ -333,3 +412,5 @@ class Mutations(ObjectType):
     delete_authorizer = DeleteAuthorizer.Field()
 
     create_customer = CreateCustomer.Field()
+    update_customer = UpdateCustomer.Field()
+    delete_customer = DeleteCustomer.Field()
