@@ -32,7 +32,14 @@ class Query(ObjectType):
         return Vehicle.objects.get(pk=id)
     
     def resolve_all_vehicles(self, info, **kwargs):
-        #todo only driver and admin can see
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        elif not user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
+
         return Vehicle.objects.all()
 
 class CreateVehicle(Mutation):
@@ -44,6 +51,14 @@ class CreateVehicle(Mutation):
     )
 
     def mutate(self, info, vehicle_data=None):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        elif not user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
+
         vehicle = Vehicle(
             **vehicle_data
         )
@@ -52,3 +67,4 @@ class CreateVehicle(Mutation):
 
 class Mutation(ObjectType):
     create_vehicle = CreateVehicle.Field()
+    
