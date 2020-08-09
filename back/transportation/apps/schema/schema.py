@@ -3,9 +3,10 @@ import graphql_jwt
 
 from apps.users.schema import Query as user_query
 from apps.users.schema import Mutations as user_mutation
+from apps.vehicles.schema import Query as vehicle_query
 from apps.crashes.schema import Mutations as crash_mutation
 
-class Query(user_query, graphene.ObjectType):
+class Query(user_query, vehicle_query, graphene.ObjectType):
     pass
 
 

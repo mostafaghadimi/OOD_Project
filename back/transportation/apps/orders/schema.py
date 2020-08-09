@@ -1,21 +1,19 @@
-from graphene import ObjectType, Mutation
+from graphene import ObjectType, Mutation, InputObjectType
 import graphene
 from .models import Order
 from graphene_django.types import DjangoObjectType
-from apps.users.models import Customer
-from apps.vehicles.models import Vehicle
+from apps.vehicles.schema import VehicleType
+from apps.users.schema import UserInput, CustomerType
+
 
 class OrderType(DjangoObjectType):
     class Meta:
         model = Order
 
-class CustomerType(DjangoObjectType):
-    class Meta:
-        model = Customer
 
-class VehicleType(DjangoObjectType):
-    class Meta:
-        model = Vehicle
+class OrderInput(InputObjectType):
+    owner = graphene.Field(UserInput)
+    vehicle = graphene.Field(VehicleInput)
 
 class Query(ObjectType):
     all_orders = graphene.List(
@@ -24,3 +22,10 @@ class Query(ObjectType):
 
     def resolve_all_orders(self, info):
         return Order.Objects.all()
+
+class CreateOrder(Mutation):
+    class Arguments:
+        order_data = OrderInput()
+
+class Mutation(ObjectType):
+    create_order = CreateOrder.Field()
