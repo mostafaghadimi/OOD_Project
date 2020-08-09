@@ -35,7 +35,20 @@ class Query(ObjectType):
         #todo only driver and admin can see
         return Vehicle.objects.all()
 
+class CreateVehicle(Mutation):
+    class Arguments:
+        vehicle_data = VehicleInput()
+    
+    vehicle = graphene.Field(
+        VehicleType
+    )
 
+    def mutate(self, info, vehicle_data=None):
+        vehicle = Vehicle(
+            **vehicle_data
+        )
+        vehicle.save()
+        return CreateVehicle(vehicle=vehicle)
 
 class Mutation(ObjectType):
-    pass
+    create_vehicle = CreateVehicle.Field()
