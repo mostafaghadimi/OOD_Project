@@ -341,6 +341,7 @@ class CreateCustomer(Mutation):
             last_name=customer_data.user.last_name,
             username=customer_data.user.username,
             email=customer_data.user.email,
+            phone_no=customer_data.user.phone_no
         )
 
         user.set_password(customer_data.user.password)
@@ -353,7 +354,7 @@ class CreateCustomer(Mutation):
         user.save()
         customer.save()
 
-        return CreateCustomer(customer=Customer)
+        return CreateCustomer(customer=customer)
 
 class UpdateCustomer(Mutation):
     class Arguments:
