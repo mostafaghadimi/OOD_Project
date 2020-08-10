@@ -23,7 +23,15 @@ class Query(ObjectType):
     )
 
     def resolve_all_orders(self, info):
-        return Order.Objects.all()
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
+        
+        return Order.objects.all()
 
 class CreateOrder(Mutation):
     class Arguments:
