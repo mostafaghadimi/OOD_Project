@@ -18,8 +18,6 @@ import './user.css'
 
 
 
-
-
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 14 },
@@ -42,7 +40,7 @@ const DriverRegister = () => {
   const handleSubmit = (event, createDriver) => {
       console.log("In the handleSubmit");
       event.preventDefault();
-    createDriver();
+      createDriver();
   };
 
   const normFile = e => {
@@ -57,21 +55,25 @@ const DriverRegister = () => {
 
   return (
     <div>
-
-
         <Mutation
           mutation={REGISTER_MUTATION}
-          variables={{
-             "driverData" : {
-               "firstName":firstName,
-               "lastName":lastName,
-               "username":username,
-               "email":email,
-               "phoneNo":phoneNo,
-               "nationalId":nationalId,
-               "password":password
+          variables={
+              {
+                  "driverData": {
+                      "user": {
+                          "firstName": firstName,
+                          "lastName": lastName,
+                          "username": username,
+                          "email": email,
+                          "phoneNo": phoneNo,
+                          "password": password
+                      },
+                      "nationalId": nationalId,
+                      // "birthday": birthDay
+                  }
+              }
           }
-          }}
+
           onCompleted={data => {
             console.log({ data });
             setVisible(true);
@@ -197,14 +199,8 @@ const DriverRegister = () => {
                      <Modal
                         title=" ثبت نام راننده در سامانه به صورت موفقیت آمیز ثبت شد"
                         visible={visible}
-                        onCancel={() => {
-                            setVisible(false);
-                          }
-                        }
-                        onOk = {() => {
-                            setVisible(false);
-                          }
-                        }
+                        onCancel={() => { setVisible(false); }}
+                        onOk = {() => { setVisible(false); }}
                         >
                     </Modal>
                 </Form.Item>
@@ -214,29 +210,6 @@ const DriverRegister = () => {
             );
           }}
         </Mutation>
-      {/* Success Dialog */}
-      {/*<Dialog*/}
-        {/*open={open}*/}
-        {/*disableBackdropClick={true}*/}
-        {/*TransitionComponent={Transition}*/}
-      {/*>*/}
-        {/*<DialogTitle>*/}
-          {/*<VerifiedUserTwoTone className={classes.icon} />*/}
-          {/*New Account*/}
-        {/*</DialogTitle>*/}
-        {/*<DialogContent>*/}
-          {/*<DialogContentText>User successfully created!</DialogContentText>*/}
-        {/*</DialogContent>*/}
-        {/*<DialogActions>*/}
-          {/*<Button*/}
-            {/*color="primary"*/}
-            {/*variant="contained"*/}
-            {/*onClick={() => setNewUser(false)}*/}
-          {/*>*/}
-            {/*Login*/}
-          {/*</Button>*/}
-        {/*</DialogActions>*/}
-      {/*</Dialog>*/}
     </div>
   );
 };
@@ -245,8 +218,10 @@ const REGISTER_MUTATION = gql`
   mutation ($driverData: DriverInput!) {
   createDriver(driverData: $driverData) {
     driver{
-      firstName
-      lastName
+       user{
+        firstName
+        lastName
+       }
     }
   }
 }
