@@ -27,12 +27,21 @@ class CustomerType(DjangoObjectType):
 class Query(ObjectType):
     driver = graphene.Field(
         DriverType,
-        id = graphene.ID()
+        id=graphene.ID(required=True)
     ) #done
 
     authorizer = graphene.Field(
         AuthorizerType,
-        id = graphene.ID()
+        id=graphene.ID(required=True)
+    ) #done
+
+    customer = graphene.Field(
+        CustomerType,
+        id=graphene.ID(required=True)
+    ) #done
+
+    all_customers = graphene.List(
+        CustomerType
     ) #done
 
     all_drivers = graphene.List(
@@ -54,6 +63,30 @@ class Query(ObjectType):
     unverified_drivers = graphene.List(
         DriverType
     ) #done
+
+    def resolve_customer(self, info, id):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        customer = Customer.objects.get(pk=id)
+        if user.is_superuser or user==customer:
+            return customer
+        
+        else:
+            raise Exception("You are not allowed to do this operation")
+
+    def resolve_all_customers(self, info):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this action")
+        
+        return Customer.objects.all()
+
 
     def resolve_unverified_drivers(self, info):
         user = info.context.user
