@@ -34,6 +34,17 @@ import ApolloClient, { gql } from "apollo-boost";
 
 const client = new ApolloClient({
     uri: "http://localhost:8000/graphql",
+    fetchOptions: {
+        credentials: "include"
+    },
+    request: operation => {
+        const token = localStorage.getItem("authToken") || "";
+        operation.setContext({
+            headers: {
+            Authorization: `JWT ${token}`
+            }
+        });
+    },
     clientState: {
         defaults: {
           isLoggedIn: !!localStorage.getItem("authToken")
@@ -45,12 +56,12 @@ const client = new ApolloClient({
 export default class App extends Component {
     render() {
         return (
-            <Switch>
+             <Switch>
                 <Route exact path="/" render={() => (
                     <Nav/>
                 )}/>
-                
-                {/* Order */}
+
+                 {/*Order */}
                 <Route exact path="/order/list" render={() => (
                     <Nav content={<OrderList/>}/>
                 )}/>
@@ -67,7 +78,7 @@ export default class App extends Component {
                 <Route exact path="/user/profile" render={() => (
                     <Nav content={<UserProfile/>}/>
                 )}/>
-                
+
                 <Route exact path="/driver/profile" render={() => (
                     <Nav content={<DriverProfile/>}/>
                 )}/>
@@ -96,8 +107,7 @@ export default class App extends Component {
                 <Route exact path="/authorizer/authorizeDrivers" render={() => (
                     <Nav content={<AuthorizeDrivers/>}/>
                 )}/>
-                
-            </Switch>
+        </Switch>
         )
     }
 }

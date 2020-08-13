@@ -5,6 +5,8 @@ import React, {useState} from "react";
 import {gql} from "apollo-boost";
 
 import Error from "../shared/Error";
+// import { Query } from "react-apollo";
+
 
 
 const DriverLogin = () => {
@@ -19,15 +21,35 @@ const DriverLogin = () => {
 
     const handleCancel = e => {
         console.log(e);
-        setVisible(false)
+        setVisible(false);
     };
+
+    // const isDriver = (res, client) => {
+    //     return(
+    //         <Query query={ME_QUERY}>
+    //         {({data, loading, error}) => {
+    //             if( data.isDriver ){
+    //                 console.log("is driver");
+    //                 localStorage.setItem("authToken", res.data.tokenAuth.token);
+    //                 client.writeData({ data: { isDriverLoggedIn: true } });
+    //                 console.log("Is logged in");
+    //                 setVisible(false);
+    //             }
+    //         }}
+    //         </Query>
+    //
+    //     )
+    // };
 
     const handleSubmit = async (event, tokenAuth, client) => {
         event.preventDefault();
         const res = await tokenAuth();
+        // isDriver(res, client);
+        console.log("is driver");
         localStorage.setItem("authToken", res.data.tokenAuth.token);
-        client.writeData({ data: { isLoggedIn: true } });
-        console.log("Is logged in")
+        client.writeData({ data: { isDriverLoggedIn: true } });
+        console.log("Is logged in");
+        setVisible(false);
     };
 
     return(
@@ -66,6 +88,14 @@ const DriverLogin = () => {
 
 
 const LOGIN_MUTATION = gql`
+    {
+        me{
+            isDriver
+        }
+    }
+`;
+
+const ME_QUERY = gql`
   mutation($username: String!, $password: String!) {
     tokenAuth(username: $username, password: $password) {
       token

@@ -13,7 +13,7 @@ import './user.css'
 const editItemLayout = {
     labelCol: { span: 2 },
     wrapperCol: { span: 10 },
-}
+};
 
 export default class DriverProfile extends Component {
     render() {

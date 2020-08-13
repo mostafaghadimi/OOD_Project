@@ -68,7 +68,7 @@ const DriverRegister = () => {
                           "phoneNo": phoneNo,
                           "password": password
                       },
-                      "nationalId": nationalId,
+                      "nationalId": nationalId
                       // "birthday": birthDay
                   }
               }
