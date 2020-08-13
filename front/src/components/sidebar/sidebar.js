@@ -48,7 +48,7 @@ export default class Sidebar extends Component {
                         <Login type = "Customer" > </Login>
                     </Menu.Item>
 
-                    {this.props.isCustomerLoggedIn ?
+                    {this.props.isLoggedIn.isCustomerLoggedIn ?
                         <Menu.Item key="1">
                             <Link to="/user/profile">
                                 پروفایل
@@ -57,7 +57,7 @@ export default class Sidebar extends Component {
                         : <div> </div>
                     }
 
-                    {this.props.isCustomerLoggedIn ?
+                    {this.props.isLoggedIn.isCustomerLoggedIn ?
                         <Menu.Item key="2">
                             <Link to="/order/list">
                                 سفارشات
@@ -66,7 +66,7 @@ export default class Sidebar extends Component {
                         : <div> </div>
                     }
 
-                    {this.props.isCustomerLoggedIn ?
+                    {this.props.isLoggedIn.isCustomerLoggedIn ?
                         <Menu.Item key="3">
                             <Link to="/order/add">
                                 ثبت سفارش
@@ -75,7 +75,7 @@ export default class Sidebar extends Component {
                         : <div> </div>
                     }
 
-                    {this.props.isCustomerLoggedIn ?
+                    {this.props.isLoggedIn.isCustomerLoggedIn ?
                         <Menu.Item key="4">
                             <Link to="/driver/list">
                                 لیست راننده‌ها
@@ -106,40 +106,62 @@ export default class Sidebar extends Component {
                             </Button>
                         </Link>
                     </Menu.Item>
+                    
+                    {this.props.isLoggedIn.isDriverLoggedIn ?
+                        <Menu.Item key="20">
+                            <Link to="/driver/profile">
+                                پروفایل
+                            </Link>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
 
-                    <Menu.Item key="20">
-                        <Link to="/driver/profile">
-                            پروفایل
-                        </Link>
-                    </Menu.Item>
 
-                    <Menu.Item key="9">
-                        <Link to='/driver/history'>
-                            تاریخچه بار
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key="10">
-                        <Link to='/driver/crash'>
-                            اعلام حادثه
-                        </Link>
-                    </Menu.Item>
-                    <Menu.Item key="11">
-                        <Link to='/vehicle/add'>
-                        ثبت خودرو حمل‌بار جدید
-                        </Link>
-                    </Menu.Item>
+                    {this.props.isLoggedIn.isDriverLoggedIn ?
+                        <Menu.Item key="9">
+                            <Link to='/driver/history'>
+                                تاریخچه بار
+                            </Link>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
+
+                            
+                    {this.props.isLoggedIn.isDriverLoggedIn ?
+                        <Menu.Item key="10">
+                            <Link to='/driver/crash'>
+                                اعلام حادثه
+                            </Link>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
+
+                    
+                    {this.props.isLoggedIn.isDriverLoggedIn ?
+                        <Menu.Item key="11">
+                            <Link to='/vehicle/add'>
+                            ثبت خودرو حمل‌بار جدید
+                            </Link>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
+
                 </SubMenu>
 
                 <SubMenu key="sub4" icon={<CheckOutlined />} title="مدیر احراز هویت">
                     <Menu.Item key="14">
                         <Login type = "Authorizer" > </Login>
                     </Menu.Item>
+                
+                    {this.props.isLoggedIn.isAuthorizerLoggedIn ?
+                        <Menu.Item key="22">
+                            <Link to='/authorizer/authorizeDrivers'>
+                                لیست درخواست های ثبت نام
+                            </Link>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
 
-                    <Menu.Item key="22">
-                        <Link to='/authorizer/authorizeDrivers'>
-                            لیست درخواست های ثبت نام
-                        </Link>
-                    </Menu.Item>
 
 
                 </SubMenu>

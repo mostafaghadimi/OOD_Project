@@ -4,11 +4,10 @@ import {Mutation, Query} from "react-apollo";
 import React, {useState} from "react";
 import {gql} from "apollo-boost";
 
-
+import UserTypeEnum from "../shared/user-type-enum"
 import Error from "../shared/Error";
 // import { Query } from "react-apollo";
 
-const UserTypeEnum = Object.freeze({"Driver":0, "Customer":1, "Authorizer":2});
 
 const Login = (props) => {
     const [visible, setVisible] = useState(false);
@@ -36,22 +35,23 @@ const Login = (props) => {
         userType[UserTypeEnum.Customer] = data.me.isCustomer;
         userType[UserTypeEnum.Authorizer] = data.me.isAuthorizer;
 
-        var flag = false;
         const key = UserTypeEnum[props.type];
+        console.log(userType[key]);
+        console.log(key);
         if(userType[key]) {
             console.log ("This is " + props.type.toLowerCase() +"!");
             switch(props.type) {
                 case("Driver"):
-                    client.writeData({data:{isDriverLoggedIn : true}});
+                    client.writeData({data:{"isDriverLoggedIn" : true}});
                     break;
                 case("Authorizer"):
-                    client.writeData({data:{isAuthorizerLoggedIn : true}});
+                    client.writeData({data:{"isAuthorizerLoggedIn" : true}});
                     break;
                 case("Customer"):
-                    client.writeData({data:{isCustomerLoggedIn : true}});
+                    client.writeData({data:{"isCustomerLoggedIn" : true}});
                     break;
             }
-            localStorage.setItem("usertype", key);
+            localStorage.setItem("userType", key);
             setVisible(false);
         }
         else {
@@ -79,7 +79,7 @@ const Login = (props) => {
                                     <Modal
                                         title= {titles[props.type]}
                                         visible={visible}
-                                        onOk={event => handleSubmit(event, tokenAuth, client, data, type)}
+                                        onOk={event => handleSubmit(event, tokenAuth, client, data)}
                                         onCancel={handleCancel}
                                         okText="ورود"
                                         cancelText="لغو"

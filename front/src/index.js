@@ -47,36 +47,42 @@ const client = new ApolloClient({
     },
     clientState: {
         defaults: {
-             // isLoggedIn: !!localStorage.getItem("authToken")
-            isDriverLoggedIn: false,
-            isAuthorizerLoggedIn: false,
-            isCustomerLoggedIn: false,
-            isAdminLoggedIn: false
+            isDriverLoggedIn: (localStorage.getItem("userType") === 0),
+            isCustomerLoggedIn: (localStorage.getItem("userType") === 1),
+            isAuthorizerLoggedIn: (localStorage.getItem("userType") === 2),
+
         }
     }
 });
 
 const IS_LOGGED_IN_QUERY = gql`
-  query {
-    isDriverLoggedIn @client
-    isAuthorizerLoggedIn @client
-    isCostumerLoggedIn @client
-  }
+    query {
+        isDriverLoggedIn @client
+        isCustomerLoggedIn 
+        isAuthorizerLoggedIn  
+    }
 `;
 
 export default class App extends Component {
+    test = (data) => {
+            console.log(data);
+    };
+
     render() {
+
         return (
-            <Query query={IS_LOGGED_IN_QUERY}>
-                {({ data }) => (<Nav
-                    isLoggedIn = {
-                        [
-                            data.isDriverLoggedIn,
-                            data.isAuthorizerLoggedIn,
-                            data.isCustomerLoggedIn
-                        ]
-                    }
-                />)}
+            <Query query={IS_LOGGED_IN_QUERY} >
+                {({ data }) => (
+                   <Nav
+                       isLoggedIn = {
+                           [
+                               data.isDriverLoggedIn,
+                               data.isCustomerLoggedIn,
+                               data.isAuthorizerLoggedIn
+                           ]
+                       }
+                   />
+                )}
             </Query>
 
 
