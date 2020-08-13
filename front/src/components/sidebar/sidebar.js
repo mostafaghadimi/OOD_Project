@@ -4,7 +4,7 @@ import { CarOutlined, UserOutlined, KeyOutlined, InboxOutlined, CheckOutlined } 
 import { Layout, Menu, Button, Modal, Input  } from 'antd';
 import { Mutation } from "react-apollo";
 import { gql } from "apollo-boost";
-import DriverLogin from "../user/driver-login"
+import Login from "../user/login"
 
 import './sidebar.css'
 
@@ -13,23 +13,23 @@ const { Sider } = Layout;
 
 export default class Sidebar extends Component {
 
-    state = {
-        visibleAuthorizer:false,
-    };
-
-
-    showAuthorizerModal = () => {
-        this.setState({
-            visibleAuthorizer: true,
-        });
-    };
-
-    handleAuthorizerCancel = e => {
-        console.log(e);
-        this.setState({
-            visibleAuthorizer: false,
-        });
-    };
+    // state = {
+    //     visibleAuthorizer:false,
+    // };
+    //
+    //
+    // showAuthorizerModal = () => {
+    //     this.setState({
+    //         visibleAuthorizer: true,
+    //     });
+    // };
+    //
+    // handleAuthorizerCancel = e => {
+    //     console.log(e);
+    //     this.setState({
+    //         visibleAuthorizer: false,
+    //     });
+    // };
 
 
 
@@ -44,30 +44,46 @@ export default class Sidebar extends Component {
                 style={{ height: '100%', borderRight: 0 }}
                 >
                 <SubMenu key="sub1" icon={<InboxOutlined />} title="صاحب بار">
-                    
-                    <Menu.Item key="1">
-                        <Link to="/user/profile">
-                            پروفایل
-                        </Link>
+                    <Menu.Item key="14">
+                        <Login type = "Customer" > </Login>
                     </Menu.Item>
-                    
-                    <Menu.Item key="2">
-                        <Link to="/order/list">
-                            سفارشات
-                        </Link>
-                    </Menu.Item>
-                    
-                    <Menu.Item key="3">
-                        <Link to="/order/add">
-                            ثبت سفارش 
-                        </Link>
-                    </Menu.Item>
-                    
-                    <Menu.Item key="4">
-                        <Link to="/driver/list">
-                            لیست راننده‌ها
-                        </Link>
-                    </Menu.Item>
+
+                    {this.props.isCustomerLoggedIn ?
+                        <Menu.Item key="1">
+                            <Link to="/user/profile">
+                                پروفایل
+                            </Link>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
+
+                    {this.props.isCustomerLoggedIn ?
+                        <Menu.Item key="2">
+                            <Link to="/order/list">
+                                سفارشات
+                            </Link>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
+
+                    {this.props.isCustomerLoggedIn ?
+                        <Menu.Item key="3">
+                            <Link to="/order/add">
+                                ثبت سفارش
+                            </Link>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
+
+                    {this.props.isCustomerLoggedIn ?
+                        <Menu.Item key="4">
+                            <Link to="/driver/list">
+                                لیست راننده‌ها
+                            </Link>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
+
 
                     {/* <Menu.Item key="19">
                         <Link to="/order/detail">
@@ -80,9 +96,7 @@ export default class Sidebar extends Component {
                 <SubMenu key="sub3" icon={<CarOutlined />} title="راننده">
 
                     <Menu.Item key="14">
-                        <DriverLogin>
-
-                        </DriverLogin>
+                        <Login type = "Driver" > </Login>
                     </Menu.Item>
 
                     <Menu.Item key="13">
@@ -117,27 +131,8 @@ export default class Sidebar extends Component {
                 </SubMenu>
 
                 <SubMenu key="sub4" icon={<CheckOutlined />} title="مدیر احراز هویت">
-                    <Menu.Item key="21">
-                          <Button block onClick={this.showAuthorizerModal}>
-                            ورود
-                        </Button>‍
-                        <Modal
-                            title="ورود مدیر احراز هویت به سامانه"
-                            visible={this.state.visibleAuthorizer}
-                            // onOk={() => setNewUser(true)}
-                            onCancel={this.handleAuthorizerCancel}
-                            okText="ورود"
-                            cancelText="لغو"
-                            >
-                            <p>
-                                <Input size="large" placeholder="نام کاربری" prefix={<UserOutlined />} />
-                            </p>
-                            <p>
-                                <Input.Password  size="large" placeholder="رمز عبور" prefix={<KeyOutlined />} />
-
-                            </p>
-
-                        </Modal>
+                    <Menu.Item key="14">
+                        <Login type = "Authorizer" > </Login>
                     </Menu.Item>
 
                     <Menu.Item key="22">

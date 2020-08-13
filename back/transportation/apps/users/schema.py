@@ -199,6 +199,7 @@ class CreateDriver(Mutation):
             user=user,    
             national_id=driver_data.national_id,
             birthday=driver_data.birthday,
+            is_driver=True,
         )
 
         driver.save()

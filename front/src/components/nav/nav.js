@@ -38,7 +38,9 @@ export default class Nav extends Component {
                 </Menu>
                 </Header>
                 <Layout>
-                    <Sidebar/>
+                    <Sidebar
+                        isLoggedIn = {this.props.isLoggedIn}
+                    />
                     <Layout className="nav-layout">
                         <Content
                             className="site-layout-background"

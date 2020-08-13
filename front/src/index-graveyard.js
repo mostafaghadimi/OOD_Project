@@ -1,4 +1,4 @@
-{/*<Switch>*/}
+            {/*<Switch>*/}
                 {/*<Route exact path="/" render={() => (*/}
                     {/*<Nav/>*/}
                 {/*)}/>*/}
