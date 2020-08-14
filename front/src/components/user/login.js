@@ -4,7 +4,7 @@ import {Mutation, Query} from "react-apollo";
 import React, {useState} from "react";
 import {gql} from "apollo-boost";
 
-import UserTypeEnum from "../shared/user-type-enum"
+import {UserType} from "../shared/user-type-enum";
 import Error from "../shared/Error";
 // import { Query } from "react-apollo";
 
@@ -31,13 +31,12 @@ const Login = (props) => {
         console.log(data);
 
         var userType = [];
-        userType[UserTypeEnum.Driver] = data.me.isDriver;
-        userType[UserTypeEnum.Customer] = data.me.isCustomer;
-        userType[UserTypeEnum.Authorizer] = data.me.isAuthorizer;
+        userType[UserType["Driver"]] = data.me.isDriver;
+        userType[UserType["Customer"]] = data.me.isCustomer;
+        userType[UserType["Authorizerr"]] = data.me.isAuthorizer;
 
-        const key = UserTypeEnum[props.type];
-        console.log(userType[key]);
-        console.log(key);
+
+        const key = UserType[props.type];
         if(userType[key]) {
             console.log ("This is " + props.type.toLowerCase() +"!");
             switch(props.type) {
@@ -77,7 +76,7 @@ const Login = (props) => {
                                         {loading ? "در حال ورود ..." : "ورود"}
                                     </Button>‍
                                     <Modal
-                                        title= {titles[props.type]}
+                                        title= {titles[UserType[props.type]]}
                                         visible={visible}
                                         onOk={event => handleSubmit(event, tokenAuth, client, data)}
                                         onCancel={handleCancel}

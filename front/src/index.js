@@ -7,9 +7,11 @@ import fa_IR from 'antd/es/locale/fa_IR'
 
 import * as serviceWorker from './serviceWorker';
 
+
 import "antd/dist/antd.css";
 import './static/css/normalizer.css'
 
+import {UserType} from "./components/shared/user-type-enum";
 import DriverRegister from './components/user/driver-register';
 import DriverProfile from './components/user/driver-profile';
 import CrashReport from './components/vehicle/crash-report';
@@ -47,10 +49,9 @@ const client = new ApolloClient({
     },
     clientState: {
         defaults: {
-            isDriverLoggedIn: (localStorage.getItem("userType") === 0),
-            isCustomerLoggedIn: (localStorage.getItem("userType") === 1),
-            isAuthorizerLoggedIn: (localStorage.getItem("userType") === 2),
-
+            isDriverLoggedIn: (localStorage.getItem("userType") === UserType["Driver"]),
+            isCustomerLoggedIn: (localStorage.getItem("userType") === UserType["Customer"]),
+            isAuthorizerLoggedIn: (localStorage.getItem("userType") === UserType["Authorizer"]),
         }
     }
 });
