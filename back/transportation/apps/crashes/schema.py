@@ -33,10 +33,14 @@ class ReportCrash(Mutation):
             except:
                 raise Exception("driver not found")
 
+            driver.driver_status = "3"
+
             crash = Crash(
                 driver = driver,
                 description=crash_data.description,
             )
+
+            driver.save()
             crash.save()
 
             return ReportCrash(crash=crash)

@@ -57,7 +57,8 @@ class Driver(models.Model):
 
     STATUS_CHOICES = [
         ('1', 'Free'),
-        ('2', 'Busy')
+        ('2', 'Busy'),
+        ('3', 'Crashed')
     ]
 
     driver_status = models.CharField(

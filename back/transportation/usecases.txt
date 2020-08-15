@@ -1,4 +1,5 @@
 usecases:
+
 --------------------------------- Panel
     - add authorizer #done
     - update authorizer #done (extra)
@@ -10,20 +11,23 @@ usecases:
     - driver registration #done
     - update driver #done
     - delete driver #done
+
 ---------------------------------
     - login authentication #done
     - logout # how to invalidate jwt or delete token from localStorage
+
 --------------------------------- Driver
     - Driver (see load information) #done manage the access later
     - print load #in front should be handled
     - report crash #done
+
 --------------------------------- Administration
-    - verify driver
-    - delete driver
-    - assign vehicle to load
+    - verify driver #done
+    - delete driver #done 
+    - assign vehicle to load 
     - assign load to driver
     - assign code to load
-    - edit driver
+    - edit driver #done (extra)
     - change driver status
     - get driver information
     - user ranking
@@ -32,8 +36,10 @@ usecases:
     - delete order
     - edit order
     - get order
+
 --------------------------------- Time
     - update location
+    
 --------------------------------- customer
     - get order information
     - get order location

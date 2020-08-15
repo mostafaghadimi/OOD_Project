@@ -10,6 +10,11 @@ class Crash(models.Model):
 
     description = models.TextField()
 
+    crash_date = models.DateTimeField(
+        auto_now_add=True, 
+        blank=True,
+    )
+
     class Meta:
         verbose_name="crash"
         verbose_name_plural="crashes"

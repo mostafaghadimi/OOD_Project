@@ -7,10 +7,10 @@ from apps.orders.schema import Query as order_query
 from apps.orders.schema import Mutation as order_mutation
 from apps.vehicles.schema import Query as vehicle_query
 from apps.vehicles.schema import Mutation as vehicle_mutation
-
+from apps.crashes.schema import Query as crash_query
 from apps.crashes.schema import Mutations as crash_mutation
 
-class Query(user_query, order_query, vehicle_query, graphene.ObjectType):
+class Query(user_query, order_query, vehicle_query, crash_query, graphene.ObjectType):
     pass
 
 
