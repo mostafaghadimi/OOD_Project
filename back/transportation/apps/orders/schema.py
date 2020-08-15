@@ -5,6 +5,7 @@ from graphene_django.types import DjangoObjectType
 from apps.vehicles.schema import VehicleType, VehicleInput
 from apps.users.schema import CustomerInput
 from apps.users.models import Customer, Driver
+from apps.vehicles.models import Vehicle
 
 
 class OrderType(DjangoObjectType):
@@ -104,6 +105,49 @@ class CreateOrder(Mutation):
         else:
             raise Exception("Alchohol test required")
 
+class AssignVehicleLoad(Mutation):
+    class Arguments:
+        order_id = graphene.ID()
+        vehicle_id = graphene.ID()
+        
 
+    order = graphene.Field(OrderType)
+
+    def mutate(self, info, order_id, vehicle_id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        elif not user.is_superuser:
+            raise Exception("You are not allowed to do this opertaion")
+
+        
+        try:
+            vehicle = Vehicle.objects.get(pk=vehicle_id)
+
+        except:
+            raise Exception("Invalid vehicle ID")
+
+        try:
+            order = Order.objects.get(pk=order_id)
+        except:
+            raise Exception("Invalid order ID")
+
+        vehicle.vehicle_status = '2'
+        order.vehicle = vehicle
+
+        order.save()
+        vehicle.save()
+
+        return AssignVehicleLoad(order=order)
+
+
+
+
+
+
+        
 class Mutation(ObjectType):
     create_order = CreateOrder.Field()
+    assign_vehicle_load = AssignVehicleLoad.Field()

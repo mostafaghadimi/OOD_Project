@@ -58,5 +58,5 @@ class Order(models.Model):
     )
 
     def __str__(self):
-        return self.owner.user.username, self.id
+        return self.owner.user.username
 

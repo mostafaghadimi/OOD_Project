@@ -27,6 +27,7 @@ class Vehicle(models.Model):
     vehicle_status = models.CharField(
         max_length=1,
         default='1',
+        choices=STATUS_CHOICE,
         verbose_name='Vehicle Status',
     )
 
