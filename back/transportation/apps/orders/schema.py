@@ -189,7 +189,7 @@ class EditOrder(Mutation):
 
     order = graphene.Field(OrderType)
 
-    def mutation(self, info, order_id, order_data=None, **kwargs):
+    def mutate(self, info, order_id, order_data=None, **kwargs):
         user = info.context.user
 
         if user.is_anonymous:
