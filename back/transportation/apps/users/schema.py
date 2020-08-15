@@ -70,7 +70,7 @@ class Query(ObjectType):
             raise Exception("You need to login first!")
 
         customer = Customer.objects.get(pk=id)
-        if user.is_superuser or user.username==customer.user.username:
+        if user.is_superuser or user==customer.user:
             return customer
         
         else:
@@ -274,14 +274,14 @@ class VerifyDriver(Mutation):
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        elif not user.is_authorizer or not user.is_superuser:
+        elif user.is_authorizer or user.is_superuser:
+            driver = Driver.objects.get(pk=id)
+            driver.is_verified = True
+            driver.save()
+            return VerifyDriver(driver=driver)
+        
+        else:
             raise Exception("You are not allowed to do this action")
-
-        driver = Driver.objects.get(pk=id)
-        driver.is_verified = True
-        driver.save()
-
-        return VerifyDriver(driver=driver)
 
 
 class CreateAuthorizer(Mutation):

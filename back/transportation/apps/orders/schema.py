@@ -18,9 +18,31 @@ class OrderInput(InputObjectType):
 
 
 class Query(ObjectType):
+
+    order = graphene.Field(
+        OrderType,
+        id=graphene.ID()
+    )
+
     all_orders = graphene.List(
         OrderType
     )
+
+    def resolve_order(self, info, id):
+        user = info.context.user
+        
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        try:
+            order = Order.objects.get(pk=id)
+            print('order', order)
+            if order.owner == user or user.is_superuser:
+                return order
+            else:
+                raise Exception("You are not allowed to do this operation")
+        except:
+            raise Exception("Order_id is not valid")
 
     def resolve_all_orders(self, info):
         user = info.context.user
