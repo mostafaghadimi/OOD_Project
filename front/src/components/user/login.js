@@ -42,12 +42,18 @@ const Login = (props) => {
             switch(props.type) {
                 case("Driver"):
                     client.writeData({data:{"isDriverLoggedIn" : true}});
+                    client.writeData({data:{"isCustomerLoggedIn" : false}});
+                    client.writeData({data:{"isAuthorizerLoggedIn" : false}});
                     break;
                 case("Authorizer"):
+                    client.writeData({data:{"isDriverLoggedIn" : false}});
+                    client.writeData({data:{"isCustomerLoggedIn" : false}});
                     client.writeData({data:{"isAuthorizerLoggedIn" : true}});
                     break;
                 case("Customer"):
+                    client.writeData({data:{"isDriverLoggedIn" : false}});
                     client.writeData({data:{"isCustomerLoggedIn" : true}});
+                    client.writeData({data:{"isAuthorizerLoggedIn" : false}});
                     break;
             }
             localStorage.setItem("userType", key);
@@ -55,6 +61,9 @@ const Login = (props) => {
         }
         else {
             localStorage.setItem("authToken", null);
+            client.writeData({data:{"isDriverLoggedIn" : false}});
+            client.writeData({data:{"isCustomerLoggedIn" : false}});
+            client.writeData({data:{"isAuthorizerLoggedIn" : false}});
         }
 
     };
@@ -67,16 +76,22 @@ const Login = (props) => {
                     "ورود صاحب بار به سامانه",
                     "ورود مدیراحراز هویت به سامانه",
                 ];
+
+                if (error) return <Error error={error} />;
+
                 return (
                     <Query query={ME_QUERY}>
                         {({data, loading, error}) => {
+                            // if (loading) return;
+                            if (error) return <Error error={error} />;
+
                             return (
                                 <div>
                                     <Button block onClick={showModal}>
                                         {loading ? "در حال ورود ..." : "ورود"}
                                     </Button>‍
                                     <Modal
-                                        title= {titles[UserType[props.type]]}
+                                        title={titles[UserType[props.type]]}
                                         visible={visible}
                                         onOk={event => handleSubmit(event, tokenAuth, client, data)}
                                         onCancel={handleCancel}
@@ -96,13 +111,14 @@ const Login = (props) => {
                                         </p>
 
                                     </Modal>
-                                    {error && <Error error={error}/>}
+
                                 </div>
-                            );
+                            )
                         }}
                     </Query>
-                )
+                );
             }}
+
         </Mutation>
     )
 };
@@ -115,8 +131,6 @@ const ME_QUERY = gql`
             isAuthorizer
             isCustomer
             isSuperuser
-            firstName
-            lastName
         }
     }
 `;

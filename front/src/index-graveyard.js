@@ -1,7 +1,7 @@
-            {/*<Switch>*/}
-                {/*<Route exact path="/" render={() => (*/}
-                    {/*<Nav/>*/}
-                {/*)}/>*/}
+            <Switch>
+                <Route exact path="/" render={() => (
+                    <Nav/>
+                />
 
                 {/*/!* Order *!/*/}
                 {/*<Route exact path="/order/list" render={() => (*/}
