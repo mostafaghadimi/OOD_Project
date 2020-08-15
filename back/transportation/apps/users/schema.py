@@ -437,12 +437,35 @@ class DeleteCustomer(Mutation):
         return DeleteCustomer(id=id)
         
         
+class UpdateDriverStatus(Mutation):
+    class Arguments:
+        driver_id = graphene.ID(required=True)
+        driver_status = graphene.String(required=True)
+
+    driver = graphene.Field(DriverType)
+
+    def mutate(self, info, driver_id, driver_status):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        elif not user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
+
+        driver = Driver.objects.get(pk=driver_id)
+        driver.driver_status = driver_status
+        driver.save()
+        
+        return UpdateDriverStatus(driver=driver)
+
 
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()
     update_driver = UpdateDriver.Field()
     delete_driver = DeleteDriver.Field()
     verify_driver = VerifyDriver.Field()
+    update_driver_status = UpdateDriverStatus.Field()
 
     create_authorizer = CreateAuthorizer.Field()
     update_authorizer = UpdateAuthorizer.Field()
