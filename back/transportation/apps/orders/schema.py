@@ -4,7 +4,7 @@ from .models import Order
 from graphene_django.types import DjangoObjectType
 from apps.vehicles.schema import VehicleType, VehicleInput
 from apps.users.schema import CustomerInput
-from apps.users.models import Customer
+from apps.users.models import Customer, Driver
 
 
 class OrderType(DjangoObjectType):
@@ -18,6 +18,10 @@ class OrderInput(InputObjectType):
 
 
 class Query(ObjectType):
+    driver_load = graphene.List(
+        OrderType,
+        id=graphene.ID()
+    )
 
     order = graphene.Field(
         OrderType,
@@ -28,6 +32,21 @@ class Query(ObjectType):
         OrderType
     )
 
+    def resolve_driver_load(self, info, id):
+        user = info.context.user
+
+        try:
+            driver = Driver.objects.get(pk=id)
+
+        except:
+            raise Exception("Driver not found")
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        elif user == driver.user or user.is_superuser:
+            return driver.orders.all()
+
     def resolve_order(self, info, id):
         user = info.context.user
         
@@ -36,9 +55,9 @@ class Query(ObjectType):
         
         try:
             order = Order.objects.get(pk=id)
-            print('order', order)
             if order.owner == user or user.is_superuser:
                 return order
+
             else:
                 raise Exception("You are not allowed to do this operation")
         except:
@@ -62,14 +81,13 @@ class CreateOrder(Mutation):
     order = graphene.Field(OrderType)
 
     def mutate(self, info, order_data=None):
-        print('order_data', order_data)
 
         user = info.context.user
         
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        elif user.is_customer or user.is_superuser:
+        elif user.is_superuser:
             owner_id = order_data.owner_id
             try:
                 owner = Customer.objects.get(pk=owner_id)

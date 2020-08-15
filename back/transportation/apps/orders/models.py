@@ -57,4 +57,6 @@ class Order(models.Model):
         verbose_name="Transportation Cost",
     )
 
+    def __str__(self):
+        return self.owner.user.username, self.id
 

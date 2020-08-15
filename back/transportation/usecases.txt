@@ -14,9 +14,9 @@ usecases:
     - login authentication #done
     - logout # how to invalidate jwt or delete token from localStorage
 --------------------------------- Driver
-    - Driver (see load information)
-    - print load
-    - report crash
+    - Driver (see load information) #done manage the access later
+    - print load #in front should be handled
+    - report crash #done
 --------------------------------- Administration
     - verify driver
     - delete driver

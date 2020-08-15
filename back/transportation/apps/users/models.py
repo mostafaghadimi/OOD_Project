@@ -120,6 +120,8 @@ class Authorizer(models.Model):
         verbose_name = 'Authorizer'
         verbose_name_plural = 'Authorizers'
 
+    def __str__(self):
+        return self.user.username
 class Customer(models.Model):
     user = models.OneToOneField(
         Usermodel,
@@ -139,3 +141,6 @@ class Customer(models.Model):
     class Meta:
         verbose_name = 'Customer'
         verbose_name_plural = 'Customers'
+
+    def __str__(self):
+        return self.user.username
