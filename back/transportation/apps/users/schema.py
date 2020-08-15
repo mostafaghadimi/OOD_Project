@@ -70,7 +70,7 @@ class Query(ObjectType):
             raise Exception("You need to login first!")
 
         customer = Customer.objects.get(pk=id)
-        if user.is_superuser or user==customer:
+        if user.is_superuser or user.username==customer.user.username:
             return customer
         
         else:
