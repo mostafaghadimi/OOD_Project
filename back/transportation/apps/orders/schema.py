@@ -107,8 +107,8 @@ class CreateOrder(Mutation):
 
 class AssignVehicleLoad(Mutation):
     class Arguments:
-        order_id = graphene.ID()
-        vehicle_id = graphene.ID()
+        order_id = graphene.ID(required=True)
+        vehicle_id = graphene.ID(required=True)
         
 
     order = graphene.Field(OrderType)
@@ -142,12 +142,45 @@ class AssignVehicleLoad(Mutation):
 
         return AssignVehicleLoad(order=order)
 
+class AssignDriverLoad(Mutation):
+    class Arguments:
+        driver_id = graphene.ID(required=True)
+        order_id = graphene.ID(required=True)
+    
+    order = graphene.Field(OrderType)
 
+    def mutate(self, info, driver_id, order_id):
+        user = info.context.user
 
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
 
+        elif not user.is_superuser:
+            raise Exception("You are not allowed to do this opertaion")
+
+        
+        try:
+            driver = Driver.objects.get(pk=driver_id)
+        except:
+            raise Exception("Invalid driver ID")
+
+        try:
+            order = Order.objects.get(pk=order_id)
+        except:
+            raise Exception("Invalid order ID")
+
+        
+        driver.driver_status = '2'
+        order.driver = driver
+
+        order.save()
+        driver.save()
+
+        return AssignDriverLoad(order=order)
 
 
         
 class Mutation(ObjectType):
     create_order = CreateOrder.Field()
     assign_vehicle_load = AssignVehicleLoad.Field()
+    assign_driver_load = AssignDriverLoad.Field()
