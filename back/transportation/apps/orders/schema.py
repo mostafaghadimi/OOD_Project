@@ -179,8 +179,108 @@ class AssignDriverLoad(Mutation):
         return AssignDriverLoad(order=order)
 
 
+class EditOrder(Mutation):
+    class Arguments:
+        order_data = OrderInput(required=True)
+        order_id = graphene.ID(required=True)
+        driver_id = graphene.ID()
+        vehicle_id = graphene.ID()
+
+
+    order = graphene.Field(OrderType)
+
+    def mutation(self, info, order_id, order_data=None, **kwargs):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
         
+        order = Order.objects.get(pk=order_id)
+        driver_id = kwargs.get('driver_id')
+        vehicle_id = kwargs.get('vehicle_id')
+        
+        if driver_id:
+            try:
+                driver = Driver.objects.get(pk=owner_id)
+                order.driver = driver
+
+            except:
+                raise Exception("Invalid owner ID")
+        
+        if vehicle_id:
+            try:
+                vehicle = Vehicle.objects.get(pk=vehicle_id)
+                order.vehicle = vehicle
+                
+            except:
+                raise Exception("Invalid Vehicle ID")
+
+        order.is_load = order_data.is_load
+        order.order_status = order_data.order_status
+        order.destination_address = order_data.destination_address 
+        order.transportation_cost = order_data.transportation_cost
+        order.save()
+
+        return EditOrder(order=order)
+
+class DeleteOrder(Mutation):
+    class Arguments:
+        order_id = graphene.ID()
+
+    id = graphene.ID()
+
+    def mutate(self, info, order_id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
+
+        order = Order.objects.get(pk=order_id)
+        order.delete()
+
+        return DeleteOrder(id=order_id)
+
+class UpdateOrderLocation(Mutation):
+    class Arguments:
+        latitude = graphene.Float(required=True)
+        longitude = graphene.Float(required=True)
+        order_id = graphene.ID(required=True)
+
+    order = graphene.Field(OrderType)
+
+    def mutate(self, info, latitude, longitude, order_id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first")
+
+        try:
+            order = Order.objects.get(pk=order_id)
+        except:
+            raise Exception("Invalid order id")
+
+        if user == order.owner:
+            order.longitude = longitude
+            order.latitude = latitude
+
+            order.save()
+            return UpdateOrderLocation(order=order)
+        
+        else:
+            raise Exception("You are not allowed to do this operation")
+
 class Mutation(ObjectType):
     create_order = CreateOrder.Field()
+    delete_order = DeleteOrder.Field()
+    edit_order = EditOrder.Field()
+
     assign_vehicle_load = AssignVehicleLoad.Field()
     assign_driver_load = AssignDriverLoad.Field()
+
+    update_order_location = UpdateOrderLocation.Field()

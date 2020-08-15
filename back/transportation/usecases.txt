@@ -33,15 +33,15 @@ usecases:
     - user ranking
     - get load location
     - submit order #done
-    - delete order
-    - edit order
-    - get order
+    - delete order #done
+    - edit order #done
+    - get order #done
 
 --------------------------------- Time
     - update location
     
 --------------------------------- customer
-    - get order information
+    - get order information #done
     - get order location
     - verify delivery
     - rate driver

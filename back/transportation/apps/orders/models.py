@@ -57,6 +57,14 @@ class Order(models.Model):
         verbose_name="Transportation Cost",
     )
 
+    latitude = models.FloatField(
+        default=-1,
+    )
+
+    longitude = models.FloatField(
+        default=-1,
+    )
+
     def __str__(self):
         return self.owner.user.username
 
