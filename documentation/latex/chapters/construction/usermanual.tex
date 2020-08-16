@@ -10,8 +10,32 @@
 		
 		\مهم{نکته:} برای اطمینان از نصب موفقیت‌آمیز و قرار گرفتن پایتون در \لر{environment variables‍} ابتدا ترمینال را باز کرده و سپس دستور \کد{python3 --version} را وارد نمایید.
 		
+		\فقره مسیر خود را به پوشه‌ی \لر{back} تغییر دهید.
 		
-		\فقره به کمک دستور زیر \لر{virtual env} را نصب کنید.
+		\مهم{نکته:} برای مطمئن شدن از این‌که در مسیر درستی قرار دارید، دستور \کد{tree -L 2} را اجرا کنید. خروجی به صورت زیر خواهد بود:
+			\begin{latin}
+				\begin{verbatim}
+├── readme.md
+├── requirements.txt
+├── transportation
+│   ├── apps
+│   ├── db.sqlite3
+│   ├── manage.py
+│   ├── package-lock.json
+│   ├── static
+│   ├── transportation
+│   └── usecases.txt
+└── venv
+	├── bin
+	├── include
+	├── lib
+	└── share
+				\end{verbatim}
+			\end{latin}
+		
+		
+		
+		\فقره به کمک دستور زیر \لر{virtualenv} را نصب کنید.
 		
 		\begin{latin}
 			\begin{verbatim}
@@ -19,7 +43,7 @@
 			\end{verbatim}
 		\end{latin}
 	
-	\فقره در مسیر جدید یک \لر{virtualenv} جدید بسازید و سپس آن را فعال کنید. این کار به شما کمک می‌کند تا پکیج‌های مورد نیاز پروژه را در دایرکتوری آن دانلود، نصب و اضافه نمایید.
+	\فقره در مسیر یک \لر{virtualenv} جدید بسازید و سپس آن را فعال کنید. این کار به شما کمک می‌کند تا پکیج‌های مورد نیاز پروژه را در دایرکتوری آن دانلود، نصب و اضافه نمایید.
 		\begin{latin}
 			\begin{verbatim}
 > virtualenv venv
