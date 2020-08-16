@@ -185,11 +185,15 @@ class EditOrder(Mutation):
         order_id = graphene.ID(required=True)
         driver_id = graphene.ID()
         vehicle_id = graphene.ID()
+        is_load = graphene.Boolean()
+        order_status = graphene.String()
+        destination_address = graphene.String()
+        transportation_cost = graphene.Float()
 
 
     order = graphene.Field(OrderType)
 
-    def mutate(self, info, order_id, order_data=None, **kwargs):
+    def mutate(self, info, order_id, is_load, order_status, destination_address, transportation_cost):
         user = info.context.user
 
         if user.is_anonymous:
@@ -218,10 +222,10 @@ class EditOrder(Mutation):
             except:
                 raise Exception("Invalid Vehicle ID")
 
-        order.is_load = order_data.is_load
-        order.order_status = order_data.order_status
-        order.destination_address = order_data.destination_address 
-        order.transportation_cost = order_data.transportation_cost
+        order.is_load = is_load
+        order.order_status = order_status
+        order.destination_address = destination_address 
+        order.transportation_cost = transportation_cost
         order.save()
 
         return EditOrder(order=order)

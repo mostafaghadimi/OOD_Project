@@ -26,12 +26,12 @@ class ReportCrash(Mutation):
         if user.is_anonymous:
             raise Exception('Login is needed for reporting crash')
         
-        elif (user.is_driver and user == driver.user) or user.is_superuser:
-            try:
+        try:
                 driver = Driver.objects.get(pk=id)
+        except:
+            raise Exception("driver not found")
 
-            except:
-                raise Exception("driver not found")
+        if (user.is_driver and user == driver.user) or user.is_superuser:
 
             driver.driver_status = "3"
 
