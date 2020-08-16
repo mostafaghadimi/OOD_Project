@@ -191,6 +191,7 @@ class CreateDriver(Mutation):
             email=driver_data.user.email,
             username=driver_data.user.username,
             phone_no=driver_data.user.phone_no,
+            is_driver=True,
         )
         user.set_password(driver_data.user.password)
         user.save()
@@ -199,7 +200,6 @@ class CreateDriver(Mutation):
             user=user,    
             national_id=driver_data.national_id,
             birthday=driver_data.birthday,
-            is_driver=True,
         )
 
         driver.save()
@@ -301,6 +301,7 @@ class CreateAuthorizer(Mutation):
             email=authorizer_data.user.email,
             username=authorizer_data.user.username,
             phone_no=authorizer_data.user.phone_no,
+            is_authorizer=True,
         )
 
         user.set_password(authorizer_data.user.password)
@@ -369,13 +370,13 @@ class CreateCustomer(Mutation):
     customer = graphene.Field(CustomerType)
 
     def mutate(self, info, customer_data=None):
-        print(customer_data)
         user = Usermodel (
             first_name=customer_data.user.first_name,
             last_name=customer_data.user.last_name,
             username=customer_data.user.username,
             email=customer_data.user.email,
-            phone_no=customer_data.user.phone_no
+            phone_no=customer_data.user.phone_no,
+            is_customer=True,
         )
 
         user.set_password(customer_data.user.password)

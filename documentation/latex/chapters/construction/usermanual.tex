@@ -1,0 +1,71 @@
+\قسمت{مستند نصب}
+
+در این قسمت نحوه‌ی نصب و راه‌اندازی قسمت‌های \لر{Back-End} و \لر{Front-End} به طور کامل توضیح داده خواهد شد.
+
+\شروع{فقرات}
+	\فقره \مهم{\لر{Back-End}}: برای نصب و راه‌اندازی موفق قسمت \لر{Back-End} پیش‌نهاد می‌شود مراحل زیر را به ترتیب و مطابق با دستورالعمل‌های گفته شده انجام دهید.
+	
+	\شروع{شمارش}
+		\فقره مطمئن شوید نرم‌افزار پایتون را نصب کرده‌اید.
+		
+		\مهم{نکته:} برای اطمینان از نصب موفقیت‌آمیز و قرار گرفتن پایتون در \لر{environment variables‍} ابتدا ترمینال را باز کرده و سپس دستور \کد{python3 --version} را وارد نمایید.
+		
+		\فقره مسیر خود را به پوشه‌ی \لر{back} تغییر دهید.
+		
+		\مهم{نکته:} برای مطمئن شدن از این‌که در مسیر درستی قرار دارید، دستور \کد{tree -L 2} را اجرا کنید. خروجی به صورت زیر خواهد بود:
+			\begin{latin}
+				\begin{verbatim}
+├── readme.md
+├── requirements.txt
+├── transportation
+│   ├── apps
+│   ├── db.sqlite3
+│   ├── manage.py
+│   ├── package-lock.json
+│   ├── static
+│   ├── transportation
+│   └── usecases.txt
+└── venv
+	├── bin
+	├── include
+	├── lib
+	└── share
+				\end{verbatim}
+			\end{latin}
+		
+		
+		
+		\فقره به کمک دستور زیر \لر{virtualenv} را نصب کنید.
+		
+		\begin{latin}
+			\begin{verbatim}
+> pip3 install virtualenv
+			\end{verbatim}
+		\end{latin}
+	
+	\فقره در مسیر یک \لر{virtualenv} جدید بسازید و سپس آن را فعال کنید. این کار به شما کمک می‌کند تا پکیج‌های مورد نیاز پروژه را در دایرکتوری آن دانلود، نصب و اضافه نمایید.
+		\begin{latin}
+			\begin{verbatim}
+> virtualenv venv
+> source venv/bin/activate
+			\end{verbatim}
+		\end{latin}
+	\فقره حال کافی است که پکیج‌های مورد نیاز پروژه که قبلا در فایل \لر{requirements.txt} لیست شده‌اند را نصب کنید.
+		\begin{latin}
+			\begin{verbatim}
+> (venv) pip3 install -r requirements.txt
+			\end{verbatim}
+		\end{latin}
+	\فقره داخل پوشه‌ی \لر{transportation} رفته و برای ساخته شدن جدول‌های پایگاه‌داده و هم‌چنین اجرا شدن سرور، دستورهای زیر را اجرا کنید.
+		\begin{latin}
+			\begin{verbatim}
+> (venv) python3 manage.py makemigrations
+> (venv) python3 manage.py migrate
+> (venv) python3 manage.py runserver
+			\end{verbatim}
+		\end{latin}
+	
+	\پایان{شمارش}
+
+	
+\پایان{فقرات}

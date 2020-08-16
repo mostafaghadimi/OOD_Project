@@ -19,5 +19,5 @@ class Crash(models.Model):
         verbose_name="crash"
         verbose_name_plural="crashes"
 
-    # def __str__(self):
-    #     return self.driver
+    def __str__(self):
+        return self.description

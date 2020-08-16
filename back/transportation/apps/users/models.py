@@ -93,11 +93,6 @@ class Driver(models.Model):
         verbose_name= "Birthday",
     )
 
-    is_driver = models.BooleanField(
-        default=True,
-        verbose_name="Is Driver",
-    )
-
     class Meta:
         verbose_name = 'Driver'
         verbose_name_plural = 'Drivers'
@@ -112,11 +107,6 @@ class Authorizer(models.Model):
         on_delete=models.CASCADE,
     )
 
-    is_authorizer = models.BooleanField(
-        default=True,
-        verbose_name="Is Authorizer",
-    )
-
     class Meta:
         verbose_name = 'Authorizer'
         verbose_name_plural = 'Authorizers'
@@ -128,11 +118,6 @@ class Customer(models.Model):
         Usermodel,
         related_name="customer",
         on_delete=models.CASCADE,
-    )
-
-    is_customer = models.BooleanField(
-        default=True,
-        verbose_name="Is Customer",
     )
 
     birthday = models.DateField(
