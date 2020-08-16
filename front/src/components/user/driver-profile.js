@@ -9,15 +9,22 @@ import { KeyOutlined } from '@ant-design/icons';
 import DriverInfo from './driver-info';
 
 import './user.css'
+import {gql} from "@apollo/client";
+import {Query} from "react-apollo";
 
 const editItemLayout = {
     labelCol: { span: 2 },
     wrapperCol: { span: 10 },
-}
+};
 
-export default class DriverProfile extends Component {
-    render() {
-        return (
+const DriverProfile = ({currentUser}) => {
+    console.log(currentUser.id);
+    // const id = props.match.params.id;
+    // console.log(id);
+    return (
+        <Query query={IS_LOGGED_IN_QUERY} >
+            {({ data , loading, error}) => {
+
             <div className="user-profile">
                 <Divider>مشخصات</Divider>
                 {/* <Row>
@@ -63,15 +70,15 @@ export default class DriverProfile extends Component {
                             <Form.Item label="امتیاز">
                                 <Rate disabled defaultValue={4} />
                             </Form.Item>
-                        
+
                         </Form>
                     </Col>
-                    
+
 
                 </Row> */}
                 <DriverInfo />
                 <Divider>ویرایش اطلاعات</Divider>
-                    
+
                 <Form
                     {...editItemLayout}
                     // style={{width:490}}
@@ -79,7 +86,7 @@ export default class DriverProfile extends Component {
                     <Form.Item label="شماره تماس">
                         <Input value="09151231231" type="tel"/>
                     </Form.Item>
-                    
+
                     <Form.Item label="رمز عبور قبلی">
                         <Input.Password  placeholder="رمز عبور قبلی" prefix={<KeyOutlined />} />
                     </Form.Item>
@@ -87,7 +94,7 @@ export default class DriverProfile extends Component {
                     <Form.Item label="رمز عبور جدید">
                         <Input.Password  placeholder="رمز عبور جدید" prefix={<KeyOutlined />} />
                     </Form.Item>
-                    
+
                     <Form.Item label="تکرار رمز عبور">
                         <Input.Password  placeholder=" تکرار رمز عبور جدید" prefix={<KeyOutlined />} />
                     </Form.Item>
@@ -99,6 +106,21 @@ export default class DriverProfile extends Component {
                     </Form.Item>
                 </Form>
             </div>
-        )
+    )
+};
+const DRIVER_QUERY = gql`
+query ($id: ID!){
+    driver (id: $id){
+    user{
+        firstName
+        lastName
+        password
+        phoneNo
+    }
+    nationalId
+    birthday
+    rating
     }
 }
+`;
+export default (DriverProfile)

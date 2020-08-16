@@ -3,6 +3,7 @@ from graphene import ObjectType, Mutation, InputObjectType
 from graphene_django.types import DjangoObjectType
 
 from .models import Crash
+from apps.users.models import Driver
 
 class CrashType(DjangoObjectType):
     class Meta:
@@ -15,27 +16,55 @@ class CrashInput(InputObjectType):
 class ReportCrash(Mutation):
     class Arguments:
         crash_data = CrashInput()
+        id = graphene.ID()
 
     crash = graphene.Field(CrashType)
 
-    def mutate(self, info, crash_data=None, **kwargs):
+    def mutate(self, info, id, crash_data=None, **kwargs):
         user = info.context.user
-
+        
         if user.is_anonymous:
             raise Exception('Login is needed for reporting crash')
         
-        crash = Crash(
-            driver = user,
-            description=crash_data.description,
-        )
-        crash.save()
-        return ReportCrash(crash=crash)
+        elif (user.is_driver and user == driver.user) or user.is_superuser:
+            try:
+                driver = Driver.objects.get(pk=id)
+
+            except:
+                raise Exception("driver not found")
+
+            driver.driver_status = "3"
+
+            crash = Crash(
+                driver = driver,
+                description=crash_data.description,
+            )
+
+            driver.save()
+            crash.save()
+
+            return ReportCrash(crash=crash)
+        
+        else:
+            raise Exception("You are not allowed to do this operation")
 
 
 class Query(ObjectType):
     all_crashes = graphene.List(
         CrashType
     )
+
+    def resolve_all_crashes(self, info):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        elif user.is_superuser:
+            return Crash.objects.all()
+
+        else:
+            raise Exception("You are not allowed to do this operation")
 
 
 class Mutations(ObjectType):

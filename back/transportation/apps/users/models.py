@@ -57,7 +57,8 @@ class Driver(models.Model):
 
     STATUS_CHOICES = [
         ('1', 'Free'),
-        ('2', 'Busy')
+        ('2', 'Busy'),
+        ('3', 'Crashed')
     ]
 
     driver_status = models.CharField(
@@ -120,6 +121,8 @@ class Authorizer(models.Model):
         verbose_name = 'Authorizer'
         verbose_name_plural = 'Authorizers'
 
+    def __str__(self):
+        return self.user.username
 class Customer(models.Model):
     user = models.OneToOneField(
         Usermodel,
@@ -139,3 +142,6 @@ class Customer(models.Model):
     class Meta:
         verbose_name = 'Customer'
         verbose_name_plural = 'Customers'
+
+    def __str__(self):
+        return self.user.username

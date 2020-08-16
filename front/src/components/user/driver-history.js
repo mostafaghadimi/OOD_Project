@@ -40,7 +40,7 @@ export default class DriverHistory extends Component {
     }
     
     render() {
-        const data = []
+        const data = [];
 
         for (let i = 1; i <= 10; i++) {
             data.push({

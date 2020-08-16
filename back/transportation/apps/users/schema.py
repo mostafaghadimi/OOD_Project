@@ -27,12 +27,21 @@ class CustomerType(DjangoObjectType):
 class Query(ObjectType):
     driver = graphene.Field(
         DriverType,
-        id = graphene.ID()
+        id=graphene.ID(required=True)
     ) #done
 
     authorizer = graphene.Field(
         AuthorizerType,
-        id = graphene.ID()
+        id=graphene.ID(required=True)
+    ) #done
+
+    customer = graphene.Field(
+        CustomerType,
+        id=graphene.ID(required=True)
+    ) #done
+
+    all_customers = graphene.List(
+        CustomerType
     ) #done
 
     all_drivers = graphene.List(
@@ -54,6 +63,30 @@ class Query(ObjectType):
     unverified_drivers = graphene.List(
         DriverType
     ) #done
+
+    def resolve_customer(self, info, id):
+        user = info.context.user
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        customer = Customer.objects.get(pk=id)
+        if user.is_superuser or user==customer.user:
+            return customer
+        
+        else:
+            raise Exception("You are not allowed to do this operation")
+
+    def resolve_all_customers(self, info):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this action")
+        
+        return Customer.objects.all()
+
 
     def resolve_unverified_drivers(self, info):
         user = info.context.user
@@ -166,6 +199,7 @@ class CreateDriver(Mutation):
             user=user,    
             national_id=driver_data.national_id,
             birthday=driver_data.birthday,
+            is_driver=True,
         )
 
         driver.save()
@@ -219,14 +253,15 @@ class DeleteDriver(Mutation):
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        elif not user.is_authorizer or not user.is_superuser:
-            raise Exception("You are not allowed to do this action")
+        elif user.is_authorizer or user.is_superuser:
+            
 
-        driver = Driver.objects.get(pk=id)
-        user_id = driver.user.id
-        Usermodel.objects.get(pk=user_id).delete()
-        return DeleteDriver(id=id)
-        
+            driver = Driver.objects.get(pk=id)
+            user_id = driver.user.id
+            Usermodel.objects.get(pk=user_id).delete()
+            return DeleteDriver(id=id)
+            
+        raise Exception("You are not allowed to do this action")
 
 class VerifyDriver(Mutation):
     driver = graphene.Field(DriverType)
@@ -239,14 +274,14 @@ class VerifyDriver(Mutation):
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        elif not user.is_authorizer or not user.is_superuser:
+        elif user.is_authorizer or user.is_superuser:
+            driver = Driver.objects.get(pk=id)
+            driver.is_verified = True
+            driver.save()
+            return VerifyDriver(driver=driver)
+        
+        else:
             raise Exception("You are not allowed to do this action")
-
-        driver = Driver.objects.get(pk=id)
-        driver.is_verified = True
-        driver.save()
-
-        return VerifyDriver(driver=driver)
 
 
 class CreateAuthorizer(Mutation):
@@ -334,11 +369,13 @@ class CreateCustomer(Mutation):
     customer = graphene.Field(CustomerType)
 
     def mutate(self, info, customer_data=None):
+        print(customer_data)
         user = Usermodel (
             first_name=customer_data.user.first_name,
             last_name=customer_data.user.last_name,
             username=customer_data.user.username,
             email=customer_data.user.email,
+            phone_no=customer_data.user.phone_no
         )
 
         user.set_password(customer_data.user.password)
@@ -351,7 +388,7 @@ class CreateCustomer(Mutation):
         user.save()
         customer.save()
 
-        return CreateCustomer(customer=Customer)
+        return CreateCustomer(customer=customer)
 
 class UpdateCustomer(Mutation):
     class Arguments:
@@ -400,12 +437,35 @@ class DeleteCustomer(Mutation):
         return DeleteCustomer(id=id)
         
         
+class UpdateDriverStatus(Mutation):
+    class Arguments:
+        driver_id = graphene.ID(required=True)
+        driver_status = graphene.String(required=True)
+
+    driver = graphene.Field(DriverType)
+
+    def mutate(self, info, driver_id, driver_status):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        elif not user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
+
+        driver = Driver.objects.get(pk=driver_id)
+        driver.driver_status = driver_status
+        driver.save()
+        
+        return UpdateDriverStatus(driver=driver)
+
 
 class Mutations(ObjectType):
     create_driver = CreateDriver.Field()
     update_driver = UpdateDriver.Field()
     delete_driver = DeleteDriver.Field()
     verify_driver = VerifyDriver.Field()
+    update_driver_status = UpdateDriverStatus.Field()
 
     create_authorizer = CreateAuthorizer.Field()
     update_authorizer = UpdateAuthorizer.Field()

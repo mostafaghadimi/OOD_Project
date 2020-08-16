@@ -1,5 +1,5 @@
 from django.db import models
-from apps.users.models import Customer
+from apps.users.models import Customer, Driver
 from apps.vehicles.models import Vehicle
 
 class Order(models.Model):
@@ -8,6 +8,14 @@ class Order(models.Model):
         related_name="orders", 
         on_delete=models.CASCADE,
         verbose_name="Owner",
+    )
+
+    driver = models.ForeignKey(
+        Driver,
+        related_name="orders",
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name="Driver",
     )
 
     vehicle = models.ForeignKey(
@@ -49,4 +57,14 @@ class Order(models.Model):
         verbose_name="Transportation Cost",
     )
 
+    latitude = models.FloatField(
+        default=-1,
+    )
+
+    longitude = models.FloatField(
+        default=-1,
+    )
+
+    def __str__(self):
+        return self.owner.user.username
 

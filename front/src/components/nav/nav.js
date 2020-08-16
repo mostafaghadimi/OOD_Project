@@ -7,47 +7,50 @@ import './nav.css'
 
 const { Header, Content } = Layout;
 
-export default class Nav extends Component {
-    render() {
-        return (
-            <Layout>
-                <Header className="header">
-                <div className="logo" />
-                <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
-                    <Menu.Item key="1">
-                        <Link to="/">
-                            خانه
-                        </Link>
-                    </Menu.Item>
+const Nav = ({isLoggedIn, currentUser, content}) => {
+    return (
+        <Layout>
+            <Header className="header">
+            <div className="logo" />
+            <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['1']}>
+                <Menu.Item key="1">
+                    <Link to="/">
+                        خانه
+                    </Link>
+                </Menu.Item>
 
-                    <Menu.Item key="2">
-                        {/* <Link to=""> */}
-                            نصب اپلیکیشن
-                        {/* </Link> */}
-                    </Menu.Item>
-                    <Menu.Item key="3">
-                        {/* <Link to=""> */}
-                            تماس با ما
-                        {/* </Link> */}
-                    </Menu.Item>
-                    <Menu.Item key="4">
-                        {/* <Link to=""> */}
-                            درباره ما
-                        {/* </Link> */}
-                    </Menu.Item>
-                </Menu>
-                </Header>
-                <Layout>
-                    <Sidebar/>
-                    <Layout className="nav-layout">
-                        <Content
-                            className="site-layout-background"
-                        >
-                        {this.props.content}
-                        </Content>
-                    </Layout>
+                <Menu.Item key="2">
+                    {/* <Link to=""> */}
+                        نصب اپلیکیشن
+                    {/* </Link> */}
+                </Menu.Item>
+                <Menu.Item key="3">
+                    {/* <Link to=""> */}
+                        تماس با ما
+                    {/* </Link> */}
+                </Menu.Item>
+                <Menu.Item key="4">
+                    {/* <Link to=""> */}
+                        درباره ما
+                    {/* </Link> */}
+                </Menu.Item>
+            </Menu>
+            </Header>
+            <Layout>
+                <Sidebar
+                    isLoggedIn = {isLoggedIn}
+                    currentUser = {currentUser}
+                />
+                <Layout className="nav-layout">
+                    <Content
+                        className="site-layout-background"
+                    >
+                    {content}
+                    </Content>
                 </Layout>
             </Layout>
-        )
-    }
-}
+        </Layout>
+    )
+};
+
+export default (Nav);

@@ -181,17 +181,19 @@ const AuthorizeDrivers = (Props) => {
 
 
 export const GET_DRIVERS = gql`
-  {
+    {
     unverifiedDrivers {
-      id,
-      firstName,
-      lastName,
-      username,
-      email,
-      phoneNo,
-      nationalId,
+        user{
+            id,
+            firstName,
+            lastName,
+            username,
+            email,
+            phoneNo
+        }
+        nationalId
     }
-  }
+}
 `;
 
 

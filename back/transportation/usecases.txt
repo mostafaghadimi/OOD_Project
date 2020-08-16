@@ -1,0 +1,47 @@
+usecases:
+
+--------------------------------- Panel
+    - add authorizer #done
+    - update authorizer #done (extra)
+    - delete authorizer #done (extra)
+    - add admin #done (django default)
+    - customer registration #done
+    - update customer #done (extra)
+    - delete customer #done(extra)
+    - driver registration #done
+    - update driver #done
+    - delete driver #done
+
+---------------------------------
+    - login authentication #done
+    - logout # how to invalidate jwt or delete token from localStorage
+
+--------------------------------- Driver
+    - Driver (see load information) #done manage the access later
+    - print load #in front should be handled
+    - report crash #done
+
+--------------------------------- Administration
+    - verify driver #done
+    - delete driver #done 
+    - assign vehicle to load #done
+    - assign load to driver #done
+    - assign code to load #???
+    - edit driver #done (extra)
+    - change driver status #done
+    - get driver information #done
+    - user ranking
+    - get load location
+    - submit order #done
+    - delete order #done
+    - edit order #done
+    - get order #done
+
+--------------------------------- Time
+    - update location
+    
+--------------------------------- customer
+    - get order information #done
+    - get order location
+    - verify delivery
+    - rate driver
