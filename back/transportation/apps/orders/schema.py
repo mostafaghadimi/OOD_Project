@@ -12,6 +12,14 @@ class OrderType(DjangoObjectType):
     class Meta:
         model = Order
 
+class LocationType(DjangoObjectType):
+    class Meta:
+        model = Order
+        fields = (
+            "latitude",
+            "longitude",
+        )
+
 
 class OrderInput(InputObjectType):
     owner_id = graphene.ID(required=True)
@@ -32,6 +40,28 @@ class Query(ObjectType):
     all_orders = graphene.List(
         OrderType
     )
+
+    order_location = graphene.Field(
+        LocationType,
+        id=graphene.ID()
+    )
+
+    def resolve_order_location(self, info, id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        try:
+            order = Order.objects.get(pk=id)
+        
+        except: 
+            raise Exception("Invalid Order ID")
+
+        if user.is_superuser or user == order.owner:
+            return order
+        
+        raise Exception("You are not allowed to do this operation")
 
     def resolve_driver_load(self, info, id):
         user = info.context.user
