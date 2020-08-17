@@ -27,6 +27,13 @@ class Order(models.Model):
         verbose_name="Vehicle",
     )
 
+    order_code = models.CharField(
+        max_length=32,
+        unique=True,
+        null=True,
+        blank=True,
+    )
+
     is_load = models.BooleanField(
         default=False,
         verbose_name="Is Load",

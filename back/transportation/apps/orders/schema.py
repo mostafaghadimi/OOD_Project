@@ -78,10 +78,11 @@ class Query(ObjectType):
 class CreateOrder(Mutation):
     class Arguments:
         order_data = OrderInput()
+        order_code = graphene.String(required=True)
 
     order = graphene.Field(OrderType)
 
-    def mutate(self, info, order_data=None):
+    def mutate(self, info, order_code, order_data=None):
 
         user = info.context.user
         
@@ -97,6 +98,7 @@ class CreateOrder(Mutation):
 
             
             order = Order(owner=owner)
+            order.order_code = order_code
             order.destination_address = order_data.destination_address
             order.save()
 
@@ -183,6 +185,7 @@ class EditOrder(Mutation):
     class Arguments:
         order_data = OrderInput(required=True)
         order_id = graphene.ID(required=True)
+        order_code = graphene.String()
         driver_id = graphene.ID()
         vehicle_id = graphene.ID()
         is_load = graphene.Boolean()
@@ -193,7 +196,7 @@ class EditOrder(Mutation):
 
     order = graphene.Field(OrderType)
 
-    def mutate(self, info, order_id, is_load, order_status, destination_address, transportation_cost):
+    def mutate(self, info, order_id, order_code, is_load, order_status, destination_address, transportation_cost):
         user = info.context.user
 
         if user.is_anonymous:
@@ -223,6 +226,7 @@ class EditOrder(Mutation):
                 raise Exception("Invalid Vehicle ID")
 
         order.is_load = is_load
+        order.order_code = order_code
         order.order_status = order_status
         order.destination_address = destination_address 
         order.transportation_cost = transportation_cost

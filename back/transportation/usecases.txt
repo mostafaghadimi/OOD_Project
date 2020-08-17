@@ -26,7 +26,7 @@ usecases:
     - delete driver #done 
     - assign vehicle to load #done
     - assign load to driver #done
-    - assign code to load #???
+    - assign code to load #done
     - edit driver #done (extra)
     - change driver status #done
     - get driver information #done
@@ -38,7 +38,7 @@ usecases:
     - get order #done
 
 --------------------------------- Time
-    - update location
+    - update location #done
     
 --------------------------------- customer
     - get order information #done
