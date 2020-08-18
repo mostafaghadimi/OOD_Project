@@ -22,7 +22,7 @@ const DriverProfile = ({currentUser}) => {
     // const id = props.match.params.id;
     // console.log(id);
     return (
-        <Query query={IS_LOGGED_IN_QUERY} >
+        <Query query={DRIVER_QUERY} >
             {({ data , loading, error}) => {
 
             <div className="user-profile">
@@ -106,6 +106,8 @@ const DriverProfile = ({currentUser}) => {
                     </Form.Item>
                 </Form>
             </div>
+        }}
+        </Query>
     )
 };
 const DRIVER_QUERY = gql`
@@ -123,4 +125,4 @@ query ($id: ID!){
     }
 }
 `;
-export default (DriverProfile)
+export default DriverProfile;
