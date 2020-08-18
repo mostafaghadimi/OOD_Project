@@ -9,7 +9,7 @@ import {
 import './order.css'
 import {gql} from "apollo-boost";
 import {Mutation} from "react-apollo";
-import Error from "../user/driver-register";
+import Error from "../shared/Error";
 
 
 const formItemLayout = {
@@ -18,7 +18,7 @@ const formItemLayout = {
 };
 const { TextArea } = Input;
 
-const AddOrder = () => {
+const AddOrder = ({currentUser}) => {
     const [sourceAddress, setSourceAddress] = useState("");
     const [destAddress, setDestAddress] = useState("");
     const [receiverName, setReceiverName] = useState("");
@@ -38,9 +38,12 @@ const AddOrder = () => {
         <Mutation
         mutation={NEW_ORDER_MUTATION}
         variables={
-          {
-              // TODO
-          }
+            {
+                "orderData": {
+                    "ownerId" : currentUser.id,
+                    "destinationAddress": destAddress
+                }
+            }
         }
 
         onCompleted={data => {
@@ -145,8 +148,8 @@ const AddOrder = () => {
 
 // TODO
 const NEW_ORDER_MUTATION = gql`
-mutation {
-  createOrder {
+mutation ($orderData : OrderInput){
+  createOrder(orderData: $orderData){
      order { 
          id
      }

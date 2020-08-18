@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import { Table } from 'antd';
+import {Query} from "react-apollo";
+import {gql} from "apollo-boost";
+import Error from "../shared/Error";
 
 const columns = [
     {
@@ -11,56 +14,98 @@ const columns = [
       dataIndex: 'deliverer',
     },
     {
-      title: 'وزن بار',
-      dataIndex: 'weight',
+      title: 'هزینه ارسال',
+      dataIndex: 'cost',
     },
     {
-      title: 'تاریخ تحویل',
-      dataIndex: 'date',
+      title: 'مکان ارسال',
+      dataIndex: 'destAddress',
     },
 ];
 
-export default class DriverHistory extends Component {
-    constructor(props) {
-        super(props);
-        const title = () => 'تاریخچه بار';
-        this.state = {
-            bordered: true,
-            loading: false,
-            pagination: false,
-            size: 'default',
-            title,
-            showHeader: true,
-            rowSelection: {},
-            scroll: undefined,
-            tableLayout: undefined,
-            top: 'none',
-            bottom: 'bottomRight',
-          };
-    }
+const DriverHistory = ({currentUser}) => {
+
+    const title = () => 'تاریخچه بار';
+    const state = {
+        bordered: true,
+        loading: false,
+        pagination: false,
+        size: 'default',
+        title,
+        showHeader: true,
+        rowSelection: {},
+        scroll: undefined,
+        tableLayout: undefined,
+        top: 'none',
+        bottom: 'bottomRight',
+    };
+
     
-    render() {
-        const data = [];
 
-        for (let i = 1; i <= 10; i++) {
-            data.push({
-                key: i,
-                orderer: 'مصطفی قدیمی',
-                deliverer: 'امیرهوشنگ اکبری',
-                weight: 82 + i,
-                date: '1399/08/25'
-            })
-        }
+    const allInfo = [];
 
-        return (
-            <div className="order-container">
-                 <Table
-                    {...this.state}
-                    columns={columns}
-                    dataSource={data}
-                    scroll={this.scroll}
-                />
-            </div>
-        )
+
+
+    return (
+        <Query query={GET_DRIVER_ORDERS} variables={{"id": 7}}>
+            {({data, loading, error}) => {
+                if(loading) return <div> is loading </div>;
+                console.log(data);
+
+                {data.driverLoad.map( order => {
+                    allInfo.push(
+                        {
+                            kay: order.id,
+                            ordererer: order.owner.user.firstName + order.owner.user.lastName,
+                            deliverer: order.driver.user.firstName + order.driver.user.lastName,
+                            destAddress: order.destinationAddress,
+                            cost: order.transportationCost
+                        }
+                    );
+                    console.log(allInfo);
+
+                })}
+                return (
+                    <div className="order-container">
+                        <Table
+                            {...state}
+                            columns={columns}
+                            dataSource={allInfo}
+                        />
+                        {/* Error Handling */}
+                        {error && <Error error={error} />}
+                    </div>
+                )
+            }}
+        </Query>
+
+    )
+};
+
+const GET_DRIVER_ORDERS = gql`
+query ($id : ID!){
+    driverLoad(id:$id) {
+        id,
+        owner{
+            user{
+                firstName,
+                lastName
+            }
+        },
+        driver{
+            user{
+                firstName,
+                lastName
+            }
+        },
+        destinationAddress,
+        orderCode,
+        transportationCost   
     }
 }
+`;
+
+
+
+
+export default (DriverHistory);

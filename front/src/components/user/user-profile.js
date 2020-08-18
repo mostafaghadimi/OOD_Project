@@ -9,64 +9,71 @@ import {
 import { KeyOutlined } from '@ant-design/icons';
 
 import './user.css'
+import {Query} from "react-apollo";
+import {gql} from "@apollo/client";
 
 const formItemLayout = {
     labelCol: { span: 6 },
     wrapperCol: { span: 14 },
 };
 
-export default class UserProfile extends Component {
-    render() {
-        return (
-            <div className="user-profile">
-                <Divider>ویرایش اطلاعات</Divider>
-                    
-                <Form
-                    {...formItemLayout}
-                    // style={{width:490}}
-                >
-                    <Form.Item label="عکس کاربر">
-                        <Avatar 
-                            src={require('../../static/images/avatar.jpeg')} 
-                            size={100}
-                        />
-                    </Form.Item>
-                    <Form.Item label="نام">
-                        <Input value="امیرحسن"/>
-                    </Form.Item>
+const UserProfile = ({currentUser}) => {
+    return (
+        <Query query={CUSTOMER_QUERY} variables={{"id": currentUser.id}}>
+            {({ data , loading, error}) => {
+                if (loading) return <div> loading ...</div>;
+                return (
+                    <div className="user-profile">
+                        <Divider>ویرایش اطلاعات</Divider>
 
-                    <Form.Item label="نام خانوادگی">
-                        <Input value="فتحی"/>
-                    </Form.Item>
+                        <Form
+                            {...formItemLayout}
+                            // style={{width:490}}
+                        >
+                            <Form.Item label="عکس کاربر">
+                                <Avatar
+                                    src={require('../../static/images/avatar.jpeg')}
+                                    size={100}
+                                />
+                            </Form.Item>
+                            <Form.Item label="نام">
+                                <Input value= {data.customer.user.firstName} disabled/>
+                            </Form.Item>
 
-                    <Form.Item label="تاریخ تولد">
-                        <Input value="1376/10/24"/>
-                    </Form.Item>
+                            <Form.Item label="نام خانوادگی">
+                                <Input value= {data.customer.user.lastName} disabled/>
+                            </Form.Item>
 
-                    
-                    <Form.Item label="شماره تماس">
-                        <Input value="09151231231" type="tel"/>
-                    </Form.Item>
-                    
-                    <Form.Item label="رمز عبور قبلی">
-                        <Input.Password  placeholder="رمز عبور قبلی" prefix={<KeyOutlined />} />
-                    </Form.Item>
+                            <Form.Item label="تاریخ تولد">
+                                <Input value= {data.customer.user.birthday} disabled/>
+                            </Form.Item>
 
-                    <Form.Item label="رمز عبور جدید">
-                        <Input.Password  placeholder="رمز عبور جدید" prefix={<KeyOutlined />} />
-                    </Form.Item>
-                    
-                    <Form.Item label="تکرار رمز عبور">
-                        <Input.Password  placeholder=" تکرار رمز عبور جدید" prefix={<KeyOutlined />} />
-                    </Form.Item>
 
-                    <Form.Item label>
-                        <Button type="primary" htmlType="submit">
-                            ویرایش
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
-        )
+                            <Form.Item label="شماره تماس">
+                                <Input value= {data.customer.user.phoneNo} type="tel" disabled/>
+                            </Form.Item>
+
+                        </Form>
+                    </div>
+                )
+            }}
+        </Query>
+    )
+};
+
+const CUSTOMER_QUERY = gql`
+query ($id : ID!){
+    customer (id: $id){
+        user{
+            firstName
+            lastName
+            username
+            password
+            phoneNo
+            email
+        }
     }
 }
+`;
+
+export default (UserProfile);

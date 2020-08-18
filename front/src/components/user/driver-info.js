@@ -23,23 +23,6 @@ const DriverInfo = ({data}) => {
 
     return (
         <Row>
-            <Col span={9}>
-                <Card
-                    style={{ width: 320 }}
-                    cover={
-                    <img
-                        alt="User Profile"
-                        src={require('../../static/images/avatar.jpeg')}
-                    />
-                    }
-                    hoverable
-                >
-                    <Meta
-                        title= {data.firstName}
-                        description="راننده‌ی تریلر، خاور، وانت"
-                    />
-                </Card>
-            </Col>
             <Col span={15}>
                 <Form
                     name="user profile"
@@ -62,12 +45,44 @@ const DriverInfo = ({data}) => {
                         <Input placeholder={data.driver.birthday} disabled/>
                     </Form.Item>
 
+
+                    <Form.Item label="نام کاربری">
+                        <Input value={data.driver.user.username} type="tel" disabled/>
+                    </Form.Item>
+
+                    <Form.Item label="ایمیل">
+                        <Input value={data.driver.user.email} type="tel" disabled/>
+                    </Form.Item>
+
+                    <Form.Item label="شماره تماس">
+                        <Input value={data.driver.user.phoneNo} type="tel" disabled/>
+                    </Form.Item>
+
+
                     <Form.Item label="امتیاز">
                         <Rate disabled defaultValue={data.driver.rating} />
                     </Form.Item>
 
                 </Form>
             </Col>
+            <Col span={9}>
+                <Card
+                    style={{ width: 320 }}
+                    cover={
+                    <img
+                        alt="User Profile"
+                        src={require('../../static/images/avatar.jpeg')}
+                    />
+                    }
+                    hoverable
+                >
+                    <Meta
+                        title= {data.firstName}
+                        description="راننده‌ی تریلر، خاور، وانت"
+                    />
+                </Card>
+            </Col>
+
 
 
         </Row>

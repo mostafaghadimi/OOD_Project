@@ -82,13 +82,11 @@ const Login = (props) => {
                     "ورود مدیراحراز هویت به سامانه",
                 ];
 
-                if (error) return <Error error={error} />;
-
                 return (
 
                     <div>
 
-                        <Button block onClick={showModal}>
+                        <Button block onClick={showModal} disabled = {loading}>
                             {loading ? "در حال ورود ..." : "ورود"}
                         </Button>‍
                         <Modal
@@ -112,6 +110,7 @@ const Login = (props) => {
                             </p>
 
                         </Modal>
+                        {error && <Error error={error} />}
 
 
                     </div>

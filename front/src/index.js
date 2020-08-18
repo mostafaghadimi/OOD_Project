@@ -67,6 +67,9 @@ const App = () =>{
         <Query query={IS_LOGGED_IN_QUERY} >
             {({ data , loading, error}) => {
 
+                if (loading) return <div> loading </div>;
+                if (error) return <Error error = {error}/>;
+
                 var isLoggedIn = [];
                 isLoggedIn[UserType["Driver"]] = data.isDriverLoggedIn;
                 isLoggedIn[UserType["Customer"]] = data.isCustomerLoggedIn;
@@ -77,15 +80,18 @@ const App = () =>{
                 console.log(isLoggedIn[UserType["Authorizer"]]);
 
                 if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]] && !isLoggedIn[UserType["Authorizer"]]) {
-                    return <Route exact path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+                    return (
+                        <Route exact path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+                    )
                 }
                 return(
                     <Query query={ME_QUERY} >
-                             {({data, loading, error}) => {
-                                 if (loading) return <div> loading </div>;
+                             {(meData) => {
+                                 if (meData.loading) return <div> loading </div>;
+                                 if (meData.error) return <Error error = {meData.error}/>;
 
-                                 const currentUser = data.me;
-                                 console.log(data);
+                                 const currentUser = meData.data.me;
+                                 console.log(meData.data);
                                  if(isLoggedIn[UserType["Driver"]]){
                                      console.log("HERE");
                                      return <DriverRoot isLoggedIn = {isLoggedIn} currentUser = {currentUser}/>

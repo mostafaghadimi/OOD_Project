@@ -66,10 +66,6 @@ const AuthorizeDrivers = (Props) => {
     return(
         <Query query={GET_DRIVERS}>
             {({data, loading, error}) => {
-                console.log(loading);
-                console.log(data);
-                console.log(error);
-
                 if(loading) return <div> is loading </div>;
                 // if (error) return <div> is error </div>;
 
@@ -97,10 +93,12 @@ const AuthorizeDrivers = (Props) => {
                                               console.log({data});
                                               setVisible(true);
                                           }}
-                                    >{(verifyDriver, {loading, error}) => {
+                                    >{(verifyDriver, authorizeData) => {
                                         return (
                                             <div>
-                                                <Button onClick={event => handleSubmitAuthorize(event, verifyDriver)}>تایید</Button>
+                                                <Button onClick={event => handleSubmitAuthorize(event, verifyDriver)} disabled = {authorizeData.loading}>
+                                                    {authorizeData.loading ? "در حال تایید کردن..." : "تایید"}
+                                                </Button>
                                                 <Modal
 
                                                     title= "هویت راننده تایید شد"
@@ -114,7 +112,7 @@ const AuthorizeDrivers = (Props) => {
                                                 >
                                                 </Modal>
                                                 {/* Error Handling */}
-                                                {error && <Error error={error} />}
+                                                {authorizeData.error && <Error error={authorizeData.error} />}
                                             </div>
                                         )
                                 }}
@@ -129,10 +127,12 @@ const AuthorizeDrivers = (Props) => {
                                               console.log({data});
                                               setVisible(true);
                                           }}
-                                    >{(deleteDriver, {loading, error}) => {
+                                    >{(deleteDriver, deleteData) => {
                                         return (
                                             <div>
-                                                <Button onClick={event => handleSubmitDelete(event, deleteDriver)}>رد</Button>
+                                                <Button onClick={event => handleSubmitDelete(event, deleteDriver)} disabled = {deleteData.loading}>
+                                                    {deleteData.loading ? "در حال رد کردن..." : "رد"}
+                                                </Button>
                                                 <Modal
 
                                                     title= "هویت راننده رد شد"
@@ -148,7 +148,7 @@ const AuthorizeDrivers = (Props) => {
                                                 >
                                                 </Modal>
                                                 {/* Error Handling */}
-                                                {error && <Error error={error} />}
+                                                {deleteData.error && <Error error={deleteData.error} />}
                                             </div>
                                         )
                                     }}
@@ -183,11 +183,7 @@ const AuthorizeDrivers = (Props) => {
 
 
 
-
-
-
-
-export const GET_DRIVERS = gql`
+const GET_DRIVERS = gql`
     {
     unverifiedDrivers {
         user{
