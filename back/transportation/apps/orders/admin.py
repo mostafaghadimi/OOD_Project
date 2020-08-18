@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import Order, Rate
+from .models import Order
 
 class OrderAdmin(admin.ModelAdmin):
     list_display = [
+        'id',
         'owner',
         'driver',
         'vehicle',
@@ -10,14 +11,8 @@ class OrderAdmin(admin.ModelAdmin):
         'order_status',
         'transportation_cost',
         'destination_address',
-    ]
-
-class RateAdmin(admin.ModelAdmin):
-    list_display = [
-        'order',
-        'owner',
         'rating',
     ]
 
+
 admin.site.register(Order, OrderAdmin)
-admin.site.register(Rate, RateAdmin)

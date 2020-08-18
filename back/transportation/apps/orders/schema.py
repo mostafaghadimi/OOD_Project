@@ -1,6 +1,6 @@
 from graphene import ObjectType, Mutation, InputObjectType
 import graphene
-from .models import Order, Rate
+from .models import Order
 from graphene_django.types import DjangoObjectType
 from apps.vehicles.schema import VehicleType, VehicleInput
 from apps.users.schema import CustomerInput
@@ -344,18 +344,10 @@ class VerifyDelivery(Mutation):
 
         order.driver.driver_status = '1'
         order.vehicle.vehicle_status = '1'
-        order.save()
-
         if rate:
+            order.rating = rate
 
-            rating = Rate(
-                order=order,
-                owner=order.owner,
-                rate=rate,
-            )
-
-            rating.save()
-
+        order.save()
 
         return VerifyDelivery(order=order)
 
@@ -371,4 +363,3 @@ class Mutation(ObjectType):
 
     update_order_location = UpdateOrderLocation.Field()
     verify_delivery = VerifyDelivery.Field()
-
