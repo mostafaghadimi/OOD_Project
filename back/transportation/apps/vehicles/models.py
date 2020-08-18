@@ -22,6 +22,7 @@ class Vehicle(models.Model):
     STATUS_CHOICE = [
         ('1', 'Free'),
         ('2', 'Busy'),
+        ('3', 'Crashed')
     ]
 
     vehicle_status = models.CharField(

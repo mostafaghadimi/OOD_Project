@@ -196,6 +196,7 @@ class CreateDriver(Mutation):
             phone_no=driver_data.user.phone_no,
             is_driver=True,
         )
+        
         user.set_password(driver_data.user.password)
         user.save()
 
