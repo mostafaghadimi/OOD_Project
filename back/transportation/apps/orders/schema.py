@@ -319,6 +319,8 @@ class VerifyDelivery(Mutation):
         order_id = graphene.ID(required=True)
         rate = graphene.Int()
 
+    order = graphene.Field(OrderType)
+
     def mutate(self, info, order_id, rate=None):
         user = info.context.user
 
@@ -345,7 +347,7 @@ class VerifyDelivery(Mutation):
         order.save()
 
         if rate:
-            
+
             rating = Rate(
                 order=order,
                 owner=order.owner,
