@@ -3,7 +3,8 @@ from graphene import ObjectType, Mutation, InputObjectType
 from graphene_django.types import DjangoObjectType
 
 from .models import Crash
-from apps.users.models import Driver
+from apps.users.models import Driver, Usermodel
+from apps.vehicles.models import Vehicle
 
 class CrashType(DjangoObjectType):
     class Meta:
@@ -16,7 +17,8 @@ class CrashInput(InputObjectType):
 class ReportCrash(Mutation):
     class Arguments:
         crash_data = CrashInput()
-        id = graphene.ID()
+        driver_id = graphene.ID()
+        vehicle_id = graphene.ID()
 
     crash = graphene.Field(CrashType)
 
@@ -27,16 +29,24 @@ class ReportCrash(Mutation):
             raise Exception('Login is needed for reporting crash')
         
         try:
-                driver = Driver.objects.get(pk=id)
+            driver = Usermodel.objects.get(pk=id).driver
         except:
-            raise Exception("driver not found")
+            raise Exception("Invalid Driver/User ID")
+
+        try:
+            vehicle = Vehicle.objects.get(pk=vehicle_id)
+        except:
+            raise Exception("Invalid Vehicle ID")
+
 
         if (user.is_driver and user == driver.user) or user.is_superuser:
 
             driver.driver_status = "3"
+            vehicle.vehicle_status = "3"
 
             crash = Crash(
                 driver = driver,
+                vehicle=vehicle,
                 description=crash_data.description,
             )
 
@@ -50,9 +60,28 @@ class ReportCrash(Mutation):
 
 
 class Query(ObjectType):
+    crash = graphene.Field(
+        CrashType,
+        id=graphene.ID(required=True),
+    )
+    
     all_crashes = graphene.List(
         CrashType
     )
+
+    def resolve_crash(self, info, id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        try:
+            crash = Crash.objects.get(pk=id)
+        except:
+            raise Exception("Invalid Crash ID")
+
+        if user.is_superuser:
+            return crash
 
     def resolve_all_crashes(self, info):
         user = info.context.user
@@ -60,11 +89,11 @@ class Query(ObjectType):
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        elif user.is_superuser:
+        if user.is_superuser:
             return Crash.objects.all()
 
-        else:
-            raise Exception("You are not allowed to do this operation")
+        
+        raise Exception("You are not allowed to do this operation")
 
 
 class Mutations(ObjectType):

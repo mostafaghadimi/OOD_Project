@@ -12,6 +12,14 @@ class OrderType(DjangoObjectType):
     class Meta:
         model = Order
 
+class LocationType(DjangoObjectType):
+    class Meta:
+        model = Order
+        fields = (
+            "latitude",
+            "longitude",
+        )
+
 
 class OrderInput(InputObjectType):
     owner_id = graphene.ID(required=True)
@@ -32,6 +40,34 @@ class Query(ObjectType):
     all_orders = graphene.List(
         OrderType
     )
+
+    order_location = graphene.Field(
+        LocationType,
+        id=graphene.ID()
+    )
+
+    customer_orders = graphene.List(
+        OrderType,
+        id=graphene.ID()
+    )
+
+
+    def resolve_order_location(self, info, id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        try:
+            order = Order.objects.get(pk=id)
+        
+        except: 
+            raise Exception("Invalid Order ID")
+
+        if user.is_superuser or user == order.owner:
+            return order
+        
+        raise Exception("You are not allowed to do this operation")
 
     def resolve_driver_load(self, info, id):
         user = info.context.user
@@ -75,13 +111,29 @@ class Query(ObjectType):
         
         return Order.objects.all()
 
+    def resolve_customer_orders(self, info, id):
+        user = info.context.user
+
+        try:
+            customer = Customer.objects.get(pk=id)
+
+        except:
+            raise Exception("Customer not found")
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        elif user == customer.user or user.is_superuser:
+            return customer.orders.all()
+
 class CreateOrder(Mutation):
     class Arguments:
         order_data = OrderInput()
+        order_code = graphene.String(required=True)
 
     order = graphene.Field(OrderType)
 
-    def mutate(self, info, order_data=None):
+    def mutate(self, info, order_code, order_data=None):
 
         user = info.context.user
         
@@ -97,6 +149,7 @@ class CreateOrder(Mutation):
 
             
             order = Order(owner=owner)
+            order.order_code = order_code
             order.destination_address = order_data.destination_address
             order.save()
 
@@ -183,6 +236,7 @@ class EditOrder(Mutation):
     class Arguments:
         order_data = OrderInput(required=True)
         order_id = graphene.ID(required=True)
+        order_code = graphene.String()
         driver_id = graphene.ID()
         vehicle_id = graphene.ID()
         is_load = graphene.Boolean()
@@ -193,7 +247,7 @@ class EditOrder(Mutation):
 
     order = graphene.Field(OrderType)
 
-    def mutate(self, info, order_id, is_load, order_status, destination_address, transportation_cost):
+    def mutate(self, info, order_id, order_code, is_load, order_status, destination_address, transportation_cost):
         user = info.context.user
 
         if user.is_anonymous:
@@ -223,6 +277,7 @@ class EditOrder(Mutation):
                 raise Exception("Invalid Vehicle ID")
 
         order.is_load = is_load
+        order.order_code = order_code
         order.order_status = order_status
         order.destination_address = destination_address 
         order.transportation_cost = transportation_cost
@@ -279,6 +334,46 @@ class UpdateOrderLocation(Mutation):
         else:
             raise Exception("You are not allowed to do this operation")
 
+
+class VerifyDelivery(Mutation):
+    class Arguments:
+        order_id = graphene.ID(required=True)
+        rate = graphene.Int()
+
+    order = graphene.Field(OrderType)
+
+    def mutate(self, info, order_id, rate=None):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        if not user.is_customer:
+            raise Exception("You are not allowed to do this operation")
+        
+        try:
+            order = Order.objects.get(pk=order_id)
+        except:
+            raise Exception("Invalid Order ID")
+
+        if not user == order.owner:
+            raise Exception("You are not allowed to do this operation")
+
+
+        if not order.order_status == '3':
+            raise Exception("You cannot verify this order")
+
+        order.driver.driver_status = '1'
+        order.vehicle.vehicle_status = '1'
+        if rate:
+            order.rating = rate
+
+        order.save()
+
+        return VerifyDelivery(order=order)
+
+
+
 class Mutation(ObjectType):
     create_order = CreateOrder.Field()
     delete_order = DeleteOrder.Field()
@@ -288,3 +383,4 @@ class Mutation(ObjectType):
     assign_driver_load = AssignDriverLoad.Field()
 
     update_order_location = UpdateOrderLocation.Field()
+    verify_delivery = VerifyDelivery.Field()

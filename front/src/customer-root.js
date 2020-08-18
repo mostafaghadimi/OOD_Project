@@ -13,50 +13,41 @@ import Error from "./components/shared/Error";
 
 export const UserContext = React.createContext();
 
-const CustomerRoot = (props) => {
+const CustomerRoot = ({isLoggedIn, currentUser}) => {
 
     return(
-        <Query query={ME_QUERY} fetchPolicy="cache-and-network">
-            {({data, loading, error}) => {
-                if (loading) return;
-                if (error) return <Error error={error} />;
-                const currentUser = data.me;
+        
 
-                return (
-                    <UserContext.Provider value={currentUser}>
-                        <Switch>
-                            <Route exact path="/" render={() => (
-                                <Nav isLoggedIn={props.isLoggedIn}/>
-                            )}/>
-                            {/* Order */}
-                            <Route exact path="/customer/:id/orderList" render={() => (
-                                <Nav isLoggedIn={props.isLoggedIn} content={<OrderList/>}/>
-                            )}/>
+        <UserContext.Provider value={currentUser}>
+            <Switch>
+                <Route exact path="/" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} currentUser = {currentUser}/>
+                )}/>
+                {/* Order */}
+                <Route exact path="/customer/:id/orderList" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<OrderList currentUser = {currentUser}/>} currentUser = {currentUser}/>
+                )}/>
 
-                            <Route exact path="/customer/:id/addOrder" render={() => (
-                                <Nav isLoggedIn={props.isLoggedIn} content={<AddOrder/>}/>
-                            )}/>
+                <Route exact path="/customer/:id/addOrder" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<AddOrder currentUser = {currentUser}/>} currentUser = {currentUser}/>
+                )}/>
 
-                            <Route exact path="/customer/:id/orderDetail" render={() => (
-                                <Nav isLoggedIn={props.isLoggedIn} content={<OrderDetail/>}/>
-                            )}/>
+                <Route exact path="/customer/:id/orderDetail" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<OrderDetail currentUser = {currentUser}/>} currentUser = {currentUser}/>
+                )}/>
 
-                            <Route exact path="/customer/:id/driverList" render={() => (
-                                <Nav isLoggedIn={props.isLoggedIn} content={<DriverList/>}/>
-                            )}/>
+                <Route exact path="/customer/:id/driverList" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<DriverList currentUser = {currentUser}/>} currentUser = {currentUser}/>
+                )}/>
 
-                            {/* User */}
-                            <Route exact path="/user/:id/profile/" render={() => (
-                                <Nav isLoggedIn={props.isLoggedIn} content={<UserProfile/>}/>
-                            )}/>
-                        </Switch>
-                    </UserContext.Provider>
-                )
+                {/* User */}
+                <Route exact path="/user/:id/profile/" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<UserProfile currentUser = {currentUser}/>} currentUser = {currentUser}/>
+                )}/>
+            </Switch>
+        </UserContext.Provider>
+    )
 
-            }}
-        </Query>
-
-    );
 
 };
 
@@ -64,12 +55,6 @@ const ME_QUERY = gql`
     {
         me{
             id
-            isDriver
-            isAuthorizer
-            isCustomer
-            isSuperuser
-            firstName
-            lastName
         }
     }
 `;

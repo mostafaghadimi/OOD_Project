@@ -2,6 +2,7 @@ import graphene
 
 from graphene import Mutation, ObjectType, InputObjectType
 from .models import Driver, Authorizer, Customer, Usermodel
+from apps.orders.models import Order
 from graphene_django.types import DjangoObjectType
 
 
@@ -28,53 +29,58 @@ class Query(ObjectType):
     driver = graphene.Field(
         DriverType,
         id=graphene.ID(required=True)
-    ) #done
+    )
 
     authorizer = graphene.Field(
         AuthorizerType,
         id=graphene.ID(required=True)
-    ) #done
+    )
 
     customer = graphene.Field(
         CustomerType,
         id=graphene.ID(required=True)
-    ) #done
+    )
 
     all_customers = graphene.List(
         CustomerType
-    ) #done
+    )
 
     all_drivers = graphene.List(
         DriverType
-    ) #done
+    )
 
     all_authorizers = graphene.List(
         AuthorizerType
-    ) #done
+    )
 
     me = graphene.Field(
         UserType
     )
 
-    is_username_unique = graphene.Boolean(
-        username=graphene.String()
-    )
-
     unverified_drivers = graphene.List(
         DriverType
-    ) #done
+    )
+
+    customer_drivers = graphene.List(
+        DriverType,
+        id=graphene.ID(required=True)
+    )
 
     def resolve_customer(self, info, id):
         user = info.context.user
+
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        customer = Customer.objects.get(pk=id)
+        try:
+            customer = Usermodel.objects.get(pk=id).customer
+        except:
+            raise Exception("Invalid User/Customer ID")
+
         if user.is_superuser or user==customer.user:
             return customer
         
-        else:
-            raise Exception("You are not allowed to do this operation")
+        raise Exception("You are not allowed to do this operation")
 
     def resolve_all_customers(self, info):
         user = info.context.user
@@ -94,24 +100,20 @@ class Query(ObjectType):
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        if not user.is_superuser or not user.is_authorizer:
-            raise Exception("You are not allowed to do this action")
+        if user.is_superuser or user.is_authorizer:
+            return Driver.objects.filter(is_verified=False).all()
 
-        return Driver.objects.filter(is_verified=False).all()
+        raise Exception("You are not allowed to do this action")
 
-    def resolve_is_username_unique(self, info, username):
-        try:
-            Usermodel.objects.get(username=username)
-            return False
-        except:
-            return True
 
     def resolve_me(self, info, **kwargs):
         user = info.context.user
+
         if user.is_anonymous:
             raise Exception('You need to login first!')
         
         return user
+
 
     def resolve_all_drivers(self, info, **kwargs):
         user = info.context.user
@@ -121,27 +123,34 @@ class Query(ObjectType):
 
         return Driver.objects.all()
 
-    def resolve_driver(self, info, **kwargs):
+
+    def resolve_driver(self, info, id):
         user = info.context.user
-        id = kwargs.get('id')
+        
+        try:
+            driver = Usermodel.objects.get(pk=id).driver
+        except:
+            raise Exception("Invalid User/Driver ID")
 
-        if id is not None:
-            driver = Driver.objects.get(pk=id)
+        if user == driver.user or user.is_superuser:
+            return driver
 
-            if user != driver.user:
-                raise Exception("You are not allowed to do this action")
+        raise Exception("You are not allowed to do this action")
 
-            return Driver.objects.get(pk=id)
 
-    def resolve_authorizer(self, info, **kwargs):
+    def resolve_authorizer(self, info, id):
         user = info.context.user
-        id = kwargs.get('id')
-        if id is not None:
-            driver = Driver.objects.get(pk=id)
-            if user != driver.user or not user.is_superuser:
-                raise Exception("You are not allowed to do this action")
+        
+        try:
+            authorizer = Usermodel.objects.get(pk=id).authorizer
+        except:
+            raise Exception("Invalid User/Authorizer ID")
 
-            return Driver.objects.get(pk=id)
+        if user == authorizer.user or user.is_superuser:
+            return authorizer
+        
+        raise Exception("You are not allowed to do this action")
+
 
     def resolve_all_authorizers(self, info, **kwargs):
         user = info.context.user
@@ -153,6 +162,19 @@ class Query(ObjectType):
             raise Exception("You are not allowed to do this action")
 
         return Authorizer.objects.all()
+
+    def resolve_customer_drivers(self, info, id):
+        user = info.context.user
+
+        try:
+            customer = Usermodel.objects.get(pk=id).customer
+        except:
+            raise Exception("Invalid User ID")
+        
+        if user == customer.user or user.is_superuser:
+            return Driver.objects.filter(orders__owner=customer)
+        
+        raise Exception("You are not allowed to do this action")
 
 class UserInput(InputObjectType):
     first_name = graphene.String()
@@ -193,11 +215,13 @@ class CreateDriver(Mutation):
             phone_no=driver_data.user.phone_no,
             is_driver=True,
         )
+        
         user.set_password(driver_data.user.password)
         user.save()
 
-        driver = Driver(    
-            user=user,    
+        driver = Driver(
+            id=user.id,
+            user=user,
             national_id=driver_data.national_id,
             birthday=driver_data.birthday,
         )
@@ -305,12 +329,13 @@ class CreateAuthorizer(Mutation):
         )
 
         user.set_password(authorizer_data.user.password)
-        
+        user.save()
+
         authorizer = Authorizer(
+            id=user.id,
             user=user
         )
 
-        user.save()
         authorizer.save()
         return CreateAuthorizer(authorizer=authorizer)
 
@@ -380,13 +405,14 @@ class CreateCustomer(Mutation):
         )
 
         user.set_password(customer_data.user.password)
+        user.save()
 
         customer = Customer (
+            id=user.id,
             user=user,
             birthday=customer_data.birthday
         )
 
-        user.save()
         customer.save()
 
         return CreateCustomer(customer=customer)
