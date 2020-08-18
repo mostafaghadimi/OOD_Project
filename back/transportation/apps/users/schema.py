@@ -42,15 +42,15 @@ class Query(ObjectType):
 
     all_customers = graphene.List(
         CustomerType
-    ) #done
+    )
 
     all_drivers = graphene.List(
         DriverType
-    ) #done
+    )
 
     all_authorizers = graphene.List(
         AuthorizerType
-    ) #done
+    )
 
     me = graphene.Field(
         UserType
@@ -58,11 +58,11 @@ class Query(ObjectType):
 
     unverified_drivers = graphene.List(
         DriverType
-    ) #done
+    )
 
     def resolve_customer(self, info, id):
         user = info.context.user
-        
+
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
@@ -94,14 +94,15 @@ class Query(ObjectType):
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        if not user.is_superuser or not user.is_authorizer:
-            raise Exception("You are not allowed to do this action")
+        if user.is_superuser or user.is_authorizer:
+            return Driver.objects.filter(is_verified=False).all()
 
-        return Driver.objects.filter(is_verified=False).all()
+        raise Exception("You are not allowed to do this action")
 
 
     def resolve_me(self, info, **kwargs):
         user = info.context.user
+
         if user.is_anonymous:
             raise Exception('You need to login first!')
         
