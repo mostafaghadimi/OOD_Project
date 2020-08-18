@@ -1,11 +1,12 @@
 import React, {Component, useState} from 'react'
 import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
-import { Table, Button, Modal, Tooltip, Input } from 'antd';
+import {Table, Button, Modal, Tooltip, Input, Form} from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { Mutation } from "react-apollo";
 
 import './user.css'
+import Error from "./driver-profile";
 
 
 const columns = [
@@ -70,7 +71,7 @@ const AuthorizeDrivers = (Props) => {
                 console.log(error);
 
                 if(loading) return <div> is loading </div>;
-                if (error) return <div> is error </div>;
+                // if (error) return <div> is error </div>;
 
                 {data.unverifiedDrivers.map( driver => {
                     // setModalConfirmTitle("هویت ".concat(driver.firstName).concat(" تایید شد"));
@@ -96,24 +97,26 @@ const AuthorizeDrivers = (Props) => {
                                               console.log({data});
                                               setVisible(true);
                                           }}
-                                >{(verifyDriver, {loading, error}) => {
-                                    return (
-                                        <div>
-                                            <Button onClick={event => handleSubmitAuthorize(event, verifyDriver)}>تایید</Button>
-                                            <Modal
+                                    >{(verifyDriver, {loading, error}) => {
+                                        return (
+                                            <div>
+                                                <Button onClick={event => handleSubmitAuthorize(event, verifyDriver)}>تایید</Button>
+                                                <Modal
 
-                                                title= "هویت راننده تایید شد"
-                                                visible={visible}
-                                                onCancel={() => {
-                                                    setVisible(false);
-                                                }}
-                                                onOk={() => {
-                                                    setVisible(false);
-                                                }}
-                                            >
-                                            </Modal>
-                                        </div>
-                                    )
+                                                    title= "هویت راننده تایید شد"
+                                                    visible={visible}
+                                                    onCancel={() => {
+                                                        setVisible(false);
+                                                    }}
+                                                    onOk={() => {
+                                                        setVisible(false);
+                                                    }}
+                                                >
+                                                </Modal>
+                                                {/* Error Handling */}
+                                                {error && <Error error={error} />}
+                                            </div>
+                                        )
                                 }}
                                 </Mutation>
                                 <Mutation mutation={REMOVE_MUTATION}
@@ -126,27 +129,29 @@ const AuthorizeDrivers = (Props) => {
                                               console.log({data});
                                               setVisible(true);
                                           }}
-                                >{(deleteDriver, {loading, error}) => {
-                                    return (
-                                        <div>
-                                            <Button onClick={event => handleSubmitDelete(event, deleteDriver)}>رد</Button>
-                                            <Modal
+                                    >{(deleteDriver, {loading, error}) => {
+                                        return (
+                                            <div>
+                                                <Button onClick={event => handleSubmitDelete(event, deleteDriver)}>رد</Button>
+                                                <Modal
 
-                                                title= "هویت راننده رد شد"
-                                                visible={visible}
-                                                onCancel={() => {
-                                                    setVisible(false);
-                                                }
-                                                }
-                                                onOk={() => {
-                                                    setVisible(false);
-                                                }
-                                                }
-                                            >
-                                            </Modal>
-                                        </div>
-                                    )
-                                }}
+                                                    title= "هویت راننده رد شد"
+                                                    visible={visible}
+                                                    onCancel={() => {
+                                                        setVisible(false);
+                                                    }
+                                                    }
+                                                    onOk={() => {
+                                                        setVisible(false);
+                                                    }
+                                                    }
+                                                >
+                                                </Modal>
+                                                {/* Error Handling */}
+                                                {error && <Error error={error} />}
+                                            </div>
+                                        )
+                                    }}
                                 </Mutation>
                             </div>
 
@@ -163,8 +168,10 @@ const AuthorizeDrivers = (Props) => {
                             dataSource={allInfo}
                             // scroll={this.scroll}
                         />
-
+                        {/* Error Handling */}
+                        {error && <Error error={error} />}
                     </div>
+
                 );
 
             }}

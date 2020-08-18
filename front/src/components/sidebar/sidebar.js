@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {Component, useState} from 'react'
 import { Link } from 'react-router-dom';
 import { CarOutlined, UserOutlined, KeyOutlined, InboxOutlined, CheckOutlined } from '@ant-design/icons';
 import { Layout, Menu, Button, Modal, Input  } from 'antd';
@@ -6,7 +6,7 @@ import {Mutation, Query} from "react-apollo";
 import { gql } from "apollo-boost";
 import {UserType} from "../shared/user-type-enum";
 import Login from "../user/login"
-
+import CheckUserType from "../user/check-user-type"
 import './sidebar.css'
 
 
@@ -14,6 +14,7 @@ const { SubMenu } = Menu;
 const { Sider } = Layout;
 
 const Sidebar = (props) => {
+
     return (
         <Sider width={250} className="site-layout-background">
             <Menu
@@ -77,6 +78,7 @@ const Sidebar = (props) => {
 
                     <Menu.Item key="14">
                         <Login type="Driver"> </Login>
+
                     </Menu.Item>
 
                     <Menu.Item key="13">

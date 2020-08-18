@@ -1,126 +1,206 @@
-import React, { Component } from 'react'
-import { 
-    Divider, 
+import React, {Component, useState} from 'react'
+import {
+    Divider,
     Form,
     Input,
-    Button,
+    Button, Modal,
 } from 'antd';
 import { KeyOutlined } from '@ant-design/icons';
 import DriverInfo from './driver-info';
 
 import './user.css'
 import {gql} from "@apollo/client";
-import {Query} from "react-apollo";
+import {Mutation, Query} from "react-apollo";
+import Error from "../shared/Error";
 
 const editItemLayout = {
     labelCol: { span: 2 },
     wrapperCol: { span: 10 },
 };
 
+
+
 const DriverProfile = ({currentUser}) => {
+
+    const [prevPassword, setPrevPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [newPasswordRepeat, setNewPasswordRepeat] = useState("");
+    const [phoneNo, setPhoneNo] = useState("");
+    const [visible, setVisible] = useState(false);
+    const [message, setMessage] = useState("");
+
+
+    const handleSubmit = async (event, updateDriver, data) => {
+        console.log("In the handleSubmit");
+        event.preventDefault();
+        if (newPassword === newPasswordRepeat) {
+            updateDriver();
+            setMessage("اطلاعات شما با موفقیت تغییر کرد");
+        } else if (!(newPassword === newPasswordRepeat)) {
+            setMessage("تکرار رمز عبور نا درست است");
+        } else {
+            setMessage("رمز قبلی را اشتباه وارد کرده اید");
+        }
+
+        setVisible(true);
+
+
+    };
     console.log(currentUser.id);
     // const id = props.match.params.id;
     // console.log(id);
     return (
-        <Query query={IS_LOGGED_IN_QUERY} >
+        <Query query={DRIVER_QUERY} variables={{"id": 7}}>
             {({ data , loading, error}) => {
+                if (loading) return <div> loading ...</div>;
 
-            <div className="user-profile">
-                <Divider>مشخصات</Divider>
-                {/* <Row>
-                    <Col span={9}>
-                        <Card
-                            style={{ width: 320 }}
-                            cover={
-                            <img
-                                alt="User Profile Picture"
-                                src={require('../../static/images/avatar.jpeg')}
-                            />
+                console.log(data);
+                return (
+                    <Mutation
+                        mutation={UPDATE_DRIVER}
+                        variables={
+                            {
+                                "driverData": {
+                                    "user": {
+                                        "firstName": data.driver.user.firstName,
+                                        "lastName": data.driver.user.lastName,
+                                        "username": data.driver.user.username,
+                                        "email": data.driver.user.email,
+                                        "phoneNo": phoneNo,
+                                        "password": newPassword
+                                    },
+                                    "nationalId": data.driver.nationalId,
+                                    "birthday": data.driver.birthday,
+                                    "latitude": data.driver.latitude,
+                                    "longitude": data.driver.longitude
+                                },
+                                "id" : 7
                             }
-                            hoverable
-                        >
-                            <Meta
-                                title="امیرحسن فتحی"
-                                description="راننده‌ی تریلر، خاور، وانت"
-                            />
-                        </Card>
-                    </Col>
-                    <Col span={15}>
-                        <Form
-                            name="user profile"
-                            {...formItemLayout}
-                            onFinish={onFinish}
-                        >
-                            <Form.Item label="نام">
-                                <Input placeholder="امیرحسن" disabled/>
-                            </Form.Item>
+                        }
 
-                            <Form.Item label="نام خانوادگی">
-                                <Input value="فتحی" disabled/>
-                            </Form.Item>
+                        onCompleted={data => {
+                            console.log({data});
+                            setVisible(true);
+                        }}
+                    >
+                        {(updateDriver, {loading, error}) => {
+                            return (
+                                <div className="user-profile">
 
-                            <Form.Item label="کد ملی">
-                                <Input placeholder="0080080081" type="tel" disabled/>
-                            </Form.Item>
+                                    <Divider>مشخصات</Divider>
 
-                            <Form.Item label="تاریخ تولد">
-                                <Input placeholder="1376/10/24" disabled/>
-                            </Form.Item>
+                                    <DriverInfo data={data}/>
+                                    <Divider>ویرایش اطلاعات</Divider>
 
-                            <Form.Item label="امتیاز">
-                                <Rate disabled defaultValue={4} />
-                            </Form.Item>
+                                    <Form
+                                        {...editItemLayout}
+                                        // style={{width:490}}
+                                    >
+                                        <Form.Item label="شماره تماس">
+                                            <Input value={data.driver.user.phoneNo} type="tel"
+                                                   onChange={event => {
+                                                       setPhoneNo(event.target.value);
+                                                   }}/>
+                                        </Form.Item>
 
-                        </Form>
-                    </Col>
+                                        <Form.Item label="رمز عبور قبلی">
+                                            <Input.Password placeholder="رمز عبور قبلی"
+                                                            prefix={<KeyOutlined/>}
+                                                            onChange={event => {
+                                                                setPrevPassword(event.target.value);
+                                                            }}/>
+                                        </Form.Item>
 
+                                        <Form.Item label="رمز عبور جدید">
+                                            <Input.Password placeholder="رمز عبور جدید"
+                                                            prefix={<KeyOutlined/>}
+                                                            onChange={event => {
+                                                                setNewPassword(event.target.value);
+                                                            }}/>
+                                        </Form.Item>
 
-                </Row> */}
-                <DriverInfo />
-                <Divider>ویرایش اطلاعات</Divider>
+                                        <Form.Item label="تکرار رمز عبور">
+                                            <Input.Password placeholder=" تکرار رمز عبور جدید"
+                                                            prefix={<KeyOutlined/>}
+                                                            onChange={event => {
+                                                                setNewPasswordRepeat(event.target.value);
+                                                            }}/>
+                                        </Form.Item>
 
-                <Form
-                    {...editItemLayout}
-                    // style={{width:490}}
-                >
-                    <Form.Item label="شماره تماس">
-                        <Input value="09151231231" type="tel"/>
-                    </Form.Item>
+                                        <Form.Item label>
+                                            <Button type="primary" htmlType="submit"
+                                                    onClick={event => handleSubmit(event, updateDriver, data)}>
+                                                ویرایش
+                                            </Button>
+                                            <Modal
+                                                title={message}
+                                                visible={visible}
+                                                onCancel={() => {
+                                                    setVisible(false);
+                                                }}
+                                                onOk={() => {
+                                                    setVisible(false);
+                                                }}
+                                            >
+                                            </Modal>
+                                        </Form.Item>
 
-                    <Form.Item label="رمز عبور قبلی">
-                        <Input.Password  placeholder="رمز عبور قبلی" prefix={<KeyOutlined />} />
-                    </Form.Item>
+                                    </Form>
+                                    {/* Error Handling */}
+                                    {error && <Error error={error}/>}
+                                </div>
+                            )
 
-                    <Form.Item label="رمز عبور جدید">
-                        <Input.Password  placeholder="رمز عبور جدید" prefix={<KeyOutlined />} />
-                    </Form.Item>
-
-                    <Form.Item label="تکرار رمز عبور">
-                        <Input.Password  placeholder=" تکرار رمز عبور جدید" prefix={<KeyOutlined />} />
-                    </Form.Item>
-
-                    <Form.Item label>
-                        <Button type="primary" htmlType="submit">
-                            ویرایش
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </div>
+                        }}
+                    </Mutation>
+                )
+            }}
+        </Query>
     )
 };
+
+
 const DRIVER_QUERY = gql`
-query ($id: ID!){
+query ($id : ID!){
     driver (id: $id){
-    user{
-        firstName
-        lastName
-        password
-        phoneNo
-    }
-    nationalId
-    birthday
-    rating
+        user{
+            firstName
+            lastName
+            username
+            password
+            phoneNo
+            email
+        }
+        nationalId
+        birthday
+        rating
+        latitude
+        longitude
+        birthday
     }
 }
 `;
-export default (DriverProfile)
+
+const IS_LOGIN = gql`
+  mutation($username: String!, $password: String!) {
+    tokenAuth(username: $username, password: $password) {
+      token
+    }
+  }
+`;
+
+
+const UPDATE_DRIVER = gql`
+  mutation ($driverData: DriverInput!, $id: ID!) {
+      updateDriver(driverData: $driverData, id: $id) {
+        driver{
+           user{
+            firstName
+            lastName
+           }
+        }
+      }
+}
+`;
+
+export default (DriverProfile);

@@ -24,18 +24,11 @@ import AuthorizeDrivers from './components/user/authorizer-drivers'
 import {UserType} from "./components/shared/user-type-enum";
 import Nav from './components/nav/nav';
 import Error from "./components/shared/Error";
-// import DriverRoot from './driver-root';
-// import CustomerRoot from './customer-root';
-// import AuthorizerRoot, {UserContext} from './authorizer-root';
-// import {
-//   ApolloClient,
-//   InMemoryCache,
-//   HttpLink,
-//   ApolloProvider,
-// } from "@apollo/client";
+import DriverRoot from './driver-root';
+import CustomerRoot from './customer-root';
+import AuthorizerRoot from './authorizer-root';
 import { ApolloProvider, Query } from "react-apollo";
 import ApolloClient, { gql } from "apollo-boost";
-export const UserContext = React.createContext();
 
 
 
@@ -79,72 +72,30 @@ const App = () =>{
                 isLoggedIn[UserType["Customer"]] = data.isCustomerLoggedIn;
                 isLoggedIn[UserType["Authorizer"]] = data.isAuthorizerLoggedIn;
 
+                console.log(isLoggedIn[UserType["Driver"]]);
+                console.log(isLoggedIn[UserType["Customer"]]);
+                console.log(isLoggedIn[UserType["Authorizer"]]);
 
+                if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]] && !isLoggedIn[UserType["Authorizer"]]) {
+                    return <Route exact path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+                }
                 return(
-                    <Query query={ME_QUERY} fetchPolicy="cache-and-network">
-                        {({data, loading, error}) => {
-                            if (error) return <Error error={error}/>;
-                            const currentUser = data.me;
+                    <Query query={ME_QUERY} >
+                             {({data, loading, error}) => {
+                                 if (loading) return <div> loading </div>;
 
-                            return (
-                                <UserContext.Provider value={currentUser}>
-                                    <Switch>
-                                        <Route exact path="/" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} currentUser = {currentUser}/>
-                                        )}/>
+                                 const currentUser = data.me;
+                                 console.log(data);
+                                 if(isLoggedIn[UserType["Driver"]]){
+                                     console.log("HERE");
+                                     return <DriverRoot isLoggedIn = {isLoggedIn} currentUser = {currentUser}/>
+                                 }
+                                 if(isLoggedIn[UserType["Customer"]]){
+                                     return <CustomerRoot isLoggedIn = {isLoggedIn} currentUser = {currentUser}/>
+                                 }
+                                 return <AuthorizerRoot isLoggedIn = {isLoggedIn} currentUser = {currentUser}/>
 
-                                        {/* Order */}
-                                        <Route exact path="/customer/:id/orderList" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<OrderList currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-
-                                        <Route exact path="/customer/:id/addOrder" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<AddOrder currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-
-                                        <Route exact path="/customer/:id/orderDetail" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<OrderDetail currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-
-                                        <Route exact path="/customer/:id/driverList" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<DriverList currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-
-                                        {/* User */}
-                                        <Route exact path="/user/:id/profile/" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<UserProfile currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-
-                                        {/* Driver */}
-                                        <Route exact path="/driver/:id/profile/" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<DriverProfile currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-
-                                        <Route exact path="/driver/register" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<DriverRegister currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-
-
-                                        <Route exact path="/driver/:id/history/" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<DriverHistory currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-
-                                        <Route exact path="/driver/:id/crash" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<CrashReport currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-
-
-                                        <Route exact path="/driver/:id/addVehicle" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<AddVehicle currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-                                        {/* Authorizer*/}
-                                        <Route exact path="/authorizer/:id/authorizeDrivers" render={() => (
-                                            <Nav isLoggedIn={isLoggedIn} content={<AuthorizeDrivers currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                                        )}/>
-                                    </Switch>
-                                </UserContext.Provider>
-                            )
-                        }}
+                             }}
                     </Query>
                 )
             }}
