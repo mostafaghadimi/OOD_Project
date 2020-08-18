@@ -313,6 +313,10 @@ class UpdateOrderLocation(Mutation):
         else:
             raise Exception("You are not allowed to do this operation")
 
+
+# class VerifyDelivery(Mutation):
+#     class Arguments:
+
 class Mutation(ObjectType):
     create_order = CreateOrder.Field()
     delete_order = DeleteOrder.Field()
@@ -322,3 +326,5 @@ class Mutation(ObjectType):
     assign_driver_load = AssignDriverLoad.Field()
 
     update_order_location = UpdateOrderLocation.Field()
+    # verify_delivery = VerifyDelivery.Field()
+

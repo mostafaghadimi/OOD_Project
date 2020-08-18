@@ -28,7 +28,7 @@ class Query(ObjectType):
     driver = graphene.Field(
         DriverType,
         id=graphene.ID(required=True)
-    ) #done
+    )
 
     authorizer = graphene.Field(
         AuthorizerType,
@@ -121,17 +121,19 @@ class Query(ObjectType):
 
         return Driver.objects.all()
 
-    def resolve_driver(self, info, **kwargs):
+    def resolve_driver(self, info, id):
         user = info.context.user
-        id = kwargs.get('id')
+        
+        try:
+            driver = Usermodel.objects.get(pk=id).driver
+        except:
+            raise Exception("Invalid User/Driver ID")
 
-        if id is not None:
-            driver = Driver.objects.get(pk=id)
+        if user == driver.user or user.is_superuser:
+            return driver
 
-            if user != driver.user:
-                raise Exception("You are not allowed to do this action")
+        raise Exception("You are not allowed to do this action")
 
-            return Driver.objects.get(pk=id)
 
     def resolve_authorizer(self, info, **kwargs):
         user = info.context.user
