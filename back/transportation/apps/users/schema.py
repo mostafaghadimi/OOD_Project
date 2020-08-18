@@ -38,7 +38,7 @@ class Query(ObjectType):
     customer = graphene.Field(
         CustomerType,
         id=graphene.ID(required=True)
-    ) #done
+    )
 
     all_customers = graphene.List(
         CustomerType
@@ -56,25 +56,25 @@ class Query(ObjectType):
         UserType
     )
 
-    is_username_unique = graphene.Boolean(
-        username=graphene.String()
-    )
-
     unverified_drivers = graphene.List(
         DriverType
     ) #done
 
     def resolve_customer(self, info, id):
         user = info.context.user
+        
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        customer = Customer.objects.get(pk=id)
+        try:
+            customer = Usermodel.objects.get(pk=id).customer
+        except:
+            raise Exception("Invalid User/Customer ID")
+
         if user.is_superuser or user==customer.user:
             return customer
         
-        else:
-            raise Exception("You are not allowed to do this operation")
+        raise Exception("You are not allowed to do this operation")
 
     def resolve_all_customers(self, info):
         user = info.context.user
@@ -99,12 +99,6 @@ class Query(ObjectType):
 
         return Driver.objects.filter(is_verified=False).all()
 
-    def resolve_is_username_unique(self, info, username):
-        try:
-            Usermodel.objects.get(username=username)
-            return False
-        except:
-            return True
 
     def resolve_me(self, info, **kwargs):
         user = info.context.user
@@ -113,6 +107,7 @@ class Query(ObjectType):
         
         return user
 
+
     def resolve_all_drivers(self, info, **kwargs):
         user = info.context.user
 
@@ -120,6 +115,7 @@ class Query(ObjectType):
             raise Exception("You are not allowed to do this action")
 
         return Driver.objects.all()
+
 
     def resolve_driver(self, info, id):
         user = info.context.user
