@@ -1,6 +1,6 @@
 from graphene import ObjectType, Mutation, InputObjectType
 import graphene
-from .models import Order
+from .models import Order, Rate
 from graphene_django.types import DjangoObjectType
 from apps.vehicles.schema import VehicleType, VehicleInput
 from apps.users.schema import CustomerInput
@@ -314,12 +314,50 @@ class UpdateOrderLocation(Mutation):
             raise Exception("You are not allowed to do this operation")
 
 
-# class VerifyDelivery(Mutation):
-#     class Arguments:
-#         pass
+class VerifyDelivery(Mutation):
+    class Arguments:
+        order_id = graphene.ID(required=True)
+        rate = graphene.Int()
 
-#     def mutate(self, info):
-#         pass
+    def mutate(self, info, order_id, rate=None):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        if not user.is_customer:
+            raise Exception("You are not allowed to do this operation")
+        
+        try:
+            order = Order.objects.get(pk=order_id)
+        except:
+            raise Exception("Invalid Order ID")
+
+        if not user == order.owner:
+            raise Exception("You are not allowed to do this operation")
+
+
+        if not order.order_status == '3':
+            raise Exception("You cannot verify this order")
+
+        order.driver.driver_status = '1'
+        order.vehicle.vehicle_status = '1'
+        order.save()
+
+        if rate:
+            
+            rating = Rate(
+                order=order,
+                owner=order.owner,
+                rate=rate,
+            )
+
+            rating.save()
+
+
+        return VerifyDelivery(order=order)
+
+
 
 class Mutation(ObjectType):
     create_order = CreateOrder.Field()
@@ -330,5 +368,5 @@ class Mutation(ObjectType):
     assign_driver_load = AssignDriverLoad.Field()
 
     update_order_location = UpdateOrderLocation.Field()
-    # verify_delivery = VerifyDelivery.Field()
+    verify_delivery = VerifyDelivery.Field()
 

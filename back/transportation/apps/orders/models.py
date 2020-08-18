@@ -75,3 +75,21 @@ class Order(models.Model):
     def __str__(self):
         return self.owner.user.username
 
+
+class Rate(models.Model):
+    order = models.ForeignKey(
+        Order,
+        related_name='rate',
+        on_delete=models.CASCADE,
+    )
+
+    owner = models.ForeignKey(
+        Customer,
+        related_name='rate',
+        on_delete=models.CASCADE,
+    )
+
+    rating = models.IntegerField(
+        blank=True,
+        null=True,
+    )

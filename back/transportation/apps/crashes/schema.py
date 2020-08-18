@@ -64,6 +64,7 @@ class Query(ObjectType):
         CrashType,
         id=graphene.ID(required=True),
     )
+    
     all_crashes = graphene.List(
         CrashType
     )
