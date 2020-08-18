@@ -6,6 +6,7 @@ from apps.vehicles.schema import VehicleType, VehicleInput
 from apps.users.schema import CustomerInput
 from apps.users.models import Customer, Driver
 from apps.vehicles.models import Vehicle
+from django.db.models import Avg
 
 
 class OrderType(DjangoObjectType):
@@ -363,16 +364,18 @@ class VerifyDelivery(Mutation):
         if not order.order_status == '3':
             raise Exception("You cannot verify this order")
 
-        driver_id = order.driver.id
-        driver = Driver.objects.get(pk=driver_id)
+        order.order_status = '4'
+
+        driver = order.driver
         driver.driver_status = '1'
 
-        vehicle_id = order.vehicle.id
-        vehicle = Vehicle.objects.get(pk=vehicle_id)
+        vehicle = order.vehicle
         vehicle.vehicle_status = '1'
+
 
         if rate:
             order.rating = rate
+            driver.rating = driver.orders.filter(order_status='4').aggregate(Avg('rating'))
 
         vehicle.save()
         driver.save()
