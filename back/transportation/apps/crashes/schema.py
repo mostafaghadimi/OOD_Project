@@ -4,7 +4,7 @@ from graphene_django.types import DjangoObjectType
 
 from .models import Crash
 from apps.users.models import Driver, Usermodel
-from apps.vehicle.models import Vehicle
+from apps.vehicles.models import Vehicle
 
 class CrashType(DjangoObjectType):
     class Meta:
@@ -61,7 +61,7 @@ class ReportCrash(Mutation):
 
 class Query(ObjectType):
     crash = graphene.Field(
-        crashType,
+        CrashType,
         id=graphene.ID(required=True),
     )
     all_crashes = graphene.List(

@@ -316,6 +316,10 @@ class UpdateOrderLocation(Mutation):
 
 # class VerifyDelivery(Mutation):
 #     class Arguments:
+#         pass
+
+#     def mutate(self, info):
+#         pass
 
 class Mutation(ObjectType):
     create_order = CreateOrder.Field()
