@@ -33,7 +33,7 @@ class Query(ObjectType):
     authorizer = graphene.Field(
         AuthorizerType,
         id=graphene.ID(required=True)
-    ) #done
+    )
 
     customer = graphene.Field(
         CustomerType,
@@ -135,15 +135,19 @@ class Query(ObjectType):
         raise Exception("You are not allowed to do this action")
 
 
-    def resolve_authorizer(self, info, **kwargs):
+    def resolve_authorizer(self, info, id):
         user = info.context.user
-        id = kwargs.get('id')
-        if id is not None:
-            driver = Driver.objects.get(pk=id)
-            if user != driver.user or not user.is_superuser:
-                raise Exception("You are not allowed to do this action")
+        
+        try:
+            authorizer = Usermodel.objects.get(pk=id).authorizer
+        except:
+            raise Exception("Invalid User/Authorizer ID")
 
-            return Driver.objects.get(pk=id)
+        if user == authorizer.user or user.is_superuser:
+            return authorizer
+        
+        raise Exception("You are not allowed to do this action")
+
 
     def resolve_all_authorizers(self, info, **kwargs):
         user = info.context.user
