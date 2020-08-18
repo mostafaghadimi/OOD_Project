@@ -16,7 +16,7 @@ const formItemLayout = {
 
 
 
-const DriverInfo = ({match}) => {
+const DriverInfo = ({data}) => {
     const onFinish = values => {
         console.log('Received values of form: ', values);
     };
@@ -35,7 +35,7 @@ const DriverInfo = ({match}) => {
                     hoverable
                 >
                     <Meta
-                        title="امیرحسن فتحی"
+                        title= {data.firstName}
                         description="راننده‌ی تریلر، خاور، وانت"
                     />
                 </Card>
@@ -47,23 +47,23 @@ const DriverInfo = ({match}) => {
                     onFinish={onFinish}
                 >
                     <Form.Item label="نام">
-                        <Input placeholder="امیرحسن" disabled/>
+                        <Input placeholder={data.driver.user.firstName} disabled/>
                     </Form.Item>
 
                     <Form.Item label="نام خانوادگی">
-                        <Input value="فتحی" disabled/>
+                        <Input value={data.driver.user.lastName} disabled/>
                     </Form.Item>
 
                     <Form.Item label="کد ملی">
-                        <Input placeholder="0080080081" type="tel" disabled/>
+                        <Input placeholder={data.driver.nationalId} type="tel" disabled/>
                     </Form.Item>
 
                     <Form.Item label="تاریخ تولد">
-                        <Input placeholder="1376/10/24" disabled/>
+                        <Input placeholder={data.driver.birthday} disabled/>
                     </Form.Item>
 
                     <Form.Item label="امتیاز">
-                        <Rate disabled defaultValue={4} />
+                        <Rate disabled defaultValue={data.driver.rating} />
                     </Form.Item>
 
                 </Form>
