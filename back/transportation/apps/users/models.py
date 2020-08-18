@@ -113,6 +113,7 @@ class Authorizer(models.Model):
 
     def __str__(self):
         return self.user.username
+        
 class Customer(models.Model):
     user = models.OneToOneField(
         Usermodel,

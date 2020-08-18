@@ -26,22 +26,22 @@ usecases:
     - delete driver #done 
     - assign vehicle to load #done
     - assign load to driver #done
-    - assign code to load #???
+    - assign code to load #done
     - edit driver #done (extra)
     - change driver status #done
     - get driver information #done
     - user ranking
-    - get load location
+    - get load location #done
     - submit order #done
     - delete order #done
     - edit order #done
     - get order #done
 
 --------------------------------- Time
-    - update location
+    - update location #done
     
 --------------------------------- customer
     - get order information #done
-    - get order location
+    - get order location #done
     - verify delivery
     - rate driver
