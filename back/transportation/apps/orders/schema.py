@@ -356,19 +356,28 @@ class VerifyDelivery(Mutation):
         except:
             raise Exception("Invalid Order ID")
 
-        if not user == order.owner:
+        if not user == order.owner.user:
             raise Exception("You are not allowed to do this operation")
 
 
         if not order.order_status == '3':
             raise Exception("You cannot verify this order")
 
-        order.driver.driver_status = '1'
-        order.vehicle.vehicle_status = '1'
+        driver_id = order.driver.id
+        driver = Driver.objects.get(pk=driver_id)
+        driver.driver_status = '1'
+
+        vehicle_id = order.vehicle.id
+        vehicle = Vehicle.objects.get(pk=vehicle_id)
+        vehicle.vehicle_status = '1'
+
         if rate:
             order.rating = rate
 
+        vehicle.save()
+        driver.save()
         order.save()
+
 
         return VerifyDelivery(order=order)
 
