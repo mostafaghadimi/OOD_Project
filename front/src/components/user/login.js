@@ -32,6 +32,7 @@ const Login = (props) => {
         const res = await tokenAuth();
         localStorage.setItem("authToken", res.data.tokenAuth.token);
 
+
         var userType = [];
         userType[UserType["Driver"]] = true;
         userType[UserType["Customer"]] = true;
@@ -60,7 +61,7 @@ const Login = (props) => {
             localStorage.setItem("userType", key);
 
         } else {
-            localStorage.setItem("authToken", null);
+            localStorage.removeItem("authToken");
             client.writeData({data: {"isDriverLoggedIn": false}});
             client.writeData({data: {"isCustomerLoggedIn": false}});
             client.writeData({data: {"isAuthorizerLoggedIn": false}});
