@@ -5,11 +5,13 @@ import AuthorizeDrivers from './components/user/authorizer-drivers'
 import {gql} from "apollo-boost";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Error from "./components/shared/Error";
+import Loading from "./components/shared/loading";
 
 export const UserContext = React.createContext();
 
 const AuthorizerRoot = ({isLoggedIn, currentUser}) => {
     return (
+
         <UserContext.Provider value={currentUser}>
             <Switch>
                 <Route exact path="/" render={() => (
@@ -24,13 +26,5 @@ const AuthorizerRoot = ({isLoggedIn, currentUser}) => {
     );
 };
 
-const ME_QUERY = gql`
-    {
-        me{
-            id
-
-        }
-    }
-`;
 
 export default (AuthorizerRoot);

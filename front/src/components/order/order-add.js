@@ -9,7 +9,7 @@ import {
 import './order.css'
 import {gql} from "apollo-boost";
 import {Mutation} from "react-apollo";
-import Error from "../user/driver-register";
+import Error from "../shared/Error";
 
 
 const formItemLayout = {
@@ -18,7 +18,7 @@ const formItemLayout = {
 };
 const { TextArea } = Input;
 
-const AddOrder = () => {
+const AddOrder = ({customer}) => {
     const [sourceAddress, setSourceAddress] = useState("");
     const [destAddress, setDestAddress] = useState("");
     const [receiverName, setReceiverName] = useState("");
@@ -28,24 +28,37 @@ const AddOrder = () => {
     const [receiveDate, setReceiveDate] = useState(null);
     const [extraInfo, setExtraInfo] = useState("");
 
-    const handleSubmit = (event, createOrder) => {
+    const handleSubmit = (event, createOrder, error) => {
         console.log("In the handleSubmit");
         event.preventDefault();
         createOrder();
+        if(!error) {
+            setVisible(true);
+        }
     };
+
+    function info(message) {
+      Modal.info({
+        title: message,
+        onOk() {},
+      });
+    }
 
     return (
         <Mutation
         mutation={NEW_ORDER_MUTATION}
         variables={
-          {
-              // TODO
-          }
+            {
+                "orderData": {
+                    "ownerId" : customer.id,
+                    "destinationAddress": destAddress
+                },
+                "orderCode" : "234567"
+            }
         }
 
-        onCompleted={data => {
-        console.log({ data });
-        setVisible(true);
+        onCompleted={() => {
+        info("سفارش با موفقیت ثبت شد")
         }}
         >
         {(createOrder, { loading, error }) => {
@@ -57,7 +70,7 @@ const AddOrder = () => {
                     // onFinish={onFinish}
                 >
                     <Form.Item label="صاحب بار">
-                        <Input placeholder="امیرحسن فتحی" disabled/>
+                        <Input placeholder={customer.user.firstName + " " + customer.user.lastName} disabled/>
                     </Form.Item>
 
 
@@ -116,23 +129,11 @@ const AddOrder = () => {
                             !receiveDate||
                             !phoneNo.trim()
                             }
-                            onClick={event => handleSubmit(event, createOrder)}
+                            onClick={event => handleSubmit(event, createOrder, error)}
                         >
                             {loading ? "در حال ثبت کردن..." : "ثبت سفارش"}
                         </Button>
-                        <Modal
-                        title="سفارش با موفقیت ثبت شد"
-                        visible={visible}
-                        onCancel={() => {
-                            setVisible(false);
-                          }
-                        }
-                        onOk = {() => {
-                            setVisible(false);
-                          }
-                        }
-                        >
-                    </Modal>
+
                     </Form.Item>
                     {error && <Error error={error} />}
                 </Form>
@@ -145,8 +146,8 @@ const AddOrder = () => {
 
 // TODO
 const NEW_ORDER_MUTATION = gql`
-mutation {
-  createOrder {
+mutation ($orderCode: String!, $orderData : OrderInput){
+  createOrder(orderCode: $orderCode, orderData: $orderData){
      order { 
          id
      }

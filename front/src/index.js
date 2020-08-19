@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
@@ -6,30 +6,21 @@ import { ConfigProvider } from 'antd';
 import fa_IR from 'antd/es/locale/fa_IR'
 
 import * as serviceWorker from './serviceWorker';
-
+import {UserType} from './components/shared/user-type-enum';
 
 import "antd/dist/antd.css";
 import './static/css/normalizer.css'
-import OrderDetail from './components/order/order-detail';
-import UserProfile from './components/user/user-profile';
-import DriverList from './components/user/driver-list';
-import OrderList from './components/order/order-list';
-import AddOrder from './components/order/order-add';
-import DriverRegister from './components/user/driver-register';
-import DriverProfile from './components/user/driver-profile';
-import CrashReport from './components/vehicle/crash-report';
-import AddVehicle from './components/vehicle/add-vehicle';
-import DriverHistory from './components/user/driver-history';
-import AuthorizeDrivers from './components/user/authorizer-drivers'
-import {UserType} from "./components/shared/user-type-enum";
 import Nav from './components/nav/nav';
 import Error from "./components/shared/Error";
+import Loading from "./components/shared/loading";
 import DriverRoot from './driver-root';
 import CustomerRoot from './customer-root';
 import AuthorizerRoot from './authorizer-root';
 import AdminRoot from './admin-root';
 import { ApolloProvider, Query } from "react-apollo";
 import ApolloClient, { gql } from "apollo-boost";
+import DriverRegister from './components/user/driver-register';
+
 
 
 
@@ -70,6 +61,9 @@ const App = () =>{
         <Query query={IS_LOGGED_IN_QUERY} >
             {({ data , loading, error}) => {
 
+                if (loading) return <div> loading </div>;
+                if (error) return <Error error = {error}/>;
+
                 var isLoggedIn = [];
                 isLoggedIn[UserType["Driver"]] = data.isDriverLoggedIn;
                 isLoggedIn[UserType["Customer"]] = data.isCustomerLoggedIn;
@@ -82,16 +76,26 @@ const App = () =>{
                 console.log(isLoggedIn[UserType["Admin"]]);
 
                 if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]]
-                && !isLoggedIn[UserType["Authorizer"]] && !isLoggedIn[UserType["Admin"]]) {
-                    return <Route exact path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+                && !isLoggedIn[UserType["Authorizer"]]&& !isLoggedIn[UserType["Admin"]]) {
+                    return (
+                        <Switch>
+                            <Route exact path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+
+                            <Route exact path="/driver/register" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<DriverRegister/>}/>
+                            )}/>
+
+                        </Switch>
+                    )
                 }
                 return(
                     <Query query={ME_QUERY} >
-                             {({data, loading, error}) => {
-                                 if (loading) return <div> loading </div>;
+                             {(meData) => {
+                                 if (meData.loading) return <Loading/>;
+                                 if (meData.error) return <Error error = {meData.error}/>;
 
-                                 const currentUser = data.me;
-                                 console.log(data);
+                                 const currentUser = meData.data.me;
+                                 console.log(meData.data);
                                  if(isLoggedIn[UserType["Driver"]]){
                                      console.log("HERE");
                                      return <DriverRoot isLoggedIn = {isLoggedIn} currentUser = {currentUser}/>

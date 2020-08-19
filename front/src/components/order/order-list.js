@@ -1,9 +1,14 @@
-import React, { Component } from 'react'
+import React, {Component, useState} from 'react'
 import { Table, Button, Modal } from 'antd';
 import { CheckCircleTwoTone } from '@ant-design/icons';
 import OrderDetail from './order-detail';
 
 import './order.css'
+import {gql} from "apollo-boost";
+import {Query} from "react-apollo";
+import Error from "../shared/Error";
+import Loading from "../shared/loading";
+
 
 const columns = [
     {
@@ -11,13 +16,8 @@ const columns = [
       dataIndex: 'orderer',
     },
     {
-      title: ' وزن بار',
-      dataIndex: 'weight',
-      sorter: (a, b) => a.weight - b.weight,
-    },
-    {
-        title: 'مشخصات',
-        dataIndex: 'info',
+      title: 'راننده',
+      dataIndex: 'deliverer',
     },
     {
       title: 'آدرس',
@@ -38,89 +38,121 @@ const columns = [
     {
       title: 'وضعیت',
       dataIndex: 'status',
-      render: () => (
-        <span>
-            <CheckCircleTwoTone twoToneColor="#52c41a"/>
-        </span>
-      ),
+        filters: [
+        {
+          text: "ثبت شده",
+          value: 'submitted',
+        },
+        {
+          text: "در حال بارگذاری" ,
+          value: 'loading',
+        },
+        {
+          text: "در حال ارسال",
+          value: 'sending',
+        },
+        {
+          text: "ارسال شده",
+          value: 'delivered',
+        },
+
+      ],
+      onFilter: (value, record) => record.address.indexOf(value) === 0,
+    },
+    {
+      title: 'هزینه',
+      dataIndex: 'cost',
     },
 ];
 
-export default class OrderList extends Component {
-    constructor(props) {
-        super(props);
-        const title = () => 'سفارش‌های ثبت شده';
-        this.state = {
-            visible: false,
-            bordered: true,
-            loading: false,
-            pagination: false,
-            size: 'default',
-            title,
-            showHeader: true,
-            rowSelection: {},
-            scroll: undefined,
-            tableLayout: undefined,
-            top: 'none',
-            bottom: 'bottomRight',
-          };
-    }
+const OrderList = ({customer}) => {
+    const title = () => 'سفارش‌های ثبت شده';
 
-    showModal = () => {
-        this.setState({
-            visibleDriver: true,
-        });
-    };
+    const [visible, setVisible] = useState(false);
 
-    handleOk = e => {
-        console.log(e);
-        this.setState({
-            visibleDriver: false,
-        });
-    };
 
-    handleCancel = e => {
-        console.log(e);
-        this.setState({
-            visibleDriver: false,
-        });
-    };
+    const state = {
+        visible: false,
+        bordered: true,
+        loading: false,
+        pagination: false,
+        size: 'default',
+        title,
+        showHeader: true,
+        rowSelection: {},
+        scroll: undefined,
+        tableLayout: undefined,
+        top: 'none',
+        bottom: 'bottomRight',
+      };
 
     
-    render() {
-        const data = []
+    const allInfo = [];
 
-        for (let i = 1; i <= 10; i++) {
-            data.push({
-                key: i,
-                orderer: 'مصطفی قدیمی',
-                weight: 82 + i,
-                info: <Button key={i} onClick={this.showModal}>جزئیات سفارش</Button>,
-                address: 'تهران، دانشگاه شریف، مترو حبیب‌الله، روبه‌روی فلافلی عمو اکبر',
-            })
-        }
 
-        return (
-            <div className="order-container">
-                 <Table
-                    {...this.state}
-                    columns={columns}
-                    dataSource={data}
-                    scroll={this.scroll}
-                />
-                
-                <Modal
-                    title="جزئیات سفارش"
-                    visible={this.state.visibleDriver}
-                    // onOk={this.handleOk}
-                    onCancel={this.handleCancel}
-                    footer={null}
-                    width='80%'
-                    bodyStyle={{overflow: 'auto'}}
-                >
-                    <OrderDetail />
-                </Modal>
-            </div>
-        )
+
+    return (
+        <Query query={GET_CUSTOMER_ORDERS} variables={{"id": customer.id}}>
+            {({data, loading, error}) => {
+                if (loading) return <Loading/>;
+
+
+                {
+                    data.customerOrders.map(order => {
+                        allInfo.push(
+                            {
+                                kay: order.id,
+                                orderer: order.owner.user.firstName + " " + order.owner.user.lastName,
+                                deliverer: order.driver.user.firstName + " " + order.driver.user.lastName,
+                                address: order.destinationAddress,
+                                cost: order.transportationCost,
+                                status: order.orderStatus === "A_1" ? "ثبت شده" : order.orderStatus === "A_2" ? "در حال بارگذاری" : order.orderStatus === "A_3" ? "در حال ارسال":  order.orderStatus === "A_4" ? "ارسال شده" : "",
+                            }
+                        );
+                        console.log(allInfo);
+
+                    })
+                }
+                console.log(allInfo);
+                return (
+                    <div className="order-container">
+                        <Table
+                            {...state}
+                            columns={columns}
+                            dataSource={allInfo}
+                        />
+                        {error && <Error error={error} />}
+                    </div>
+
+                );
+            }}
+        </Query>
+    )
+};
+
+const GET_CUSTOMER_ORDERS = gql`
+query ($id : ID!){
+    customerOrders(id : $id) {
+        id,
+        owner{
+            user{
+                firstName,
+                lastName
+            }
+        },
+        driver{
+            user{
+                firstName,
+                lastName
+            }
+        },
+        destinationAddress,
+        orderCode,
+        transportationCost,
+        orderStatus
     }
 }
+`;
+
+
+export default (OrderList)

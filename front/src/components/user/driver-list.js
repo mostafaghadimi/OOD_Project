@@ -1,8 +1,13 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
+import Error from "../shared/Error";
+import Loading from "../shared/loading"
+
 
 import './user.css'
+import {Query} from "react-apollo";
+import {gql} from "apollo-boost";
 
 const columns = [
     {
@@ -14,13 +19,18 @@ const columns = [
       dataIndex: 'status',
       filters: [
         {
+          text: 'آزاد',
+          value: 'free',
+        },
+        {
           text: 'در ماموریت',
           value: 'on-duty',
         },
         {
-          text: 'آزاد',
-          value: 'free',
+          text: 'تصادف کرده',
+          value: 'crashed',
         },
+
       ],
       onFilter: (value, record) => record.address.indexOf(value) === 0,
     },
@@ -53,104 +63,163 @@ const title = () => (
         />
     </div>
 );
-export default class DriverList extends Component {
-    
-    constructor(props) {
-        super(props);
-        this.state = {
-            visible: false,
-            bordered: true,
-            loading: false,
-            pagination: false,
-            size: 'default',
-            title,
-            showHeader: true,
-            rowSelection: {},
-            scroll: undefined,
-            tableLayout: undefined,
-            top: 'none',
-            bottom: 'bottomRight',
-        };
+const DriverList = ({customer}) => {
+    const [visible, setVisible] = useState(false);
+    const [visibleHistory, setVisibleHistory] = useState(false);
+
+
+    const state = {
+        bordered: true,
+        loading: false,
+        pagination: false,
+        size: 'default',
+        title,
+        showHeader: true,
+        rowSelection: {},
+        scroll: undefined,
+        tableLayout: undefined,
+        top: 'none',
+        bottom: 'bottomRight',
+    };
+
+
+    const showModal = () => {
+        function initMap() {
+          var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 8,
+            center: {lat: 40.731, lng: -73.997}
+          });
+          var geocoder = new google.maps.Geocoder;
+          var infowindow = new google.maps.InfoWindow;
+
+          document.getElementById('submit').addEventListener('click', function() {
+            geocodeLatLng(geocoder, map, infowindow);
+          });
+        }
+
+        function geocodeLatLng(geocoder, map, infowindow) {
+          var input = document.getElementById('latlng').value;
+          var latlngStr = input.split(',', 2);
+          var latlng = {lat: parseFloat(latlngStr[0]), lng: parseFloat(latlngStr[1])};
+          geocoder.geocode({'location': latlng}, function(results, status) {
+            if (status === 'OK') {
+              if (results[0]) {
+                map.setZoom(11);
+                var marker = new google.maps.Marker({
+                  position: latlng,
+                  map: map
+                });
+                infowindow.setContent(results[0].formatted_address);
+                infowindow.open(map, marker);
+              } else {
+                window.alert('No results found');
+              }
+            } else {
+              window.alert('Geocoder failed due to: ' + status);
+            }
+          });
+        }
+        setVisible(true);
+    };
+
+
+
+    const allInfo = [];
+
+    function info(message, content) {
+      Modal.info({
+        title: message,
+        content: content,
+        onOk() {},
+      });
     }
 
-    showModal = () => {
-        this.setState({
-            visibleDriver: true,
-        });
-    };
 
-    handleOk = e => {
-        console.log(e);
-        this.setState({
-            visibleDriver: false,
-        });
-    };
+    return (
+        <Query query={GET_CUSTOMER_DRIVERS} variables={{"id": customer.user.id}}>
+        {({data, loading, error}) => {
+            if(loading) return <Loading/>;
+            console.log(data);
 
-    handleCancel = e => {
-        console.log(e);
-        this.setState({
-            visibleDriver: false,
-        });
-    };
+            const orderColumns = [
+                {
+                  title: 'مکان سفارش',
+                  dataIndex: 'orderLocation',
+                },
+            ];
 
-    
-    render() {
-        
+            const orderInfo = [];
 
-       
 
-        const data = [];
-
-        for (let i = 1; i <= 10; i++) {
-            data.push({
-                key: i,
-                driver: 'امیرهوشنگ اکبری',
-                status: 
-                    <div className="driver-status">
-                        <span>
-                            در ماموریت
-                        </span>
-                        <Tooltip placement="top" title='ویرایش'>
-                            <Button key={i} shape="circle" onClick={this.showModal}>
-                                <EditOutlined />
+            {data.customerDrivers.map( driver => {
+                {driver.orders.map( order=> {
+                    orderInfo.push({orderLocation: "(" + order.latitude+ ", " + order.longitude + ")"})
+                })}
+                allInfo.push({
+                    key: driver.id,
+                    driver: driver.user.firstName + " " + driver.user.lastName,
+                    status:
+                        <div className="driver-status">
+                            <span>
+                                {driver.driverStatus === "A_1" ? "آزاد" : driver.driverStatus === "A_2" ? "در ماموریت" : driver.driverStatus === "A_3" ? "تصادف کرده" : ""}
+                            </span>
+                        </div>,
+                    location: <Button key={driver.id} onClick={showModal}>مشاهده روی نقشه</Button>,
+                    history:
+                        <div>
+                            <Button key={driver.id} onClick={() =>
+                                info("نمایش تاریخچه راننده",
+                                    <Table
+                                    columns={orderColumns}
+                                    dataSource={orderInfo}/>)} >
+                                مشاهده تاریخچه
                             </Button>
-                            <Modal
-                                title="چرا نشون نمیده؟"
-                                visible={this.state.visibleDriver}
-                                onOk={this.handleOk}
-                                onCancel={this.handleCancel}
-                                okText="ورود"
-                                cancelText="لغو"
-                            >
-                            <p>
-                                salam
-                            </p>
-                            
-                            
-                        </Modal>
-                        </Tooltip>
-                    </div>,
-                location: <Button key={i} onClick={this.showModal}>مشاهده روی نقشه</Button>,
-                history: <Button key={i}>مشاهده تاریخچه</Button>,
-                score: 4
-            })
-        }
-        
 
-        return (
-            <div className="order-container">
-                 <Table
-                    {...this.state}
-                    columns={columns}
-                    dataSource={data}
-                    scroll={this.scroll}
-                />
-            </div>
-        )
+
+
+                        </div>,
+                    score: driver.rating
+                });
+
+            })}
+            return (
+                <div className="order-container">
+                    <Table
+                        {...state}
+                        columns={columns}
+                        dataSource={allInfo}
+                    />
+                    {error && <Error error = {error}/>}
+                </div>
+            )
+        }}
+        </Query>
+    )
+};
+
+
+const GET_CUSTOMER_DRIVERS = gql`
+query ($id : ID!){
+    customerDrivers(id:$id) {
+        id,
+        user{
+            firstName,
+            lastName
+        }
+        latitude,
+        longitude,
+        rating,
+        orders{
+          latitude
+          longitude
+        }
+        driverStatus,
+        rating
     }
 }
+`;
 
-
+export default (DriverList);
 // class DedicateLoad extends Component {
 //     render(){
 //         return (

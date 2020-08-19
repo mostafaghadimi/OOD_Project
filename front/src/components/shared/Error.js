@@ -8,22 +8,20 @@ const Error = ({ error }) => {
    <Modal
         title = "خطا به وجود آمده است"
         visible={visible}
-        onCancel={() => {
-            setVisible(false);
-          }
-        }
         onOk = {() => {
             setVisible(false);
           }
         }
+        cancelButtonProps={{ type: "text"}}
+        okText="تایید"
+        cancelText=" "
         >
        <p>
            متن خطا:
-
            {error.message}
        </p>
    </Modal>
-  );
+  )
 };
 
 

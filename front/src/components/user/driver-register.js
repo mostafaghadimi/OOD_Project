@@ -62,6 +62,13 @@ const DriverRegister = () => {
   };
 
 
+  function info(message) {
+      Modal.info({
+        title: message,
+        onOk() {},
+      });
+  }
+
   return (
     <div>
         <Mutation
@@ -84,8 +91,7 @@ const DriverRegister = () => {
           }
 
           onCompleted={data => {
-            console.log({ data });
-            setVisible(true);
+            info(" ثبت نام راننده در سامانه به صورت موفقیت آمیز ثبت شد")
           }}
         >
           {(createDriver, { loading, error }) => {
@@ -235,13 +241,7 @@ const DriverRegister = () => {
                         {loading ? "در حال ثبت کردن..." : "ثبت کن"}
                     </Button>
                     {/*{error && <Error error={error} />}*/}
-                     <Modal
-                        title=" ثبت نام راننده در سامانه به صورت موفقیت آمیز ثبت شد"
-                        visible={visible}
-                        onCancel={() => { setVisible(false); }}
-                        onOk = {() => { setVisible(false); }}
-                        >
-                    </Modal>
+
                 </Form.Item>
                 {/* Error Handling */}
                 {error && <Error error={error} />}

@@ -30,7 +30,9 @@ const Login = (props) => {
     const handleSubmit = async (event, tokenAuth, client) => {
         event.preventDefault();
         const res = await tokenAuth();
+
         localStorage.setItem("authToken", res.data.tokenAuth.token);
+
 
         var userType = [];
         userType[UserType["Driver"]] = true;
@@ -70,7 +72,7 @@ const Login = (props) => {
             localStorage.setItem("userType", key);
 
         } else {
-            localStorage.setItem("authToken", null);
+            localStorage.removeItem("authToken");
             client.writeData({data: {"isDriverLoggedIn": false}});
             client.writeData({data: {"isCustomerLoggedIn": false}});
             client.writeData({data: {"isAuthorizerLoggedIn": false}});
@@ -94,19 +96,18 @@ const Login = (props) => {
                     "ورود مدیر به سامانه",
                 ];
 
-                if (error) return <Error error={error} />;
-
                 return (
 
                     <div>
 
-                        <Button block onClick={showModal}>
+                        <Button block onClick={showModal} disabled = {loading}>
                             {loading ? "در حال ورود ..." : "ورود"}
                         </Button>‍
                         <Modal
                             title={titles[UserType[props.type]]}
                             visible={visible}
                             onOk={event => handleSubmit(event, tokenAuth, client)}
+                            okButtonProps={{ href: "/"}}
                             onCancel={handleCancel}
                             okText="ورود"
                             cancelText="لغو"
@@ -124,6 +125,7 @@ const Login = (props) => {
                             </p>
 
                         </Modal>
+                        {error && <Error error={error} />}
 
 
                     </div>

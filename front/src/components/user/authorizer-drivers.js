@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react'
+import React, {useState} from 'react'
 import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
 import {Table, Button, Modal, Tooltip, Input, Form} from 'antd';
@@ -6,7 +6,8 @@ import { EditOutlined } from '@ant-design/icons';
 import { Mutation } from "react-apollo";
 
 import './user.css'
-import Error from "./driver-profile";
+import Error from "../shared/Error";
+import Loading from "../shared/loading";
 
 
 const columns = [
@@ -42,21 +43,29 @@ const columns = [
 ];
 
 
-const AuthorizeDrivers = (Props) => {
+const AuthorizeDrivers = ({currentUser}) => {
     // const [username, setUsername] = useState("");
     const allInfo = [];
 
+    function info(message) {
+      Modal.info({
+        title: message,
+        onOk() {},
+      });
+    }
 
-    const handleSubmitAuthorize = (event, verifyDriver) => {
+    const handleSubmitAuthorize = (event, verifyDriver, id) => {
                         // console.log("In the handleSubmit");
                         event.preventDefault();
                         verifyDriver();
+                        delete allInfo[id];
                     };
 
-    const handleSubmitDelete = (event, deleteDriver) => {
+    const handleSubmitDelete = (event, deleteDriver, id) => {
                         // console.log("In the handleSubmit");
                         event.preventDefault();
                         deleteDriver();
+                        delete allInfo[id];
                     };
 
     const [visible, setVisible] = useState(false);
@@ -66,11 +75,7 @@ const AuthorizeDrivers = (Props) => {
     return(
         <Query query={GET_DRIVERS}>
             {({data, loading, error}) => {
-                console.log(loading);
-                console.log(data);
-                console.log(error);
-
-                if(loading) return <div> is loading </div>;
+                if(loading) return <Loading/>;
                 // if (error) return <div> is error </div>;
 
                 {data.unverifiedDrivers.map( driver => {
@@ -79,42 +84,30 @@ const AuthorizeDrivers = (Props) => {
 
                     allInfo.push({
                         key: driver.id,
-                        firstName: driver.firstName,
-                        lastName: driver.lastName,
-                        username: driver.username,
-                        email: driver.email,
-                        phoneNo: driver.phoneNo,
+                        firstName: driver.user.firstName,
+                        lastName: driver.user.lastName,
+                        username: driver.user.username,
+                        email: driver.user.email,
+                        phoneNo: driver.user.phoneNo,
                         nationalId: driver.nationalId,
                         verifyRemove:
                             <div className="driver-status">
                                 <Mutation mutation={AUTHORIZE_MUTATION}
                                           variables={
                                               {
-                                              "id" : driver.id
+                                              "id" : driver.user.id
                                               }
                                           }
-                                          onCompleted={data => {
-                                              console.log({data});
-                                              setVisible(true);
+                                          onCompleted={() => {
+                                              info("هویت راننده تایید شد")
                                           }}
-                                    >{(verifyDriver, {loading, error}) => {
+                                    >{(verifyDriver, authorizeData) => {
                                         return (
                                             <div>
-                                                <Button onClick={event => handleSubmitAuthorize(event, verifyDriver)}>تایید</Button>
-                                                <Modal
-
-                                                    title= "هویت راننده تایید شد"
-                                                    visible={visible}
-                                                    onCancel={() => {
-                                                        setVisible(false);
-                                                    }}
-                                                    onOk={() => {
-                                                        setVisible(false);
-                                                    }}
-                                                >
-                                                </Modal>
-                                                {/* Error Handling */}
-                                                {error && <Error error={error} />}
+                                                <Button onClick={event => handleSubmitAuthorize(event, verifyDriver, driver.id)} disabled = {authorizeData.loading}>
+                                                    {authorizeData.loading ? "در حال تایید کردن..." : "تایید"}
+                                                </Button>
+                                                {authorizeData.error && <Error error={authorizeData.error} />}
                                             </div>
                                         )
                                 }}
@@ -122,33 +115,20 @@ const AuthorizeDrivers = (Props) => {
                                 <Mutation mutation={REMOVE_MUTATION}
                                           variables={
                                               {
-                                                  "id" : driver.id
+                                                  "id" : driver.user.id
                                               }
                                           }
-                                          onCompleted={data => {
-                                              console.log({data});
-                                              setVisible(true);
+                                          onCompleted={() => {
+                                              info("هویت راننده رد شد")
                                           }}
-                                    >{(deleteDriver, {loading, error}) => {
+                                    >{(deleteDriver, deleteData) => {
                                         return (
                                             <div>
-                                                <Button onClick={event => handleSubmitDelete(event, deleteDriver)}>رد</Button>
-                                                <Modal
-
-                                                    title= "هویت راننده رد شد"
-                                                    visible={visible}
-                                                    onCancel={() => {
-                                                        setVisible(false);
-                                                    }
-                                                    }
-                                                    onOk={() => {
-                                                        setVisible(false);
-                                                    }
-                                                    }
-                                                >
-                                                </Modal>
+                                                <Button onClick={event => handleSubmitDelete(event, deleteDriver, driver.id)} disabled = {deleteData.loading}>
+                                                    {deleteData.loading ? "در حال رد کردن..." : "رد"}
+                                                </Button>
                                                 {/* Error Handling */}
-                                                {error && <Error error={error} />}
+                                                {deleteData.error && <Error error={deleteData.error} />}
                                             </div>
                                         )
                                     }}
@@ -183,11 +163,7 @@ const AuthorizeDrivers = (Props) => {
 
 
 
-
-
-
-
-export const GET_DRIVERS = gql`
+const GET_DRIVERS = gql`
     {
     unverifiedDrivers {
         user{
@@ -208,7 +184,9 @@ export const GET_DRIVERS = gql`
 const AUTHORIZE_MUTATION = gql`
 mutation($id: ID!){
     verifyDriver (id:$id){
-      id
+        driver{
+            id
+        }
     }
 }
 `;

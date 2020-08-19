@@ -6,6 +6,7 @@ from apps.vehicles.schema import VehicleType, VehicleInput
 from apps.users.schema import CustomerInput
 from apps.users.models import Customer, Driver
 from apps.vehicles.models import Vehicle
+from django.db.models import Avg
 
 
 class OrderType(DjangoObjectType):
@@ -45,6 +46,12 @@ class Query(ObjectType):
         LocationType,
         id=graphene.ID()
     )
+
+    customer_orders = graphene.List(
+        OrderType,
+        id=graphene.ID()
+    )
+
 
     def resolve_order_location(self, info, id):
         user = info.context.user
@@ -104,6 +111,21 @@ class Query(ObjectType):
             raise Exception("You are not allowed to do this operation")
         
         return Order.objects.all()
+
+    def resolve_customer_orders(self, info, id):
+        user = info.context.user
+
+        try:
+            customer = Customer.objects.get(pk=id)
+
+        except:
+            raise Exception("Customer not found")
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+        
+        elif user == customer.user or user.is_superuser:
+            return customer.orders.all()
 
 class CreateOrder(Mutation):
     class Arguments:
@@ -343,16 +365,18 @@ class VerifyDelivery(Mutation):
         if not order.order_status == '3':
             raise Exception("You cannot verify this order")
 
-        driver_id = order.driver.id
-        driver = Driver.objects.get(pk=driver_id)
+        order.order_status = '4'
+
+        driver = order.driver
         driver.driver_status = '1'
 
-        vehicle_id = order.vehicle.id
-        vehicle = Vehicle.objects.get(pk=vehicle_id)
+        vehicle = order.vehicle
         vehicle.vehicle_status = '1'
+
 
         if rate:
             order.rating = rate
+            driver.rating = driver.orders.filter(order_status='4').aggregate(Avg('rating'))
 
         vehicle.save()
         driver.save()

@@ -2,6 +2,7 @@ import graphene
 
 from graphene import Mutation, ObjectType, InputObjectType
 from .models import Driver, Authorizer, Customer, Usermodel
+from apps.orders.models import Order
 from graphene_django.types import DjangoObjectType
 
 
@@ -58,6 +59,11 @@ class Query(ObjectType):
 
     unverified_drivers = graphene.List(
         DriverType
+    )
+
+    customer_drivers = graphene.List(
+        DriverType,
+        id=graphene.ID(required=True)
     )
 
     def resolve_customer(self, info, id):
@@ -157,6 +163,19 @@ class Query(ObjectType):
 
         return Authorizer.objects.all()
 
+    def resolve_customer_drivers(self, info, id):
+        user = info.context.user
+
+        try:
+            customer = Usermodel.objects.get(pk=id).customer
+        except:
+            raise Exception("Invalid User ID")
+        
+        if user == customer.user or user.is_superuser:
+            return Driver.objects.filter(orders__owner=customer)
+        
+        raise Exception("You are not allowed to do this action")
+
 class UserInput(InputObjectType):
     first_name = graphene.String()
     last_name = graphene.String()
@@ -200,8 +219,9 @@ class CreateDriver(Mutation):
         user.set_password(driver_data.user.password)
         user.save()
 
-        driver = Driver(    
-            user=user,    
+        driver = Driver(
+            id=user.id,
+            user=user,
             national_id=driver_data.national_id,
             birthday=driver_data.birthday,
         )
@@ -309,12 +329,13 @@ class CreateAuthorizer(Mutation):
         )
 
         user.set_password(authorizer_data.user.password)
-        
+        user.save()
+
         authorizer = Authorizer(
+            id=user.id,
             user=user
         )
 
-        user.save()
         authorizer.save()
         return CreateAuthorizer(authorizer=authorizer)
 
@@ -384,13 +405,14 @@ class CreateCustomer(Mutation):
         )
 
         user.set_password(customer_data.user.password)
+        user.save()
 
         customer = Customer (
+            id=user.id,
             user=user,
             birthday=customer_data.birthday
         )
 
-        user.save()
         customer.save()
 
         return CreateCustomer(customer=customer)
