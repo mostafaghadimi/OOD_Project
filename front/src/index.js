@@ -81,7 +81,7 @@ const App = () =>{
 
                 if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]] && !isLoggedIn[UserType["Authorizer"]]) {
                     return (
-                        <Route exact path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+                        <Route path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
                     )
                 }
                 return(
