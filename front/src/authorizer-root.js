@@ -24,13 +24,4 @@ const AuthorizerRoot = ({isLoggedIn, currentUser}) => {
     );
 };
 
-const ME_QUERY = gql`
-    {
-        me{
-            id
-
-        }
-    }
-`;
-
 export default (AuthorizerRoot);

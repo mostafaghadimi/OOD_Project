@@ -6,6 +6,7 @@ import {Mutation, Query} from "react-apollo";
 import { gql } from "apollo-boost";
 import {UserType} from "../shared/user-type-enum";
 import Login from "../user/login"
+import Logout from "../user/logout"
 import CheckUserType from "../user/check-user-type"
 import './sidebar.css'
 
@@ -25,9 +26,12 @@ const Sidebar = (props) => {
                 style={{height: '100%', borderRight: 0}}
             >
                 <SubMenu key="sub1" icon={<InboxOutlined/>} title="صاحب بار">
-                    <Menu.Item key="14">
-                        <Login type="Customer"> </Login>
-                    </Menu.Item>
+                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] || props.isLoggedIn[UserType["Authorizer"]] ?
+                        <div></div> :
+                        <Menu.Item key="14">
+                            <Login type="Customer"> </Login>
+                        </Menu.Item>
+                    }
 
                     {props.isLoggedIn[UserType["Customer"]] ?
                         <Menu.Item key="1">
@@ -65,6 +69,12 @@ const Sidebar = (props) => {
                         : <div></div>
                     }
 
+                    {props.isLoggedIn[UserType["Customer"]]?
+                        <Menu.Item key="30">
+                            <Logout type="Customer"/>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
 
                     {/* <Menu.Item key="19">
     <Link to="/order/detail">
@@ -75,19 +85,25 @@ const Sidebar = (props) => {
                 <SubMenu key='sub2' icon={<UserOutlined/>} title="مدیر سامانه">
                 </SubMenu>
                 <SubMenu key="sub3" icon={<CarOutlined/>} title="راننده">
+                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] || props.isLoggedIn[UserType["Authorizer"]] ?
+                        <div></div> :
+                        <Menu.Item key="14">
+                            <Login type="Driver"> </Login>
 
-                    <Menu.Item key="14">
-                        <Login type="Driver"> </Login>
+                        </Menu.Item>
+                    }
 
-                    </Menu.Item>
+                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] || props.isLoggedIn[UserType["Authorizer"]] ?
+                        <div></div> :
+                        <Menu.Item key="13">
+                            <Link to='/driver/register'>
+                                <Button block>
+                                    ثبت نام
+                                </Button>
+                            </Link>
+                        </Menu.Item>
+                    }
 
-                    <Menu.Item key="13">
-                        <Link to='/driver/register'>
-                            <Button block>
-                                ثبت نام
-                            </Button>
-                        </Link>
-                    </Menu.Item>
 
                     {props.isLoggedIn[UserType["Driver"]] ?
                         <Menu.Item key="20">
@@ -128,12 +144,23 @@ const Sidebar = (props) => {
                         : <div></div>
                     }
 
+                    {props.isLoggedIn[UserType["Driver"]]?
+                        <Menu.Item key="40">
+                            <Logout type="Driver"/>
+                        </Menu.Item>
+                        : <div> </div>
+                    }
+
                 </SubMenu>
 
                 <SubMenu key="sub4" icon={<CheckOutlined/>} title="مدیر احراز هویت">
-                    <Menu.Item key="14">
-                        <Login type="Authorizer"> </Login>
-                    </Menu.Item>
+
+                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] || props.isLoggedIn[UserType["Authorizer"]] ?
+                        <div></div> :
+                        <Menu.Item key="14">
+                            <Login type="Authorizer"> </Login>
+                        </Menu.Item>
+                    }
 
                     {props.isLoggedIn[UserType["Authorizer"]] ?
                         <Menu.Item key="22">
@@ -142,6 +169,13 @@ const Sidebar = (props) => {
                             </Link>
                         </Menu.Item>
                         : <div></div>
+                    }
+
+                    {props.isLoggedIn[UserType["Authorizer"]]?
+                        <Menu.Item key="30">
+                            <Logout type="Customer"/>
+                        </Menu.Item>
+                        : <div> </div>
                     }
 
 

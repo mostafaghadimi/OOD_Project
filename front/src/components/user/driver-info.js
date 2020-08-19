@@ -16,7 +16,7 @@ const formItemLayout = {
 
 
 
-const DriverInfo = ({data}) => {
+const DriverInfo = ({driver}) => {
     const onFinish = values => {
         console.log('Received values of form: ', values);
     };
@@ -30,37 +30,37 @@ const DriverInfo = ({data}) => {
                     onFinish={onFinish}
                 >
                     <Form.Item label="نام">
-                        <Input placeholder={data.driver.user.firstName} disabled/>
+                        <Input placeholder={driver.user.firstName} disabled/>
                     </Form.Item>
 
                     <Form.Item label="نام خانوادگی">
-                        <Input value={data.driver.user.lastName} disabled/>
+                        <Input value={driver.user.lastName} disabled/>
                     </Form.Item>
 
                     <Form.Item label="کد ملی">
-                        <Input placeholder={data.driver.nationalId} type="tel" disabled/>
+                        <Input placeholder={driver.nationalId} type="tel" disabled/>
                     </Form.Item>
 
                     <Form.Item label="تاریخ تولد">
-                        <Input placeholder={data.driver.birthday} disabled/>
+                        <Input placeholder={driver.birthday} disabled/>
                     </Form.Item>
 
 
                     <Form.Item label="نام کاربری">
-                        <Input value={data.driver.user.username} type="tel" disabled/>
+                        <Input value={driver.user.username} type="tel" disabled/>
                     </Form.Item>
 
                     <Form.Item label="ایمیل">
-                        <Input value={data.driver.user.email} type="tel" disabled/>
+                        <Input value={driver.user.email} type="tel" disabled/>
                     </Form.Item>
 
                     <Form.Item label="شماره تماس">
-                        <Input value={data.driver.user.phoneNo} type="tel" disabled/>
+                        <Input value={driver.user.phoneNo} type="tel" disabled/>
                     </Form.Item>
 
 
                     <Form.Item label="امتیاز">
-                        <Rate disabled defaultValue={data.driver.rating} />
+                        <Rate disabled defaultValue={driver.rating} />
                     </Form.Item>
 
                 </Form>
@@ -77,7 +77,7 @@ const DriverInfo = ({data}) => {
                     hoverable
                 >
                     <Meta
-                        title= {data.firstName}
+                        title= {driver.firstName}
                         description="راننده‌ی تریلر، خاور، وانت"
                     />
                 </Card>

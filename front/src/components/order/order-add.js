@@ -18,7 +18,7 @@ const formItemLayout = {
 };
 const { TextArea } = Input;
 
-const AddOrder = ({currentUser}) => {
+const AddOrder = ({customer}) => {
     const [sourceAddress, setSourceAddress] = useState("");
     const [destAddress, setDestAddress] = useState("");
     const [receiverName, setReceiverName] = useState("");
@@ -28,10 +28,13 @@ const AddOrder = ({currentUser}) => {
     const [receiveDate, setReceiveDate] = useState(null);
     const [extraInfo, setExtraInfo] = useState("");
 
-    const handleSubmit = (event, createOrder) => {
+    const handleSubmit = (event, createOrder, error) => {
         console.log("In the handleSubmit");
         event.preventDefault();
         createOrder();
+        if(!error) {
+            setVisible(true);
+        }
     };
 
     return (
@@ -40,9 +43,10 @@ const AddOrder = ({currentUser}) => {
         variables={
             {
                 "orderData": {
-                    "ownerId" : currentUser.id,
+                    "ownerId" : customer.id,
                     "destinationAddress": destAddress
-                }
+                },
+                "orderCode" : "234567"
             }
         }
 
@@ -60,7 +64,7 @@ const AddOrder = ({currentUser}) => {
                     // onFinish={onFinish}
                 >
                     <Form.Item label="صاحب بار">
-                        <Input placeholder="امیرحسن فتحی" disabled/>
+                        <Input placeholder={customer.user.firstName + " " + customer.user.lastName} disabled/>
                     </Form.Item>
 
 
@@ -119,7 +123,7 @@ const AddOrder = ({currentUser}) => {
                             !receiveDate||
                             !phoneNo.trim()
                             }
-                            onClick={event => handleSubmit(event, createOrder)}
+                            onClick={event => handleSubmit(event, createOrder, error)}
                         >
                             {loading ? "در حال ثبت کردن..." : "ثبت سفارش"}
                         </Button>
@@ -148,8 +152,8 @@ const AddOrder = ({currentUser}) => {
 
 // TODO
 const NEW_ORDER_MUTATION = gql`
-mutation ($orderData : OrderInput){
-  createOrder(orderData: $orderData){
+mutation ($orderCode: String!, $orderData : OrderInput){
+  createOrder(orderCode: $orderCode, orderData: $orderData){
      order { 
          id
      }

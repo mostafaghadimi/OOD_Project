@@ -15,47 +15,73 @@ export const UserContext = React.createContext();
 const DriverRoot = ({isLoggedIn, currentUser}) => {
     console.log(currentUser.id);
     return(
+        <Query query={DRIVER_QUERY} variables={{"id": currentUser.id}}>
+            {({ data , loading, error}) => {
+                if (loading) return <div> loading ...</div>;
 
-            <UserContext.Provider value={currentUser}>
-                <Switch>
-                    <Route exact path="/" render={() => (
-                        <Nav isLoggedIn={isLoggedIn} currentUser = {currentUser}/>
-                    )}/>
+                const driver = data.driver;
+                return (
+                    <UserContext.Provider value={currentUser}>
+                        <Switch>
+                            <Route exact path="/" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} currentUser={currentUser}/>
+                            )}/>
 
-                    <Route exact path="/driver/:id/profile/" render={() => (
-                        <Nav isLoggedIn={isLoggedIn} content={<DriverProfile currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                    )}/>
+                            <Route exact path="/driver/:id/profile/" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<DriverProfile driver={driver}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
 
-                    <Route exact path="/driver/register" render={() => (
-                        <Nav isLoggedIn={isLoggedIn} content={<DriverRegister currentUser = {currentUser}/>}  currentUser = {currentUser}/>
-                    )}/>
-
-
-                    <Route exact path="/driver/:id/history/" render={() => (
-                        <Nav isLoggedIn={isLoggedIn} content={<DriverHistory currentUser = {currentUser}/>}  currentUser = {currentUser}/>
-                    )}/>
-
-                    <Route exact path="/driver/:id/crash" render={() => (
-                        <Nav isLoggedIn={isLoggedIn} content={<CrashReport currentUser = {currentUser}/>}  currentUser = {currentUser}/>
-                    )}/>
+                            <Route exact path="/driver/register" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<DriverRegister driver={driver}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
 
 
-                    <Route exact path="/driver/:id/addVehicle" render={() => (
-                        <Nav isLoggedIn={isLoggedIn} content={<AddVehicle currentUser = {currentUser}/>}  currentUser = {currentUser}/>
-                    )}/>
-                </Switch>
-            </UserContext.Provider>
+                            <Route exact path="/driver/:id/history/" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<DriverHistory driver={driver}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
 
-    );
+                            <Route exact path="/driver/:id/crash" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<CrashReport driver={driver}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
 
+
+                            <Route exact path="/driver/:id/addVehicle" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<AddVehicle driver={driver}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
+                        </Switch>
+                    </UserContext.Provider>
+                )
+            }}
+        </Query>
+    )
 };
 
-const ME_QUERY = gql`
-    {
-        me{
+
+const DRIVER_QUERY = gql`
+    query ($id : ID!){
+        driver (id: $id){
+            user{
+                firstName
+                lastName
+                username
+                password
+                phoneNo
+                email
+            }
+            nationalId
+            birthday
+            rating
+            latitude
+            longitude
+            birthday
             id
         }
     }
-`;
+    `;
 
 export default (DriverRoot);

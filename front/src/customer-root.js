@@ -16,44 +16,68 @@ export const UserContext = React.createContext();
 const CustomerRoot = ({isLoggedIn, currentUser}) => {
 
     return(
-        
+        <Query query={CUSTOMER_QUERY} variables={{"id": currentUser.id}}>
+            {({ data , loading, error}) => {
+                if (loading) return <div> loading ...</div>;
 
-        <UserContext.Provider value={currentUser}>
-            <Switch>
-                <Route exact path="/" render={() => (
-                    <Nav isLoggedIn={isLoggedIn} currentUser = {currentUser}/>
-                )}/>
-                {/* Order */}
-                <Route exact path="/customer/:id/orderList" render={() => (
-                    <Nav isLoggedIn={isLoggedIn} content={<OrderList currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                )}/>
+                const customer = data.customer;
 
-                <Route exact path="/customer/:id/addOrder" render={() => (
-                    <Nav isLoggedIn={isLoggedIn} content={<AddOrder currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                )}/>
+                return (
 
-                <Route exact path="/customer/:id/orderDetail" render={() => (
-                    <Nav isLoggedIn={isLoggedIn} content={<OrderDetail currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                )}/>
+                    <UserContext.Provider value={currentUser}>
+                        <Switch>
+                            <Route exact path="/" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} currentUser={currentUser}/>
+                            )}/>
+                            {/* Order */}
+                            <Route exact path="/customer/:id/orderList" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<OrderList customer={customer}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
 
-                <Route exact path="/customer/:id/driverList" render={() => (
-                    <Nav isLoggedIn={isLoggedIn} content={<DriverList currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                )}/>
+                            <Route exact path="/customer/:id/addOrder" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<AddOrder customer={customer}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
 
-                {/* User */}
-                <Route exact path="/user/:id/profile/" render={() => (
-                    <Nav isLoggedIn={isLoggedIn} content={<UserProfile currentUser = {currentUser}/>} currentUser = {currentUser}/>
-                )}/>
-            </Switch>
-        </UserContext.Provider>
+                            <Route exact path="/customer/:id/orderDetail" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<OrderDetail customer={customer}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
+
+                            <Route exact path="/customer/:id/driverList" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<DriverList customer={customer}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
+
+                            {/* User */}
+                            <Route exact path="/user/:id/profile/" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<UserProfile customer={customer}/>}
+                                     currentUser={currentUser}/>
+                            )}/>
+                        </Switch>
+                        {error && <Error error={error} />}
+                    </UserContext.Provider>
+                )
+            }}
+        </Query>
     )
-
 
 };
 
-const ME_QUERY = gql`
-    {
-        me{
+
+const CUSTOMER_QUERY = gql`
+    query ($id : ID!){
+        customer (id: $id){
+            user{
+                id
+                firstName
+                lastName
+                username
+                password
+                phoneNo
+                email
+            }
             id
         }
     }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import { Table } from 'antd';
 import {Query} from "react-apollo";
 import {gql} from "apollo-boost";
@@ -23,7 +23,7 @@ const columns = [
     },
 ];
 
-const DriverHistory = ({currentUser}) => {
+const DriverHistory = ({driver}) => {
 
     const title = () => 'تاریخچه بار';
     const state = {
@@ -47,7 +47,7 @@ const DriverHistory = ({currentUser}) => {
 
 
     return (
-        <Query query={GET_DRIVER_ORDERS} variables={{"id": 7}}>
+        <Query query={GET_DRIVER_ORDERS} variables={{"id": driver.id}}>
             {({data, loading, error}) => {
                 if(loading) return <div> is loading </div>;
                 console.log(data);
@@ -56,8 +56,8 @@ const DriverHistory = ({currentUser}) => {
                     allInfo.push(
                         {
                             kay: order.id,
-                            ordererer: order.owner.user.firstName + order.owner.user.lastName,
-                            deliverer: order.driver.user.firstName + order.driver.user.lastName,
+                            orderer: order.owner.user.firstName + " " + order.owner.user.lastName,
+                            deliverer: order.driver.user.firstName + " " + order.driver.user.lastName,
                             destAddress: order.destinationAddress,
                             cost: order.transportationCost
                         }

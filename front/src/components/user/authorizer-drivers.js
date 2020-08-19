@@ -6,7 +6,7 @@ import { EditOutlined } from '@ant-design/icons';
 import { Mutation } from "react-apollo";
 
 import './user.css'
-import Error from "./driver-profile";
+import Error from "../shared/Error";
 
 
 const columns = [

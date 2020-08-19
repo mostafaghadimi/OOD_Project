@@ -20,9 +20,20 @@ const editItemLayout = {
 
 
 
-const DriverProfile = ({currentUser}) => {
+const DriverProfile = ({driver}) => {
+    return(
+        <div className="user-profile">
+            <Divider>مشخصات</Divider>
+            <DriverInfo driver={driver}/>
+        </div>
+    )
+};
 
-    // const [prevPassword, setPrevPassword] = useState("");
+
+export default (DriverProfile);
+
+
+// const [prevPassword, setPrevPassword] = useState("");
     // const [newPassword, setNewPassword] = useState("");
     // const [newPasswordRepeat, setNewPasswordRepeat] = useState("");
     // const [phoneNo, setPhoneNo] = useState("");
@@ -44,16 +55,11 @@ const DriverProfile = ({currentUser}) => {
     //
     //     setVisible(true);
     // };
-    console.log(currentUser.id);
+
     // const id = props.match.params.id;
     // console.log(id);
-    return (
-        <Query query={DRIVER_QUERY} variables={{"id": currentUser.id}}>
-            {({ data , loading, error}) => {
-                if (loading) return <div> loading ...</div>;
 
-                console.log(data);
-                return (
+
                     // <Mutation
                         // mutation={UPDATE_DRIVER}
                         // variables={
@@ -83,46 +89,7 @@ const DriverProfile = ({currentUser}) => {
                     // >
                     //     {(updateDriver, {loading, error}) => {
                     //         return (
-                    <div className="user-profile">
 
-                        <Divider>مشخصات</Divider>
-
-                        <DriverInfo data={data}/>
-                        {/*<Divider>ویرایش اطلاعات</Divider>*/}
-
-                        {/* Error Handling */}
-                        {error && <Error error={error}/>}
-                    </div>
                             // )
                         // }}
                     // </Mutation>
-                )
-            }}
-        </Query>
-    )
-};
-
-
-const DRIVER_QUERY = gql`
-query ($id : ID!){
-    driver (id: $id){
-        user{
-            firstName
-            lastName
-            username
-            password
-            phoneNo
-            email
-        }
-        nationalId
-        birthday
-        rating
-        latitude
-        longitude
-        birthday
-    }
-}
-`;
-
-
-export default (DriverProfile);
