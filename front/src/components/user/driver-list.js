@@ -91,6 +91,13 @@ const DriverList = ({customer}) => {
 
     const allInfo = [];
 
+    function info(message, content) {
+      Modal.info({
+        title: message,
+        content: content,
+        onOk() {},
+      });
+    }
 
 
     return (
@@ -125,25 +132,16 @@ const DriverList = ({customer}) => {
                     location: <Button key={driver.id} onClick={showModal}>مشاهده روی نقشه</Button>,
                     history:
                         <div>
-                            <Button key={driver.id} onClick={() => setVisibleHistory(true)}>مشاهده تاریخچه</Button>
-                            <Modal
-
-                                title= "هویت راننده رد شد"
-                                visible={visibleHistory}
-                                onCancel={() => {
-                                    setVisibleHistory(false);
-                                }
-                                }
-                                onOk={() => {
-                                    setVisibleHistory(false);
-                                }
-                                }
-                            >
-                                <Table
+                            <Button key={driver.id} onClick={() =>
+                                info("نمایش تاریخچه راننده",
+                                    <Table
                                     columns={orderColumns}
-                                    dataSource={orderInfo}
-                                />
-                            </Modal>
+                                    dataSource={orderInfo}/>)} >
+                                مشاهده تاریخچه
+                            </Button>
+
+
+
                         </div>,
                     score: driver.rating
                 });

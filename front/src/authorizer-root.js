@@ -11,6 +11,7 @@ export const UserContext = React.createContext();
 
 const AuthorizerRoot = ({isLoggedIn, currentUser}) => {
     return (
+
         <UserContext.Provider value={currentUser}>
             <Switch>
                 <Route exact path="/" render={() => (
@@ -24,5 +25,6 @@ const AuthorizerRoot = ({isLoggedIn, currentUser}) => {
         </UserContext.Provider>
     );
 };
+
 
 export default (AuthorizerRoot);

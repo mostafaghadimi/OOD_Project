@@ -30,6 +30,7 @@ const Login = (props) => {
     const handleSubmit = async (event, tokenAuth, client) => {
         event.preventDefault();
         const res = await tokenAuth();
+
         localStorage.setItem("authToken", res.data.tokenAuth.token);
 
 
@@ -94,6 +95,7 @@ const Login = (props) => {
                             title={titles[UserType[props.type]]}
                             visible={visible}
                             onOk={event => handleSubmit(event, tokenAuth, client)}
+                            okButtonProps={{ href: "/"}}
                             onCancel={handleCancel}
                             okText="ورود"
                             cancelText="لغو"

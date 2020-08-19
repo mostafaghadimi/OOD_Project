@@ -34,10 +34,10 @@ const DriverRoot = ({isLoggedIn, currentUser}) => {
                                      currentUser={currentUser}/>
                             )}/>
 
-                            <Route exact path="/driver/register" render={() => (
-                                <Nav isLoggedIn={isLoggedIn} content={<DriverRegister driver={driver}/>}
-                                     currentUser={currentUser}/>
-                            )}/>
+                            {/*<Route exact path="/driver/register" render={() => (*/}
+                                {/*<Nav isLoggedIn={isLoggedIn} content={<DriverRegister driver={driver}/>}*/}
+                                     {/*currentUser={currentUser}/>*/}
+                            {/*)}/>*/}
 
 
                             <Route exact path="/driver/:id/history/" render={() => (

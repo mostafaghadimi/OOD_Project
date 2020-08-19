@@ -18,6 +18,8 @@ import CustomerRoot from './customer-root';
 import AuthorizerRoot from './authorizer-root';
 import { ApolloProvider, Query } from "react-apollo";
 import ApolloClient, { gql } from "apollo-boost";
+import DriverRegister from './components/user/driver-register';
+
 
 
 
@@ -70,7 +72,14 @@ const App = () =>{
 
                 if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]] && !isLoggedIn[UserType["Authorizer"]]) {
                     return (
-                        <Route path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+                        <Switch>
+                            <Route exact path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+
+                            <Route exact path="/driver/register" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<DriverRegister/>}/>
+                            )}/>
+
+                        </Switch>
                     )
                 }
                 return(
