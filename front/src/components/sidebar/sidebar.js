@@ -64,6 +64,7 @@ const Sidebar = (props) => {
                         </Menu.Item>
                         : <div></div>
                     }
+                </SubMenu>
 
 
                     {/* <Menu.Item key="19">
@@ -71,12 +72,9 @@ const Sidebar = (props) => {
         جزئیات سفارش
     </Link>
 </Menu.Item> */}
-                </SubMenu>
-                <SubMenu key='sub2' icon={<UserOutlined/>} title="مدیر سامانه">
-                </SubMenu>
                 <SubMenu key="sub3" icon={<CarOutlined/>} title="راننده">
 
-                    <Menu.Item key="14">
+                    <Menu.Item key="5">
                         <Login type="Driver"> </Login>
 
                     </Menu.Item>
@@ -131,7 +129,7 @@ const Sidebar = (props) => {
                 </SubMenu>
 
                 <SubMenu key="sub4" icon={<CheckOutlined/>} title="مدیر احراز هویت">
-                    <Menu.Item key="14">
+                    <Menu.Item key="16">
                         <Login type="Authorizer"> </Login>
                     </Menu.Item>
 
@@ -139,6 +137,50 @@ const Sidebar = (props) => {
                         <Menu.Item key="22">
                             <Link to={`/authorizer/${props.currentUser.id}}/authorizeDrivers`}>
                                 لیست درخواست های ثبت نام
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
+                    }
+
+
+                </SubMenu>
+
+                <SubMenu key="sub2" icon={<UserOutlined/>} title="مدیر سامانه">
+                    <Menu.Item key="17">
+                        <Login type="Admin"> </Login>
+                    </Menu.Item>
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/${props.currentUser.id}}/getAuthorizersList`}>
+                                لیست مدیران احراز هویت
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
+                    }
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/${props.currentUser.id}}/getCustomersList`}>
+                                لیست مشتریان
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
+                    }
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/${props.currentUser.id}}/getDriversList`}>
+                                لیست راننده‌ها
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
+                    }
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/${props.currentUser.id}}/getAdminsList`}>
+                                لیست مدیران سامانه
                             </Link>
                         </Menu.Item>
                         : <div></div>
