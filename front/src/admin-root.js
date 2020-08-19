@@ -15,7 +15,7 @@ const AdminRoot = ({isLoggedIn, currentUser}) => {
                     <Nav isLoggedIn={isLoggedIn} currentUser = {currentUser}/>
                 )}/>
 
-                <Route exact path="/admin/:id/driverList" render={() => (
+                <Route exact path="/admin/:id/allDriverList" render={() => (
                     <Nav isLoggedIn={isLoggedIn} content={<driverList currentUser = {currentUser}/>} currentUser = {currentUser}/>
                 )}/>
             </Switch>

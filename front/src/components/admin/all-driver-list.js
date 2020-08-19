@@ -101,7 +101,7 @@ const DriverList = ({customer}) => {
 
 
     return (
-        <Query query={GET_CUSTOMER_DRIVERS} variables={{"id": customer.user.id}}>
+        <Query query={GET_ALL_DRIVERS} variables={}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -163,9 +163,9 @@ const DriverList = ({customer}) => {
 };
 
 
-const GET_CUSTOMER_DRIVERS = gql`
-query ($id : ID!){
-    customerDrivers(id:$id) {
+const GET_ALL_DRIVERS = gql`
+query (){
+    allDrivers() {
         id,
         user{
             firstName,
