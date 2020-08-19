@@ -9,6 +9,8 @@ import DriverHistory from './components/user/driver-history';
 import {gql} from "apollo-boost";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Error from "./components/shared/Error";
+import Loading from "./components/shared/loading";
+
 
 export const UserContext = React.createContext();
 
@@ -17,7 +19,7 @@ const DriverRoot = ({isLoggedIn, currentUser}) => {
     return(
         <Query query={DRIVER_QUERY} variables={{"id": currentUser.id}}>
             {({ data , loading, error}) => {
-                if (loading) return <div> loading ...</div>;
+                if (loading) return <Loading/>;
 
                 const driver = data.driver;
                 return (
@@ -54,6 +56,7 @@ const DriverRoot = ({isLoggedIn, currentUser}) => {
                                      currentUser={currentUser}/>
                             )}/>
                         </Switch>
+                        {error && <Error error={error} />}
                     </UserContext.Provider>
                 )
             }}

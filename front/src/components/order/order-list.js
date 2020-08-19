@@ -7,6 +7,8 @@ import './order.css'
 import {gql} from "apollo-boost";
 import {Query} from "react-apollo";
 import Error from "../shared/Error";
+import Loading from "../shared/loading";
+
 
 const columns = [
     {
@@ -92,7 +94,7 @@ const OrderList = ({customer}) => {
     return (
         <Query query={GET_CUSTOMER_ORDERS} variables={{"id": customer.id}}>
             {({data, loading, error}) => {
-                if (loading) return <div> is loading </div>;
+                if (loading) return <Loading/>;
 
 
                 {

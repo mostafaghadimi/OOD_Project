@@ -3,6 +3,8 @@ import { Table } from 'antd';
 import {Query} from "react-apollo";
 import {gql} from "apollo-boost";
 import Error from "../shared/Error";
+import Loading from "../shared/loading";
+
 
 const columns = [
     {
@@ -49,7 +51,7 @@ const DriverHistory = ({driver}) => {
     return (
         <Query query={GET_DRIVER_ORDERS} variables={{"id": driver.id}}>
             {({data, loading, error}) => {
-                if(loading) return <div> is loading </div>;
+                if(loading) return <Loading/>;
                 console.log(data);
 
                 {data.driverLoad.map( order => {

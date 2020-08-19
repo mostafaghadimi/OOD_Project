@@ -10,6 +10,7 @@ import Nav from './components/nav/nav';
 import {gql} from "apollo-boost";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Error from "./components/shared/Error";
+import Loading from "./components/shared/loading";
 
 export const UserContext = React.createContext();
 
@@ -18,7 +19,7 @@ const CustomerRoot = ({isLoggedIn, currentUser}) => {
     return(
         <Query query={CUSTOMER_QUERY} variables={{"id": currentUser.id}}>
             {({ data , loading, error}) => {
-                if (loading) return <div> loading ...</div>;
+                if (loading) return <Loading/>;
 
                 const customer = data.customer;
 

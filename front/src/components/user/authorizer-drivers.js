@@ -1,4 +1,4 @@
-import React, {Component, useState} from 'react'
+import React, {useState} from 'react'
 import { Query } from "react-apollo";
 import { gql } from "apollo-boost";
 import {Table, Button, Modal, Tooltip, Input, Form} from 'antd';
@@ -7,6 +7,7 @@ import { Mutation } from "react-apollo";
 
 import './user.css'
 import Error from "../shared/Error";
+import Loading from "../shared/loading";
 
 
 const columns = [
@@ -66,7 +67,7 @@ const AuthorizeDrivers = (Props) => {
     return(
         <Query query={GET_DRIVERS}>
             {({data, loading, error}) => {
-                if(loading) return <div> is loading </div>;
+                if(loading) return <Loading/>;
                 // if (error) return <div> is error </div>;
 
                 {data.unverifiedDrivers.map( driver => {

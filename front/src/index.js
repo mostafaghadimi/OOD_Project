@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
@@ -6,24 +6,13 @@ import { ConfigProvider } from 'antd';
 import fa_IR from 'antd/es/locale/fa_IR'
 
 import * as serviceWorker from './serviceWorker';
-
+import {UserType} from './components/shared/user-type-enum';
 
 import "antd/dist/antd.css";
 import './static/css/normalizer.css'
-import OrderDetail from './components/order/order-detail';
-import UserProfile from './components/user/user-profile';
-import DriverList from './components/user/driver-list';
-import OrderList from './components/order/order-list';
-import AddOrder from './components/order/order-add';
-import DriverRegister from './components/user/driver-register';
-import DriverProfile from './components/user/driver-profile';
-import CrashReport from './components/vehicle/crash-report';
-import AddVehicle from './components/vehicle/add-vehicle';
-import DriverHistory from './components/user/driver-history';
-import AuthorizeDrivers from './components/user/authorizer-drivers'
-import {UserType} from "./components/shared/user-type-enum";
 import Nav from './components/nav/nav';
 import Error from "./components/shared/Error";
+import Loading from "./components/shared/loading";
 import DriverRoot from './driver-root';
 import CustomerRoot from './customer-root';
 import AuthorizerRoot from './authorizer-root';
@@ -87,7 +76,7 @@ const App = () =>{
                 return(
                     <Query query={ME_QUERY} >
                              {(meData) => {
-                                 if (meData.loading) return <div> loading </div>;
+                                 if (meData.loading) return <Loading/>;
                                  if (meData.error) return <Error error = {meData.error}/>;
 
                                  const currentUser = meData.data.me;

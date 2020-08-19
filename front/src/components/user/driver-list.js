@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import Error from "../shared/Error"
+import Error from "../shared/Error";
+import Loading from "../shared/loading"
+
 
 import './user.css'
 import {Query} from "react-apollo";
@@ -94,7 +96,7 @@ const DriverList = ({customer}) => {
     return (
         <Query query={GET_CUSTOMER_DRIVERS} variables={{"id": customer.user.id}}>
         {({data, loading, error}) => {
-            if(loading) return <div> is loading </div>;
+            if(loading) return <Loading/>;
             console.log(data);
 
             const orderColumns = [
