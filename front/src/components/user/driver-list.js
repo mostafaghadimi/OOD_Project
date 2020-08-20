@@ -9,6 +9,9 @@ import './user.css'
 import {Query} from "react-apollo";
 import {gql} from "apollo-boost";
 
+import { Map, Marker, Popup, TileLayer } from "react-leaflet";
+import { Icon } from "leaflet";
+
 const columns = [
     {
       title: 'نام راننده',
@@ -82,8 +85,23 @@ const DriverList = ({customer}) => {
         bottom: 'bottomRight',
     };
 
-
     const showModal = () => {
+        function tick() {
+            const element = (
+                <div>
+                    <Map center={[latitude, longitude]} zoom={12}>
+                        <TileLayer
+                            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                        />
+                    </Map>
+                </div>
+            );
+          ReactDOM.render(element, document.getElementById('root'));
+        }
+
+        setInterval(tick, 1000);
+
         setVisible(true);
     };
 
@@ -114,7 +132,7 @@ const DriverList = ({customer}) => {
             ];
 
             const orderInfo = [];
-
+ 
 
             {data.customerDrivers.map( driver => {
                 {driver.orders.map( order=> {

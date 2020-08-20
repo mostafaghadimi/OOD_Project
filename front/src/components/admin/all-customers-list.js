@@ -11,32 +11,12 @@ import {gql} from "apollo-boost";
 
 const columns = [
     {
-      title: 'نام صاحب‌ بارل',
-      dataIndex: 'driver',
+      title: 'نام صاحب‌ بار',
+      dataIndex: 'Customer',
     },
     {
-      title: 'وضعیت',
-      dataIndex: 'status',
-      filters: [
-        {
-          text: 'آزاد',
-          value: 'free',
-        },
-        {
-          text: 'در ماموریت',
-          value: 'on-duty',
-        },
-        {
-          text: 'تصادف کرده',
-          value: 'crashed',
-        },
-
-      ],
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
-    },
-    {
-        title: 'موقعیت جغرافیایی',
-        dataIndex: 'location',
+        title: 'نوع کاربر',
+        dataIndex: 'userType',
     },
     {
       title: 'تاریخچه',

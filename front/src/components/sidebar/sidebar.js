@@ -10,7 +10,6 @@ import Logout from "../user/logout"
 import CheckUserType from "../user/check-user-type"
 import './sidebar.css'
 
-
 const { SubMenu } = Menu;
 const { Sider } = Layout;
 
