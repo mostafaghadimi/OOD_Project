@@ -12,6 +12,7 @@ import "antd/dist/antd.css";
 import './static/css/normalizer.css'
 import Nav from './components/nav/nav';
 import Error from "./components/shared/Error";
+import Install from "./components/shared/install";
 import Loading from "./components/shared/loading";
 import DriverRoot from './driver-root';
 import CustomerRoot from './customer-root';
@@ -39,10 +40,10 @@ const client = new ApolloClient({
     },
     clientState: {
         defaults: {
-            isDriverLoggedIn: (localStorage.getItem("userType") === UserType["Driver"]),
-            isCustomerLoggedIn: (localStorage.getItem("userType") === UserType["Customer"]),
-            isAuthorizerLoggedIn: (localStorage.getItem("userType") === UserType["Authorizer"]),
-            isAdminLoggedIn: (localStorage.getItem("userType") === UserType["Admin"]),
+            isDriverLoggedIn: (localStorage.getItem("userType") == UserType["Driver"]),
+            isCustomerLoggedIn: (localStorage.getItem("userType") == UserType["Customer"]),
+            isAuthorizerLoggedIn: (localStorage.getItem("userType") == UserType["Authorizer"]),
+            isAdminLoggedIn: (localStorage.getItem("userType") == UserType["Admin"]),
         }
     }
 });
@@ -57,6 +58,9 @@ const IS_LOGGED_IN_QUERY = gql`
 `;
 
 const App = () =>{
+    console.log(localStorage.getItem("userType"));
+    console.log(UserType["Admin"]);
+    console.log(localStorage.getItem("userType") === UserType["Admin"]);
     return (
         <Query query={IS_LOGGED_IN_QUERY} >
             {({ data , loading, error}) => {
@@ -74,6 +78,7 @@ const App = () =>{
                 console.log(isLoggedIn[UserType["Customer"]]);
                 console.log(isLoggedIn[UserType["Authorizer"]]);
                 console.log(isLoggedIn[UserType["Admin"]]);
+                // console.log(localStorage.getItem(auth));
 
                 if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]]
                 && !isLoggedIn[UserType["Authorizer"]]&& !isLoggedIn[UserType["Admin"]]) {
@@ -85,6 +90,7 @@ const App = () =>{
                                 <Nav isLoggedIn={isLoggedIn} content={<DriverRegister/>}/>
                             )}/>
 
+                            <Route exact path="/install" render={() => (<Nav isLoggedIn={isLoggedIn} content={<Install/>}/>)}/>
                         </Switch>
                     )
                 }

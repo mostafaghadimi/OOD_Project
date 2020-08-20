@@ -1,18 +1,29 @@
 import React, { useState } from 'react'
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import {EditOutlined, KeyOutlined, UserOutlined, MinusOutlined} from '@ant-design/icons';
 import Error from "../shared/Error";
 import Loading from "../shared/loading"
 
 
-import './user.css'
-import {Query} from "react-apollo";
+import '../user/user.css'
+import {Mutation, Query} from "react-apollo";
 import {gql} from "apollo-boost";
+import {UserType} from "../shared/user-type-enum";
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Nav from "../../admin-root";
+import EditDriver from "./edit-driver";
+import AddDriver from "./add-driver";
+
+
 
 const columns = [
     {
-      title: 'نام راننده',
-      dataIndex: 'driver',
+      title: 'نام',
+      dataIndex: 'firstName',
+    },
+    {
+      title: 'نام خانوادگی',
+      dataIndex: 'lastName',
     },
     {
       title: 'وضعیت',
@@ -47,25 +58,40 @@ const columns = [
       title: 'امتیاز',
       dataIndex: 'score',
     },
+    {
+      title: 'ویرایش / پاک کردن',
+      dataIndex: 'editDelete',
+    }
 ];
 
 const { Search } = Input;
-const title = () => (
-    <div>
-        <p>
-            لیست راننده‌ها
-        </p>
-        <Search
-            placeholder="جست‌وجو در لیست راننده‌ها"
-            onSearch={value => console.log(value)}
-            enterButton
-            style={{width:400}}
-        />
-    </div>
-);
-const DriverList = ({customer}) => {
-    const [visible, setVisible] = useState(false);
+
+
+const AllDriversList = () => {
     const [visibleHistory, setVisibleHistory] = useState(false);
+    const [visibleEdit, setVisibleEdit] = useState(false);
+    const [visibleAdd, setVisibleAdd] = useState(false);
+    const [driverClone, setDriverClone] = useState(null);
+
+    const title = () => (
+        <div>
+            <p>
+                لیست راننده‌ها
+            </p>
+            <Search
+                placeholder="جست‌وجو در لیست راننده‌ها"
+                onSearch={value => console.log(value)}
+                enterButton
+                style={{width:400}}
+            />
+
+            <Button type="primary" size="large" onClick = {() => setVisibleAdd(true)} style = {{position: 'absolute', up:2, left:1}}>
+                اضافه کردن
+            </Button>
+
+            <AddDriver visible = {visibleAdd} setVisible = {setVisibleAdd}/>
+        </div>
+    );
 
 
     const state = {
@@ -83,8 +109,15 @@ const DriverList = ({customer}) => {
     };
 
 
-    const showModal = () => {
-        setVisible(true);
+    const handleEdit = (driver) => {
+        console.log(driver);
+        setDriverClone(driver);
+        setVisibleEdit(true);
+    };
+
+    const handleDelete = (event, deleteDriver) => {
+        event.preventDefault();
+        deleteDriver();
     };
 
 
@@ -101,7 +134,8 @@ const DriverList = ({customer}) => {
 
 
     return (
-        <Query query={GET_ALL_DRIVERS} variables={}>
+
+        <Query query={GET_ALL_DRIVERS}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -116,45 +150,84 @@ const DriverList = ({customer}) => {
             const orderInfo = [];
 
 
-            {data.customerDrivers.map( driver => {
+            {data.allDrivers.map( driver => {
                 {driver.orders.map( order=> {
                     orderInfo.push({orderLocation: "(" + order.latitude+ ", " + order.longitude + ")"})
                 })}
                 allInfo.push({
                     key: driver.id,
-                    driver: driver.user.firstName + " " + driver.user.lastName,
+                    firstName:
+                        driver.user.firstName,
+                    lastName:
+                        driver.user.lastName,
                     status:
                         <div className="driver-status">
                             <span>
                                 {driver.driverStatus === "A_1" ? "آزاد" : driver.driverStatus === "A_2" ? "در ماموریت" : driver.driverStatus === "A_3" ? "تصادف کرده" : ""}
                             </span>
                         </div>,
-                    location: <Button key={driver.id} onClick={showModal}>مشاهده روی نقشه</Button>,
+                    location: <Button key={4*driver.id} >مشاهده روی نقشه</Button>,
                     history:
                         <div>
-                            <Button key={driver.id} onClick={() =>
+                            <Button key={4*driver.id + 1} onClick={() =>
                                 info("نمایش تاریخچه راننده",
                                     <Table
                                     columns={orderColumns}
                                     dataSource={orderInfo}/>)} >
                                 مشاهده تاریخچه
                             </Button>
-
-
-
                         </div>,
-                    score: driver.rating
+                    score: driver.rating,
+                    editDelete:
+                    <div>
+                        <Tooltip placement="top" title='ویرایش'>
+
+                            <Button key={4* driver.id + 2} shape="circle" onClick={() => handleEdit(driver)}>
+                                <EditOutlined />
+                            </Button>
+
+                        </Tooltip>
+                        <Mutation mutation={REMOVE_MUTATION}
+                          variables={
+                              {
+                                  "id" : driver.user.id
+                              }
+                          }
+                          onCompleted={() => {
+                              info("راننده با موفقیت حذف شد")
+                          }}
+                        >{(deleteDriver, deleteData) => {
+                            return (
+
+                                <Tooltip placement="top" title= {deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
+                                    <Button key={4* driver.id + 3} shape="circle" onClick={event => handleDelete(event, deleteDriver)} disabled = {deleteData.loading}>
+                                        <MinusOutlined />
+                                    </Button>
+                                    {deleteData.error && <Error error={deleteData.error} />}
+                                </Tooltip>
+                            )
+                        }}
+                        </Mutation>
+                    </div>
+
                 });
 
             })}
+            console.log(!!driverClone);
             return (
                 <div className="order-container">
+
+
+
                     <Table
                         {...state}
                         columns={columns}
                         dataSource={allInfo}
                     />
                     {error && <Error error = {error}/>}
+                    {!!driverClone && <EditDriver driver = {driverClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}
+                    {/*<AddDriver visible = {visibleAdd} setVisible = {setVisibleAdd}/>*/}
+
                 </div>
             )
         }}
@@ -164,24 +237,42 @@ const DriverList = ({customer}) => {
 
 
 const GET_ALL_DRIVERS = gql`
-query (){
-    allDrivers() {
-        id,
+{
+    allDrivers {
+        id
         user{
-            firstName,
+            id
+            firstName
             lastName
+            username
+            password
+            email
+            phoneNo
         }
-        latitude,
-        longitude,
-        rating,
+        latitude
+        longitude
+        rating
+        driverStatus
+        rating
+        profilePicture
+        birthday
+        nationalId
         orders{
           latitude
           longitude
         }
-        driverStatus,
-        rating
     }
 }
 `;
 
-export default (DriverList);
+
+
+const REMOVE_MUTATION = gql`
+mutation($id: ID!){
+     deleteDriver (id:$id){
+      id
+    }
+}
+`;
+
+export default (AllDriversList);

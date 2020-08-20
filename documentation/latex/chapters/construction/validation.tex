@@ -1,0 +1,18 @@
+\قسمت{درستی‌سنجی}
+
+در این قسمت درستی بخش‌های مختلف \لر{back-end} با کمک درخواست‌\زیرنویس{\لر{query}} و اعمال تغییرات \زیرنویس{\لر{mutation}} می‌سنجیم. \زیرنویس{\مهم{نکته:} تمامی این درخواست‌ها و اعمال تغییرات در ریپازیتوری گیت‌هاب مربوط به پروژه موجود است.}
+
+\شروع{فقرات}
+	\فقره \مهم{گرفتن توکن}
+\پایان{فقرات}
+
+
+\begin{latin}
+	\begin{verbatim}
+mutation($username:String!, $password: String!) {
+	tokenAuth(username:$username, password:$password) {
+		token
+	}
+}
+	\end{verbatim}
+\end{latin}

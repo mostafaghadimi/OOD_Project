@@ -71,9 +71,10 @@ AUTHENTICATION_BACKENDS = [
 
 AUTH_USER_MODEL = 'users.Usermodel'
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:3000"
-]
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:3000"
+# ]
 
 
 ROOT_URLCONF = 'transportation.urls'

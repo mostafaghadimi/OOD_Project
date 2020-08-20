@@ -420,18 +420,19 @@ class CreateCustomer(Mutation):
 class UpdateCustomer(Mutation):
     class Arguments:
         customer_data = CustomerInput()
+        customer_id = graphene.ID(required=True)
+
 
     customer = graphene.Field(CustomerType)
 
-    def mutate(self, info, id, customer_data=None):
-        customer = Customer.objects.get(pk=id)
-        user_id = customer.user.id
-        user = Usermodel.objects.get(pk=user_id)
+    def mutate(self, info, customer_id=None, customer_data=None):
+        customer = Customer.objects.get(pk=customer_id)
+    
         current_user = info.context.user
         if current_user.is_anonymous:
             raise Exception("You need to login first!")
 
-        if user == current_user or current_user.is_superuser:
+        if customer == current_user or current_user.is_superuser:
             customer.user.first_name = customer_data.user.first_name
             customer.user.last_name = customer_data.user.last_name
             customer.user.email = customer_data.user.email
@@ -455,13 +456,12 @@ class DeleteCustomer(Mutation):
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        if user != customer.user:
-            raise Exception("You are not allowed to do this operation")
+        if user == customer.user or user.is_superuser:
+            Usermodel.objects.get(pk=id).delete()
+            return DeleteCustomer(id=id)
         
-        user_id = customer.user.id
-        Usermodel.models.get(pk=user_id).delete()
-
-        return DeleteCustomer(id=id)
+        raise Exception("You are not allowed to do this operation")
+        
         
         
 class UpdateDriverStatus(Mutation):

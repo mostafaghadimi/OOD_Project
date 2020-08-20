@@ -132,7 +132,7 @@ const DriverList = ({customer}) => {
             ];
 
             const orderInfo = [];
- 
+
 
             {data.customerDrivers.map( driver => {
                 {driver.orders.map( order=> {

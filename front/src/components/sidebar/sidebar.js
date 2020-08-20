@@ -152,7 +152,7 @@ const Sidebar = (props) => {
 
 
                     {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] ||
-                     props.isLoggedIn[UserType["Authorizer"] || props.isLoggedIn["Admin"]] ?
+                     props.isLoggedIn[UserType["Authorizer"]] || props.isLoggedIn[UserType["Admin"]] ?
                         <div></div> :
                         <Menu.Item key="14">
                             <Login type="Authorizer"> </Login>
@@ -181,7 +181,7 @@ const Sidebar = (props) => {
                 <SubMenu key="sub2" icon={<UserOutlined/>} title="مدیر سامانه">
 
                     {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] ||
-                     props.isLoggedIn[UserType["Authorizer"] || props.isLoggedIn["Admin"]] ?
+                     props.isLoggedIn[UserType["Authorizer"]] || props.isLoggedIn[UserType["Admin"]] ?
                         <div></div> :
                         <Menu.Item key="17">
                             <Login type="Admin"> </Login>
@@ -190,7 +190,7 @@ const Sidebar = (props) => {
 
                     {props.isLoggedIn[UserType["Admin"]] ?
                         <Menu.Item key="23">
-                            <Link to={`/admin/${props.currentUser.id}}/getAuthorizersList`}>
+                            <Link to={`/admin/allAuthorizersList`}>
                                 لیست مدیران احراز هویت
                             </Link>
                         </Menu.Item>
@@ -199,7 +199,7 @@ const Sidebar = (props) => {
 
                     {props.isLoggedIn[UserType["Admin"]] ?
                         <Menu.Item key="23">
-                            <Link to={`/admin/${props.currentUser.id}}/getCustomersList`}>
+                            <Link to={`/admin/allCustomersList`}>
                                 لیست مشتریان
                             </Link>
                         </Menu.Item>
@@ -208,21 +208,20 @@ const Sidebar = (props) => {
 
                     {props.isLoggedIn[UserType["Admin"]] ?
                         <Menu.Item key="23">
-                            <Link to={`/admin/${props.currentUser.id}}/getDriversList`}>
+                            <Link to={`/admin/allDriversList`}>
                                 لیست راننده‌ها
                             </Link>
                         </Menu.Item>
                         : <div></div>
                     }
 
-                    {props.isLoggedIn[UserType["Admin"]] ?
-                        <Menu.Item key="23">
-                            <Link to={`/admin/${props.currentUser.id}}/getAdminsList`}>
-                                لیست مدیران سامانه
-                            </Link>
+                    {props.isLoggedIn[UserType["Admin"]]?
+                        <Menu.Item key="30">
+                            <Logout type="Admin"/>
                         </Menu.Item>
-                        : <div></div>
+                        : <div> </div>
                     }
+
 
 
                 </SubMenu>

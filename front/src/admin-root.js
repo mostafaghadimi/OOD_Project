@@ -4,6 +4,12 @@ import Nav from './components/nav/nav';
 import {gql} from "apollo-boost";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Error from "./components/shared/Error";
+import AllDriversList from "./components/admin/all-driver-list";
+import AllCustomersList from "./components/admin/all-customers-list";
+import AllAuthorizersList from "./components/admin/all-authorizer";
+import Install from "./components/shared/install";
+
+
 
 export const UserContext = React.createContext();
 
@@ -15,9 +21,23 @@ const AdminRoot = ({isLoggedIn, currentUser}) => {
                     <Nav isLoggedIn={isLoggedIn} currentUser = {currentUser}/>
                 )}/>
 
-                <Route exact path="/admin/:id/allDriverList" render={() => (
-                    <Nav isLoggedIn={isLoggedIn} content={<driverList currentUser = {currentUser}/>} currentUser = {currentUser}/>
+                <Route exact path="/install" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<Install/>} currentUser={currentUser}/>
                 )}/>
+
+                <Route exact path="/admin/allDriversList" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<AllDriversList/>} currentUser = {currentUser}/>
+                )}/>
+
+                <Route exact path="/admin/allCustomersList" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<AllCustomersList/>} currentUser = {currentUser}/>
+                )}/>
+
+
+                <Route exact path="/admin/allAuthorizersList" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<AllAuthorizersList/>} currentUser = {currentUser}/>
+                )}/>
+
             </Switch>
         </UserContext.Provider>
     );

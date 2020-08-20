@@ -15,6 +15,7 @@ import { UploadOutlined } from '@ant-design/icons';
 // import { useQuery, gql, useMutation } from "@apollo/client";
 
 import './user.css'
+import moment from "moment";
 
 
 
@@ -84,8 +85,8 @@ const DriverRegister = () => {
                           "phoneNo": phoneNo,
                           "password": password
                       },
-                      "nationalId": nationalId
-                      // "birthday": birthDay
+                      "nationalId": nationalId,
+                      // "birthday": birthDay? moment(birthDay, "YYYY-MM-DD"): null
                   }
               }
           }

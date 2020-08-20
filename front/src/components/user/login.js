@@ -16,6 +16,11 @@ const Login = (props) => {
     const [visible, setVisible] = useState(false);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    var userType = [];
+    userType[UserType["Driver"]] = true;
+    userType[UserType["Customer"]] = true;
+    userType[UserType["Authorizer"]] = true;
+    userType[UserType["Admin"]] = true;
 
     const showModal = () => {
         setVisible(true);
@@ -30,57 +35,32 @@ const Login = (props) => {
     const handleSubmit = async (event, tokenAuth, client) => {
         event.preventDefault();
         const res = await tokenAuth();
-
         localStorage.setItem("authToken", res.data.tokenAuth.token);
-
-
-        var userType = [];
-        userType[UserType["Driver"]] = true;
-        userType[UserType["Customer"]] = true;
-        userType[UserType["Authorizer"]] = true;
-        userType[UserType["Admin"]] = true;
 
         const key = UserType[props.type];
         if (userType[key]) {
             console.log("This is " + props.type.toLowerCase() + "!");
             switch (props.type) {
                 case("Driver"):
-                    client.writeData({data: {"isDriverLoggedIn": true}});
-                    client.writeData({data: {"isCustomerLoggedIn": false}});
-                    client.writeData({data: {"isAuthorizerLoggedIn": false}});
-                    client.writeData({data: {"isAdminLoggedIn": false}});
+                    client.writeData({data: {"isDriverLoggedIn": true, "isCustomerLoggedIn": false, "isAuthorizerLoggedIn": false, "isAdminLoggedIn": false}});
                     break;
                 case("Authorizer"):
-                    client.writeData({data: {"isDriverLoggedIn": false}});
-                    client.writeData({data: {"isCustomerLoggedIn": false}});
-                    client.writeData({data: {"isAuthorizerLoggedIn": true}});
-                    client.writeData({data: {"isAdminLoggedIn": false}});
+                    client.writeData({data: {"isDriverLoggedIn": false, "isCustomerLoggedIn": false, "isAuthorizerLoggedIn": true, "isAdminLoggedIn": false}});
                     break;
                 case("Customer"):
-                    client.writeData({data: {"isDriverLoggedIn": false}});
-                    client.writeData({data: {"isCustomerLoggedIn": true}});
-                    client.writeData({data: {"isAuthorizerLoggedIn": false}});
-                    client.writeData({data: {"isAdminLoggedIn": false}});
+                    client.writeData({data: {"isDriverLoggedIn": false, "isCustomerLoggedIn": true, "isAuthorizerLoggedIn": false, "isAdminLoggedIn": false}});
                     break;
                 case("Admin"):
-                    client.writeData({data: {"isDriverLoggedIn": false}});
-                    client.writeData({data: {"isCustomerLoggedIn": false}});
-                    client.writeData({data: {"isAuthorizerLoggedIn": false}});
-                    client.writeData({data: {"isAdminLoggedIn": true}});
+                    client.writeData({data: {"isDriverLoggedIn": false, "isCustomerLoggedIn": false, "isAuthorizerLoggedIn": false, "isAdminLoggedIn": true}});
                     break;
             }
             localStorage.setItem("userType", key);
 
         } else {
             localStorage.removeItem("authToken");
-            client.writeData({data: {"isDriverLoggedIn": false}});
-            client.writeData({data: {"isCustomerLoggedIn": false}});
-            client.writeData({data: {"isAuthorizerLoggedIn": false}});
-            client.writeData({data: {"isAdminLoggedIn": false}});
+            client.writeData({data: {"isDriverLoggedIn": false, "isCustomerLoggedIn": false, "isAuthorizerLoggedIn": false, "isAdminLoggedIn": false}});
         }
-
         setVisible(false);
-
     };
 
 
@@ -145,7 +125,7 @@ const ME_QUERY = gql`
             isDriver
             isAuthorizer
             isCustomer
-            isAdmin
+            isSuperuser
         }
     }
 `;
