@@ -457,7 +457,7 @@ class DeleteCustomer(Mutation):
             raise Exception("You need to login first!")
 
         if user == customer.user or user.is_superuser:
-            Usermodel.models.get(pk=id).delete()
+            Usermodel.objects.get(pk=id).delete()
             return DeleteCustomer(id=id)
         
         raise Exception("You are not allowed to do this operation")
