@@ -40,10 +40,10 @@ const client = new ApolloClient({
     },
     clientState: {
         defaults: {
-            isDriverLoggedIn: (localStorage.getItem("userType") === UserType["Driver"]),
-            isCustomerLoggedIn: (localStorage.getItem("userType") === UserType["Customer"]),
-            isAuthorizerLoggedIn: (localStorage.getItem("userType") === UserType["Authorizer"]),
-            isAdminLoggedIn: (localStorage.getItem("userType") === UserType["Admin"]),
+            isDriverLoggedIn: (localStorage.getItem("userType") == UserType["Driver"]),
+            isCustomerLoggedIn: (localStorage.getItem("userType") == UserType["Customer"]),
+            isAuthorizerLoggedIn: (localStorage.getItem("userType") == UserType["Authorizer"]),
+            isAdminLoggedIn: (localStorage.getItem("userType") == UserType["Admin"]),
         }
     }
 });
@@ -58,6 +58,9 @@ const IS_LOGGED_IN_QUERY = gql`
 `;
 
 const App = () =>{
+    console.log(localStorage.getItem("userType"));
+    console.log(UserType["Admin"]);
+    console.log(localStorage.getItem("userType") === UserType["Admin"]);
     return (
         <Query query={IS_LOGGED_IN_QUERY} >
             {({ data , loading, error}) => {
@@ -75,6 +78,7 @@ const App = () =>{
                 console.log(isLoggedIn[UserType["Customer"]]);
                 console.log(isLoggedIn[UserType["Authorizer"]]);
                 console.log(isLoggedIn[UserType["Admin"]]);
+                // console.log(localStorage.getItem(auth));
 
                 if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]]
                 && !isLoggedIn[UserType["Authorizer"]]&& !isLoggedIn[UserType["Admin"]]) {

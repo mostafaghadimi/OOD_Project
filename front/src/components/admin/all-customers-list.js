@@ -1,42 +1,29 @@
 import React, { useState } from 'react'
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import {EditOutlined, KeyOutlined, UserOutlined, MinusOutlined} from '@ant-design/icons';
 import Error from "../shared/Error";
 import Loading from "../shared/loading"
 
 
-import './user.css'
-import {Query} from "react-apollo";
+import '../user/user.css'
+import {Mutation, Query} from "react-apollo";
 import {gql} from "apollo-boost";
+import {UserType} from "../shared/user-type-enum";
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import Nav from "../../admin-root";
+import EditCustomer from "./edit-customer"
+
+
+export const UserContext = React.createContext();
 
 const columns = [
     {
-      title: 'نام صاحب‌ بارل',
-      dataIndex: 'driver',
+      title: 'نام',
+      dataIndex: 'firstName',
     },
     {
-      title: 'وضعیت',
-      dataIndex: 'status',
-      filters: [
-        {
-          text: 'آزاد',
-          value: 'free',
-        },
-        {
-          text: 'در ماموریت',
-          value: 'on-duty',
-        },
-        {
-          text: 'تصادف کرده',
-          value: 'crashed',
-        },
-
-      ],
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
-    },
-    {
-        title: 'موقعیت جغرافیایی',
-        dataIndex: 'location',
+      title: 'نام خانوادگی',
+      dataIndex: 'lastName',
     },
     {
       title: 'تاریخچه',
@@ -44,9 +31,13 @@ const columns = [
 
     },
     {
-      title: 'امتیاز',
-      dataIndex: 'score',
+      title: 'تاریخ تولد',
+      dataIndex: 'birthday',
     },
+    {
+      title: 'ویرایش / پاک کردن',
+      dataIndex: 'editDelete',
+    }
 ];
 
 const { Search } = Input;
@@ -63,10 +54,13 @@ const title = () => (
         />
     </div>
 );
-const DriverList = ({customer}) => {
-    const [visible, setVisible] = useState(false);
-    const [visibleHistory, setVisibleHistory] = useState(false);
 
+
+const AllCustomersList = ({customer}) => {
+    const [visibleHistory, setVisibleHistory] = useState(false);
+    const [visibleEdit, setVisibleEdit] = useState(false);
+    const [visibleDelete, setVisibleDelete] = useState(false);
+    const [customerClone, setCustomerClone] = useState(null);
 
     const state = {
         bordered: true,
@@ -83,8 +77,15 @@ const DriverList = ({customer}) => {
     };
 
 
-    const showModal = () => {
-        setVisible(true);
+    const handleEdit = (customer) => {
+        console.log(customer);
+        setCustomerClone(customer);
+        setVisibleEdit(true);
+    };
+
+    const handleDelete = (event, deleteCustomer) => {
+        event.preventDefault();
+        deleteCustomer();
     };
 
 
@@ -101,7 +102,8 @@ const DriverList = ({customer}) => {
 
 
     return (
-        <Query query={GET_ALL_DRIVERS} variables={}>
+
+        <Query query={GET_ALL_CUSTOMERS}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -116,45 +118,76 @@ const DriverList = ({customer}) => {
             const orderInfo = [];
 
 
-            {data.customerDrivers.map( driver => {
-                {driver.orders.map( order=> {
+            {data.allCustomers.map( customer => {
+                {customer.orders.map( order=> {
                     orderInfo.push({orderLocation: "(" + order.latitude+ ", " + order.longitude + ")"})
                 })}
                 allInfo.push({
-                    key: driver.id,
-                    driver: driver.user.firstName + " " + driver.user.lastName,
-                    status:
-                        <div className="driver-status">
-                            <span>
-                                {driver.driverStatus === "A_1" ? "آزاد" : driver.driverStatus === "A_2" ? "در ماموریت" : driver.driverStatus === "A_3" ? "تصادف کرده" : ""}
-                            </span>
-                        </div>,
-                    location: <Button key={driver.id} onClick={showModal}>مشاهده روی نقشه</Button>,
+                    key: customer.id,
+                    firstName:
+                        customer.user.firstName,
+                    lastName:
+                        customer.user.lastName,
+                    birthday:
+                        customer.birthday,
+                    location: <Button key={4*customer.id} >مشاهده روی نقشه</Button>,
                     history:
                         <div>
-                            <Button key={driver.id} onClick={() =>
+                            <Button key={4*customer.id + 1} onClick={() =>
                                 info("نمایش تاریخچه راننده",
                                     <Table
                                     columns={orderColumns}
                                     dataSource={orderInfo}/>)} >
                                 مشاهده تاریخچه
                             </Button>
-
-
-
                         </div>,
-                    score: driver.rating
+                    editDelete:
+                    <div>
+                        <Tooltip placement="top" title='ویرایش'>
+
+                            <Button key={4* customer.id + 2} shape="circle" onClick={() => handleEdit(customer)}>
+                                <EditOutlined />
+                            </Button>
+
+                        </Tooltip>
+                        <Mutation mutation={REMOVE_MUTATION}
+                          variables={
+                              {
+                                  "id" : customer.id
+                              }
+                          }
+                          onCompleted={() => {
+                              info("مشتری با موفقیت حذف شد")
+                          }}
+                        >{(deleteCustomer, deleteData) => {
+                            return (
+
+                                <Tooltip placement="top" title= {deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
+                                    <Button key={4* customer.id + 3} shape="circle" onClick={event => handleDelete(event, deleteCustomer)} disabled = {deleteData.loading}>
+                                        <MinusOutlined />
+                                    </Button>
+                                    {deleteData.error && <Error error={deleteData.error} />}
+                                </Tooltip>
+                            )
+                        }}
+                        </Mutation>
+                    </div>
+
                 });
 
             })}
             return (
                 <div className="order-container">
+
+
+
                     <Table
                         {...state}
                         columns={columns}
                         dataSource={allInfo}
                     />
                     {error && <Error error = {error}/>}
+                    {customerClone && <EditCustomer customer = {customerClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}
                 </div>
             )
         }}
@@ -163,25 +196,36 @@ const DriverList = ({customer}) => {
 };
 
 
-const GET_ALL_DRIVERS = gql`
-query (){
-    allDrivers() {
-        id,
+const GET_ALL_CUSTOMERS = gql`
+{
+    allCustomers {
+        id
         user{
-            firstName,
+            id
+            firstName
             lastName
+            username
+            password
+            email
+            phoneNo
         }
-        latitude,
-        longitude,
-        rating,
-        orders{
-          latitude
-          longitude
+        birthday
+        orders {
+            longitude
+            latitude
         }
-        driverStatus,
-        rating
     }
 }
 `;
 
-export default (DriverList);
+
+
+const REMOVE_MUTATION = gql`
+mutation($id : ID!){
+    deleteCustomer (id : $id){
+      id
+    }
+}
+`;
+
+export default (AllCustomersList);
