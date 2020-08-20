@@ -10,6 +10,7 @@ import {gql} from "apollo-boost";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Error from "./components/shared/Error";
 import Loading from "./components/shared/loading";
+import Install from "./components/shared/install";
 
 
 export const UserContext = React.createContext();
@@ -28,6 +29,11 @@ const DriverRoot = ({isLoggedIn, currentUser}) => {
                             <Route exact path="/" render={() => (
                                 <Nav isLoggedIn={isLoggedIn} currentUser={currentUser}/>
                             )}/>
+
+                            <Route exact path="/install" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<Install/>} currentUser={currentUser}/>
+                            )}/>
+
 
                             <Route exact path="/driver/:id/profile/" render={() => (
                                 <Nav isLoggedIn={isLoggedIn} content={<DriverProfile driver={driver}/>}

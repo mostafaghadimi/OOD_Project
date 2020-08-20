@@ -12,6 +12,9 @@ import {UserType} from "../shared/user-type-enum";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Nav from "../../admin-root";
 import EditCustomer from "./edit-customer"
+import AddCustomer from "./add-customer";
+import AddDriver from "./all-driver-list";
+
 
 
 export const UserContext = React.createContext();
@@ -41,26 +44,35 @@ const columns = [
 ];
 
 const { Search } = Input;
-const title = () => (
-    <div>
-        <p>
-            لیست راننده‌ها
-        </p>
-        <Search
-            placeholder="جست‌وجو در لیست راننده‌ها"
-            onSearch={value => console.log(value)}
-            enterButton
-            style={{width:400}}
-        />
-    </div>
-);
 
 
-const AllCustomersList = ({customer}) => {
+
+const AllCustomersList = () => {
     const [visibleHistory, setVisibleHistory] = useState(false);
     const [visibleEdit, setVisibleEdit] = useState(false);
-    const [visibleDelete, setVisibleDelete] = useState(false);
+    const [visibleAdd, setVisibleAdd] = useState(false);
     const [customerClone, setCustomerClone] = useState(null);
+
+    const title = () => (
+        <div>
+            <p>
+                لیست راننده‌ها
+            </p>
+            <Search
+                placeholder="جست‌وجو در لیست راننده‌ها"
+                onSearch={value => console.log(value)}
+                enterButton
+                style={{width:400}}
+            />
+
+
+        <Button type="primary" size="large" onClick = {() => setVisibleAdd(true)} style = {{position: 'absolute', up:2, left:1}}>
+                    اضافه کردن
+                </Button>
+
+                <AddCustomer visible = {visibleAdd} setVisible = {setVisibleAdd}/>
+        </div>
+    );
 
     const state = {
         bordered: true,
@@ -223,7 +235,7 @@ const GET_ALL_CUSTOMERS = gql`
 const REMOVE_MUTATION = gql`
 mutation($id : ID!){
     deleteCustomer (id : $id){
-      id
+       id
     }
 }
 `;

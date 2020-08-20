@@ -56,7 +56,7 @@ const EditCustomer = ({customer, visible, setVisible}) => {
 
     return (
         <Mutation
-            mutation={UPDATE_DRIVER}
+            mutation={UPDATE_CUSTOMER}
             variables={
                 {
                     "customerData": {
@@ -68,15 +68,16 @@ const EditCustomer = ({customer, visible, setVisible}) => {
                             "phoneNo": phoneNo,
                             "password": password
                         },
-                        "birthday": birthDay,
-                    }
+                        // "birthday": birthDay,
+                    },
+                    "customerId" : customer.id
                 }
             }
         >
             {(updateCustomer, {loading, error}) => {
                 return (
                    <Modal
-                        title = "ویرایش راننده"
+                        title = "ویرایش مشتری"
                         visible={visible}
                         onOk = {event => handleSubmit(event, updateCustomer)}
                         onCancel = {() => setVisible(false)}
@@ -192,8 +193,8 @@ const EditCustomer = ({customer, visible, setVisible}) => {
                             </Form>
 
                    </Modal>
-          )
-        }}
+                )
+            }}
     </Mutation>
   );
 };
@@ -201,8 +202,8 @@ const EditCustomer = ({customer, visible, setVisible}) => {
 
 export default (EditCustomer);
 
-const UPDATE_DRIVER = gql`
-  mutation ($id : ID!, $customerData: CustomerInput!) {
+const UPDATE_CUSTOMER = gql`
+ mutation ($id : ID!, $customerData: CustomerInput!) {
   updateCustomer(id: $id, customerData: $customerData) {
     customer{
        user{
