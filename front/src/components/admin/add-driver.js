@@ -20,7 +20,7 @@ const editItemLayout = {
 
 
 
-const EditDriver = ({visible, setVisible}) => {
+const AddDriver = ({visible, setVisible}) => {
     const [username, setUsername] = useState("");
     const [usernameState, setUsernameState] = useState(false);
     const [email, setEmail] = useState("");
@@ -43,8 +43,9 @@ const EditDriver = ({visible, setVisible}) => {
     const handleSubmit = async (event, createDriver) => {
         console.log("In the handleSubmit");
         event.preventDefault();
-        createDriver();
+        const res = await createDriver();
         setVisible(false);
+        info("راننده با موفقیت اضافه شد", "");
     };
 
 
@@ -81,7 +82,7 @@ const EditDriver = ({visible, setVisible}) => {
                             "password": password
                         },
                         "nationalId": nationalId,
-                        "birthday": birthDay,
+                        // "birthday": birthDay,
                     }
                 }
             }
@@ -89,12 +90,13 @@ const EditDriver = ({visible, setVisible}) => {
             {(createDriver, {loading, error}) => {
                 return (
                    <Modal
-                        title = "ویرایش راننده"
+                        title = "اضافه کردن راننده"
                         visible={visible}
                         onOk = {event => handleSubmit(event, createDriver)}
                         onCancel = {() => setVisible(false)}
                         okButtonProps = {{
                             disabled:
+
                             loading ||
                             !firstNameState ||
                             !lastNameState ||
@@ -104,21 +106,18 @@ const EditDriver = ({visible, setVisible}) => {
                             !passwordState ||
                             !phoneNoState
                         }}
-                        okText={loading ? "در حال ویرایش..." : "ویرایش"}
+                        okText={loading ? "در حال اضافه کردن..." : "اضافه کردن"}
                         cancelText="لغو"
                         >
-
                             <Form
-                                name="edit driver"
+                                name="add driver in all drivers list"
                                 {...editItemLayout}
-                                onComplete = {
-                                    () => info("اطلاعات با موفیقت تغییر کرد!", "")
-                                }
+                                // onComplete = {() => info("راننده با موفقیت اضافه شد", "")}
 
                             >
                                 <Form.Item label="نام">
                                 <Input
-                                    id = "name"
+                                    id = "name-add"
                                     onChange={event => {
                                         setFirstName(event.target.value);
                                         setFirstNameState(!!firstName);
@@ -128,7 +127,7 @@ const EditDriver = ({visible, setVisible}) => {
 
                                 <Form.Item label="نام خانوادگی">
                                     <Input
-                                        id = "familyName"
+                                        id = "familyName-add"
                                         onChange={event => {
                                                 setLastName(event.target.value);
                                                 setLastNameState(!!firstName);
@@ -139,7 +138,7 @@ const EditDriver = ({visible, setVisible}) => {
 
                                 <Form.Item label="نام کاربری">
                                     <Input
-                                        id = "username"
+                                        id = "username-add"
                                         onChange={event => {
                                                 setUsername(event.target.value);
                                                 setUsernameState(!!username);
@@ -150,26 +149,29 @@ const EditDriver = ({visible, setVisible}) => {
 
                                 <Form.Item label="رمز عبور">
                                     <Input
-                                        id = "password"
+                                        id = "password-add"
                                         onChange={event => {
                                                 setPassword(event.target.value);
+                                                console.log(password);
+                                                console.log(event.target.value);
                                                 setPasswordState(!!password);
+                                                console.log(passwordState);
                                             }}
                                       />
                                 </Form.Item>
 
                                 <Form.Item label="ایمیل" >
                                     <Input
-                                        id = "email"
+                                        id = "email-add"
                                         onChange={event => {
                                             if(event.target.value.match("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+[.][A-Za-z]{2,}$") != null){
                                                 setEmail(event.target.value);
                                                 setEmailState(true);
-                                                document.getElementById("email").style.backgroundColor = 'white';
+                                                document.getElementById("email-add").style.backgroundColor = 'white';
                                             }
                                             else {
                                                 setEmailState(false);
-                                                document.getElementById("email").style.backgroundColor = 'pink';
+                                                document.getElementById("email-add").style.backgroundColor = 'pink';
                                             }
                                         }}
                                         placeholder={"poosa@gmail.com"}/>
@@ -177,16 +179,16 @@ const EditDriver = ({visible, setVisible}) => {
 
                                 <Form.Item label="شماره تماس">
                                     <Input
-                                        id = "phoneNumber"
+                                        id = "phoneNumber-add"
                                         onChange={event => {
                                             if(event.target.value.match("^[0-9]{8,11}$") != null){
                                                 setPhoneNo(event.target.value);
                                                 setPhoneNoState(true);
-                                                document.getElementById("phoneNumber").style.backgroundColor = 'white';
+                                                document.getElementById("phoneNumber-add").style.backgroundColor = 'white';
                                             }
                                             else {
                                                 setPhoneNoState(false);
-                                                document.getElementById("phoneNumber").style.backgroundColor = 'pink';
+                                                document.getElementById("phoneNumber-add").style.backgroundColor = 'pink';
                                             }
                                         }}
                                         placeholder={"0912xxxxxxx"}/>
@@ -194,15 +196,15 @@ const EditDriver = ({visible, setVisible}) => {
 
                                 <Form.Item label="کد ملی">
                                     <Input
-                                        id = "nationalId"
+                                        id = "nationalId-add"
                                         onChange={event => {
                                             if(event.target.value.match("^[0-9]{10}$") != null){
                                                 setNationalId(event.target.value);
                                                 setNationalIdState(true);
-                                                document.getElementById("nationalId").style.backgroundColor = 'white';
+                                                document.getElementById("nationalId-add").style.backgroundColor = 'white';
                                             }
                                             else {
-                                                document.getElementById("nationalId").style.backgroundColor = 'pink';
+                                                document.getElementById("nationalId-add").style.backgroundColor = 'pink';
                                                 setNationalIdState(false);
                                             }
                                         }}
@@ -210,18 +212,13 @@ const EditDriver = ({visible, setVisible}) => {
                                 </Form.Item>
 
                                 <Form.Item label="تاریخ تولد">
-                                    <DatePicker id = "birthDay" onChange=
+                                    <DatePicker id = "birthDay-add" onChange=
                                         {date => {
                                                 setBirthDay(date);
                                             }
                                         }
                                     />
                                 </Form.Item>
-
-
-                            <Form.Item label="امتیاز">
-                                <Rate disabled defaultValue = {3} />
-                            </Form.Item>
 
 
                             {/*<Form.Item*/}
@@ -247,16 +244,13 @@ const EditDriver = ({visible, setVisible}) => {
 };
 
 
-export default (EditDriver);
+export default (AddDriver);
 
 const ADD_DRIVER = gql`
   mutation ($driverData: DriverInput!) {
   createDriver(driverData: $driverData) {
     driver{
-       user{
-        firstName
-        lastName
-       }
+       id
     }
   }
 }

@@ -6,7 +6,7 @@ const Loading = () => {
   return(
 
     <div>
-      <Spinner size={120} spinnerColor={"#333"} spinnerWidth={2} visible={true} />
+      <Spinner size={120} spinner_color={"#333"} spinner_width={2} visible={true} />
     </div>
 
   )

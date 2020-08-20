@@ -16,8 +16,6 @@ import AddDriver from "./add-driver";
 
 
 
-export const UserContext = React.createContext();
-
 const columns = [
     {
       title: 'نام',
@@ -69,31 +67,31 @@ const columns = [
 const { Search } = Input;
 
 
-const AllDriversList = ({customer}) => {
+const AllDriversList = () => {
     const [visibleHistory, setVisibleHistory] = useState(false);
     const [visibleEdit, setVisibleEdit] = useState(false);
     const [visibleAdd, setVisibleAdd] = useState(false);
     const [driverClone, setDriverClone] = useState(null);
 
     const title = () => (
-    <div>
-        <p>
-            لیست راننده‌ها
-        </p>
-        <Search
-            placeholder="جست‌وجو در لیست راننده‌ها"
-            onSearch={value => console.log(value)}
-            enterButton
-            style={{width:400}}
-        />
+        <div>
+            <p>
+                لیست راننده‌ها
+            </p>
+            <Search
+                placeholder="جست‌وجو در لیست راننده‌ها"
+                onSearch={value => console.log(value)}
+                enterButton
+                style={{width:400}}
+            />
 
-        <Button type="primary" size="large" style = {{position: 'absolute', up:2, left:1}}>
-            اضافه کردن
-        </Button>
+            <Button type="primary" size="large" onClick = {() => setVisibleAdd(true)} style = {{position: 'absolute', up:2, left:1}}>
+                اضافه کردن
+            </Button>
 
-        <AddDriver visible = {visibleAdd} setVisible = {setVisibleAdd}/>
-    </div>
-);
+            <AddDriver visible = {visibleAdd} setVisible = {setVisibleAdd}/>
+        </div>
+    );
 
 
     const state = {
@@ -215,6 +213,7 @@ const AllDriversList = ({customer}) => {
                 });
 
             })}
+            console.log(!!driverClone);
             return (
                 <div className="order-container">
 
@@ -226,7 +225,9 @@ const AllDriversList = ({customer}) => {
                         dataSource={allInfo}
                     />
                     {error && <Error error = {error}/>}
-                    {driverClone && <EditDriver driver = {driverClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}
+                    {!!driverClone && <EditDriver driver = {driverClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}
+                    {/*<AddDriver visible = {visibleAdd} setVisible = {setVisibleAdd}/>*/}
+
                 </div>
             )
         }}
