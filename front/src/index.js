@@ -12,6 +12,7 @@ import "antd/dist/antd.css";
 import './static/css/normalizer.css'
 import Nav from './components/nav/nav';
 import Error from "./components/shared/Error";
+import Install from "./components/shared/install";
 import Loading from "./components/shared/loading";
 import DriverRoot from './driver-root';
 import CustomerRoot from './customer-root';
@@ -70,7 +71,10 @@ const App = () =>{
 
                 if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]] && !isLoggedIn[UserType["Authorizer"]]) {
                     return (
-                        <Route path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+                        <>
+                            <Route exact path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+                            <Route exact path="/install" render={() => (<Nav isLoggedIn={isLoggedIn} content={<Install/>}/>)}/>
+                        </>
                     )
                 }
                 return(

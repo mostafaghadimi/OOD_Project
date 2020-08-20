@@ -20,9 +20,9 @@ const Nav = ({isLoggedIn, currentUser, content}) => {
                 </Menu.Item>
 
                 <Menu.Item key="2">
-                    {/* <Link to=""> */}
+                    <Link to="/install">
                         نصب اپلیکیشن
-                    {/* </Link> */}
+                    </Link>
                 </Menu.Item>
                 <Menu.Item key="3">
                     {/* <Link to=""> */}
