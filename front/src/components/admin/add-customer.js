@@ -67,7 +67,7 @@ const AddCustomer = ({visible, setVisible}) => {
 
     return (
         <Mutation
-            mutation={ADD_DRIVER}
+            mutation={ADD_CUSTOMER}
             variables={
                 {
                     "customerData": {
@@ -222,7 +222,7 @@ const AddCustomer = ({visible, setVisible}) => {
   );
 };
 
-const ADD_DRIVER = gql`
+const ADD_CUSTOMER = gql`
   mutation ($customerData: CustomerInput!) {
   createCustomer(customerData: $customerData) {
     customer{
