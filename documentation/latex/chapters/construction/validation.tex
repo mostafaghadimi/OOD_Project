@@ -1,18 +1,142 @@
 \قسمت{درستی‌سنجی}
 
-در این قسمت درستی بخش‌های مختلف \لر{back-end} با کمک درخواست‌\زیرنویس{\لر{query}} و اعمال تغییرات \زیرنویس{\لر{mutation}} می‌سنجیم. \زیرنویس{\مهم{نکته:} تمامی این درخواست‌ها و اعمال تغییرات در ریپازیتوری گیت‌هاب مربوط به پروژه موجود است.}
+در این قسمت درستی بخش‌های مختلف \لر{back-end} با کمک درخواست‌ \زیرنویس{\لر{query}} و اعمال تغییرات \زیرنویس{\لر{mutation}} می‌سنجیم. \زیرنویس{\مهم{نکته:} تمامی این درخواست‌ها و اعمال تغییرات در ریپازیتوری گیت‌هاب مربوط به پروژه موجود است.}
 
-\شروع{فقرات}
-	\فقره \مهم{گرفتن توکن}
-\پایان{فقرات}
+\شروع{شمارش}
+	\فقره چند نمونه از درخواست‌هایی که نیاز به \لر{Authorization Header} ندارند.
+	
+	\شروع{فقرات}
+		\فقره \مهم{گرفتن توکن}
 
-
-\begin{latin}
-	\begin{verbatim}
+	
+	
+	\begin{latin}
+		\begin{verbatim}
 mutation($username:String!, $password: String!) {
 	tokenAuth(username:$username, password:$password) {
 		token
 	}
 }
-	\end{verbatim}
-\end{latin}
+		\end{verbatim}
+	\end{latin}
+
+	\فقره \مهم{اعتبارسنجی توکن}
+
+
+
+	\begin{latin}	
+		\begin{verbatim}
+mutation($token: String!) {
+	verifyToken (token:$token){
+		payload 
+	}	
+}
+		\end{verbatim}
+	\end{latin}
+	
+	\فقره \مهم{\لر{Refresh} توکن}
+	
+	
+	
+	\begin{latin}
+		\begin{verbatim}
+mutation($token: String!) {
+	refreshToken (
+		token: $token
+		)
+	{
+		token
+		payload
+		
+	}
+}
+		\end{verbatim}
+	\end{latin}
+
+	\فقره \مهم{ساخت راننده جدید}
+	\begin{latin}
+		\begin{verbatim}
+mutation {
+	createDriver(
+		driverData: {
+		user: {
+		firstName: "Mostafa",
+		lastName: "Ghadimi",
+		email: "mostafa.ghadimi@yahoo.com",
+		username: "MostafaGhadimi",
+		phoneNo: "09120727175",
+		password: "asdf"
+		}
+		nationalId: "00123103",
+	
+		}
+	){
+	driver {
+		user {
+			id
+			firstName
+			lastName
+			email
+			username
+			}
+		}
+	}
+}
+		\end{verbatim}
+	\end{latin}
+	
+	
+	
+
+	\پایان{فقرات}
+	
+		\فقره چند نمونه از درخواست‌هایی که نیاز به \لر{Authorization Header} دارند.
+		
+		\شروع{فقرات}
+			\فقره \مهم{اطلاعات راننده‌های تایید نشده}
+	\begin{latin}
+		\begin{verbatim}
+{
+	unverifiedDrivers {
+		id
+		user {
+			firstName
+			lastName
+			username
+			phoneNo
+		}
+		isVerified
+		driverStatus
+	}
+}
+		\end{verbatim}
+	\end{latin}
+
+			\فقره \مهم{اختصاص راننده به بار}
+	\begin{latin}
+		\begin{verbatim}
+mutation {
+	assignDriverLoad(orderId:"1", driverId: "8"){
+		order {
+			id
+			vehicle {
+				plateNo
+			}  
+			driver {
+				user {
+					firstName
+					lastName
+					username
+				}
+			}
+			destinationAddress
+			orderStatus
+		}
+	}
+}
+		\end{verbatim}
+	\end{latin}
+		\پایان{فقرات}
+\پایان{شمارش}
+
+\مهم{نکته مهم}: تمامی درستی‌سنجی‌ها در پوشه‌ی \لر{requests} و \لر{validation} آورده شده‌اند. مثال‌های بالا صرفا برای مشاهده‌ی چگونگی درخواست‌ها بود.
