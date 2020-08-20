@@ -26,7 +26,8 @@ const Sidebar = (props) => {
                 style={{height: '100%', borderRight: 0}}
             >
                 <SubMenu key="sub1" icon={<InboxOutlined/>} title="صاحب بار">
-                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] || props.isLoggedIn[UserType["Authorizer"]] ?
+                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]]
+                    || props.isLoggedIn[UserType["Authorizer"]] || props.isLoggedIn[UserType["Admin"]] ?
                         <div></div> :
                         <Menu.Item key="14">
                             <Login type="Customer"> </Login>
@@ -68,32 +69,27 @@ const Sidebar = (props) => {
                         </Menu.Item>
                         : <div></div>
                     }
-
-                    {props.isLoggedIn[UserType["Customer"]]?
-                        <Menu.Item key="30">
-                            <Logout type="Customer"/>
-                        </Menu.Item>
-                        : <div> </div>
-                    }
-
-                    {/* <Menu.Item key="19">
-    <Link to="/order/detail">
-        جزئیات سفارش
-    </Link>
-</Menu.Item> */}
                 </SubMenu>
-                <SubMenu key='sub2' icon={<UserOutlined/>} title="مدیر سامانه">
-                </SubMenu>
+
+                {props.isLoggedIn[UserType["Customer"]]?
+                    <Menu.Item key="30">
+                        <Logout type="Customer"/>
+                    </Menu.Item>
+                    : <div> </div>
+                }
+
+
                 <SubMenu key="sub3" icon={<CarOutlined/>} title="راننده">
-                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] || props.isLoggedIn[UserType["Authorizer"]] ?
+                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]]
+                    || props.isLoggedIn[UserType["Authorizer"]] || props.isLoggedIn[UserType["Admin"]] ?
                         <div></div> :
-                        <Menu.Item key="14">
+                        <Menu.Item key="5">
                             <Login type="Driver"> </Login>
-
-                        </Menu.Item>
+                            </Menu.Item>
                     }
 
-                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] || props.isLoggedIn[UserType["Authorizer"]] ?
+                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]]
+                    || props.isLoggedIn[UserType["Authorizer"]] || props.isLoggedIn[UserType["Admin"]] ?
                         <div></div> :
                         <Menu.Item key="13">
                             <Link to='/driver/register'>
@@ -155,7 +151,9 @@ const Sidebar = (props) => {
 
                 <SubMenu key="sub4" icon={<CheckOutlined/>} title="مدیر احراز هویت">
 
-                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] || props.isLoggedIn[UserType["Authorizer"]] ?
+
+                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] ||
+                     props.isLoggedIn[UserType["Authorizer"] || props.isLoggedIn["Admin"]] ?
                         <div></div> :
                         <Menu.Item key="14">
                             <Login type="Authorizer"> </Login>
@@ -176,6 +174,55 @@ const Sidebar = (props) => {
                             <Logout type="Customer"/>
                         </Menu.Item>
                         : <div> </div>
+                    }
+
+
+                </SubMenu>
+
+                <SubMenu key="sub2" icon={<UserOutlined/>} title="مدیر سامانه">
+
+                    {props.isLoggedIn[UserType["Customer"]] || props.isLoggedIn[UserType["Driver"]] ||
+                     props.isLoggedIn[UserType["Authorizer"] || props.isLoggedIn["Admin"]] ?
+                        <div></div> :
+                        <Menu.Item key="17">
+                            <Login type="Admin"> </Login>
+                        </Menu.Item>
+                    }
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/${props.currentUser.id}}/getAuthorizersList`}>
+                                لیست مدیران احراز هویت
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
+                    }
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/${props.currentUser.id}}/getCustomersList`}>
+                                لیست مشتریان
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
+                    }
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/${props.currentUser.id}}/getDriversList`}>
+                                لیست راننده‌ها
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
+                    }
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/${props.currentUser.id}}/getAdminsList`}>
+                                لیست مدیران سامانه
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
                     }
 
 

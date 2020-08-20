@@ -30,6 +30,7 @@ const Login = (props) => {
     const handleSubmit = async (event, tokenAuth, client) => {
         event.preventDefault();
         const res = await tokenAuth();
+
         localStorage.setItem("authToken", res.data.tokenAuth.token);
 
 
@@ -37,6 +38,7 @@ const Login = (props) => {
         userType[UserType["Driver"]] = true;
         userType[UserType["Customer"]] = true;
         userType[UserType["Authorizer"]] = true;
+        userType[UserType["Admin"]] = true;
 
         const key = UserType[props.type];
         if (userType[key]) {
@@ -46,16 +48,25 @@ const Login = (props) => {
                     client.writeData({data: {"isDriverLoggedIn": true}});
                     client.writeData({data: {"isCustomerLoggedIn": false}});
                     client.writeData({data: {"isAuthorizerLoggedIn": false}});
+                    client.writeData({data: {"isAdminLoggedIn": false}});
                     break;
                 case("Authorizer"):
                     client.writeData({data: {"isDriverLoggedIn": false}});
                     client.writeData({data: {"isCustomerLoggedIn": false}});
                     client.writeData({data: {"isAuthorizerLoggedIn": true}});
+                    client.writeData({data: {"isAdminLoggedIn": false}});
                     break;
                 case("Customer"):
                     client.writeData({data: {"isDriverLoggedIn": false}});
                     client.writeData({data: {"isCustomerLoggedIn": true}});
                     client.writeData({data: {"isAuthorizerLoggedIn": false}});
+                    client.writeData({data: {"isAdminLoggedIn": false}});
+                    break;
+                case("Admin"):
+                    client.writeData({data: {"isDriverLoggedIn": false}});
+                    client.writeData({data: {"isCustomerLoggedIn": false}});
+                    client.writeData({data: {"isAuthorizerLoggedIn": false}});
+                    client.writeData({data: {"isAdminLoggedIn": true}});
                     break;
             }
             localStorage.setItem("userType", key);
@@ -65,6 +76,7 @@ const Login = (props) => {
             client.writeData({data: {"isDriverLoggedIn": false}});
             client.writeData({data: {"isCustomerLoggedIn": false}});
             client.writeData({data: {"isAuthorizerLoggedIn": false}});
+            client.writeData({data: {"isAdminLoggedIn": false}});
         }
 
         setVisible(false);
@@ -81,6 +93,7 @@ const Login = (props) => {
                     "ورود راننده به سامانه",
                     "ورود صاحب بار به سامانه",
                     "ورود مدیراحراز هویت به سامانه",
+                    "ورود مدیر به سامانه",
                 ];
 
                 return (
@@ -94,6 +107,7 @@ const Login = (props) => {
                             title={titles[UserType[props.type]]}
                             visible={visible}
                             onOk={event => handleSubmit(event, tokenAuth, client)}
+                            okButtonProps={{ href: "/"}}
                             onCancel={handleCancel}
                             okText="ورود"
                             cancelText="لغو"
@@ -131,7 +145,7 @@ const ME_QUERY = gql`
             isDriver
             isAuthorizer
             isCustomer
-            isSuperuser
+            isAdmin
         }
     }
 `;

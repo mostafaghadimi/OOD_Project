@@ -37,6 +37,13 @@ const AddOrder = ({customer}) => {
         }
     };
 
+    function info(message) {
+      Modal.info({
+        title: message,
+        onOk() {},
+      });
+    }
+
     return (
         <Mutation
         mutation={NEW_ORDER_MUTATION}
@@ -50,9 +57,8 @@ const AddOrder = ({customer}) => {
             }
         }
 
-        onCompleted={data => {
-        console.log({ data });
-        setVisible(true);
+        onCompleted={() => {
+        info("سفارش با موفقیت ثبت شد")
         }}
         >
         {(createOrder, { loading, error }) => {
@@ -127,19 +133,7 @@ const AddOrder = ({customer}) => {
                         >
                             {loading ? "در حال ثبت کردن..." : "ثبت سفارش"}
                         </Button>
-                        <Modal
-                        title="سفارش با موفقیت ثبت شد"
-                        visible={visible}
-                        onCancel={() => {
-                            setVisible(false);
-                          }
-                        }
-                        onOk = {() => {
-                            setVisible(false);
-                          }
-                        }
-                        >
-                    </Modal>
+
                     </Form.Item>
                     {error && <Error error={error} />}
                 </Form>

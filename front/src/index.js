@@ -17,8 +17,11 @@ import Loading from "./components/shared/loading";
 import DriverRoot from './driver-root';
 import CustomerRoot from './customer-root';
 import AuthorizerRoot from './authorizer-root';
+import AdminRoot from './admin-root';
 import { ApolloProvider, Query } from "react-apollo";
 import ApolloClient, { gql } from "apollo-boost";
+import DriverRegister from './components/user/driver-register';
+
 
 
 
@@ -40,6 +43,7 @@ const client = new ApolloClient({
             isDriverLoggedIn: (localStorage.getItem("userType") === UserType["Driver"]),
             isCustomerLoggedIn: (localStorage.getItem("userType") === UserType["Customer"]),
             isAuthorizerLoggedIn: (localStorage.getItem("userType") === UserType["Authorizer"]),
+            isAdminLoggedIn: (localStorage.getItem("userType") === UserType["Admin"]),
         }
     }
 });
@@ -48,7 +52,8 @@ const IS_LOGGED_IN_QUERY = gql`
     query {
         isDriverLoggedIn @client
         isCustomerLoggedIn 
-        isAuthorizerLoggedIn  
+        isAuthorizerLoggedIn
+        isAdminLoggedIn
     }
 `;
 
@@ -64,17 +69,25 @@ const App = () =>{
                 isLoggedIn[UserType["Driver"]] = data.isDriverLoggedIn;
                 isLoggedIn[UserType["Customer"]] = data.isCustomerLoggedIn;
                 isLoggedIn[UserType["Authorizer"]] = data.isAuthorizerLoggedIn;
+                isLoggedIn[UserType["Admin"]] = data.isAdminLoggedIn;
 
                 console.log(isLoggedIn[UserType["Driver"]]);
                 console.log(isLoggedIn[UserType["Customer"]]);
                 console.log(isLoggedIn[UserType["Authorizer"]]);
+                console.log(isLoggedIn[UserType["Admin"]]);
 
-                if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]] && !isLoggedIn[UserType["Authorizer"]]) {
+                if (!isLoggedIn[UserType["Driver"]] && !isLoggedIn[UserType["Customer"]]
+                && !isLoggedIn[UserType["Authorizer"]]&& !isLoggedIn[UserType["Admin"]]) {
                     return (
-                        <>
+                        <Switch>
                             <Route exact path="/" render={() => (<Nav isLoggedIn={isLoggedIn}/>)}/>
+
+                            <Route exact path="/driver/register" render={() => (
+                                <Nav isLoggedIn={isLoggedIn} content={<DriverRegister/>}/>
+                            )}/>
+
                             <Route exact path="/install" render={() => (<Nav isLoggedIn={isLoggedIn} content={<Install/>}/>)}/>
-                        </>
+                        </Switch>
                     )
                 }
                 return(
@@ -92,8 +105,10 @@ const App = () =>{
                                  if(isLoggedIn[UserType["Customer"]]){
                                      return <CustomerRoot isLoggedIn = {isLoggedIn} currentUser = {currentUser}/>
                                  }
-                                 return <AuthorizerRoot isLoggedIn = {isLoggedIn} currentUser = {currentUser}/>
-
+                                 if(isLoggedIn[UserType["Authorizer"]]){
+                                     return <AuthorizerRoot isLoggedIn = {isLoggedIn} currentUser = {currentUser}/>
+                                 }
+                                return <AdminRoot isLoggedIn = {isLoggedIn} currentUser = {currentUser}/>
                              }}
                     </Query>
                 )

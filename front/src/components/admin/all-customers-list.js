@@ -11,7 +11,7 @@ import {gql} from "apollo-boost";
 
 const columns = [
     {
-      title: 'نام راننده',
+      title: 'نام صاحب‌ بارل',
       dataIndex: 'driver',
     },
     {
@@ -41,7 +41,7 @@ const columns = [
     {
       title: 'تاریخچه',
       dataIndex: 'history',
-      
+
     },
     {
       title: 'امتیاز',
@@ -56,9 +56,9 @@ const title = () => (
             لیست راننده‌ها
         </p>
         <Search
-            placeholder="جست‌وجو در لیست راننده‌ها" 
-            onSearch={value => console.log(value)} 
-            enterButton 
+            placeholder="جست‌وجو در لیست راننده‌ها"
+            onSearch={value => console.log(value)}
+            enterButton
             style={{width:400}}
         />
     </div>
@@ -101,7 +101,7 @@ const DriverList = ({customer}) => {
 
 
     return (
-        <Query query={GET_CUSTOMER_DRIVERS} variables={{"id": customer.user.id}}>
+        <Query query={GET_ALL_DRIVERS} variables={}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -163,9 +163,9 @@ const DriverList = ({customer}) => {
 };
 
 
-const GET_CUSTOMER_DRIVERS = gql`
-query ($id : ID!){
-    customerDrivers(id:$id) {
+const GET_ALL_DRIVERS = gql`
+query (){
+    allDrivers() {
         id,
         user{
             firstName,
@@ -185,22 +185,3 @@ query ($id : ID!){
 `;
 
 export default (DriverList);
-// class DedicateLoad extends Component {
-//     render(){
-//         return (
-//             <div>
-//                 اختصاص دادن بار اگه آزاد بود
-//             </div>
-//         )
-//     }
-// }
-
-// class ChangeStatus extends Component {
-//     render() {
-//         return (
-//             <div>
-//                 تغییر وضعیت به تحویل داده اگه تو ماموریت بود! شایدم باید اتوماتیک باشه!
-//             </div>
-//         )
-//     }
-// }
