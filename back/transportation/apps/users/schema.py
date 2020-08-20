@@ -456,13 +456,12 @@ class DeleteCustomer(Mutation):
         if user.is_anonymous:
             raise Exception("You need to login first!")
 
-        if user != customer.user:
-            raise Exception("You are not allowed to do this operation")
+        if user == customer.user or user.is_superuser:
+            Usermodel.models.get(pk=id).delete()
+            return DeleteCustomer(id=id)
         
-        user_id = customer.user.id
-        Usermodel.models.get(pk=user_id).delete()
-
-        return DeleteCustomer(id=id)
+        raise Exception("You are not allowed to do this operation")
+        
         
         
 class UpdateDriverStatus(Mutation):
