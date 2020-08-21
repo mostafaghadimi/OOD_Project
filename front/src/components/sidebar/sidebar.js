@@ -122,14 +122,14 @@ const Sidebar = (props) => {
                     }
 
 
-                    {props.isLoggedIn[UserType["Driver"]] ?
-                        <Menu.Item key="11">
-                            <Link to={`/driver/${props.currentUser.id}}/addVehicle`}>
-                                ثبت خودرو حمل‌بار جدید
-                            </Link>
-                        </Menu.Item>
-                        : <div></div>
-                    }
+                    {/*{props.isLoggedIn[UserType["Driver"]] ?*/}
+                        {/*<Menu.Item key="11">*/}
+                            {/*<Link to={`/driver/${props.currentUser.id}}/addVehicle`}>*/}
+                                {/*ثبت خودرو حمل‌بار جدید*/}
+                            {/*</Link>*/}
+                        {/*</Menu.Item>*/}
+                        {/*: <div></div>*/}
+                    {/*}*/}
 
                     {props.isLoggedIn[UserType["Driver"]]?
                         <Menu.Item key="40">
@@ -211,6 +211,15 @@ const Sidebar = (props) => {
                         <Menu.Item key="23">
                             <Link to={`/admin/allOrdersList`}>
                                 لیست سفارشات
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
+                    }
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/allVehiclesList`}>
+                                لیست ماشین ها
                             </Link>
                         </Menu.Item>
                         : <div></div>

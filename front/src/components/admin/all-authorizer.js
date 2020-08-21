@@ -110,7 +110,7 @@ const AllAuthorizerList = () => {
 
     return (
 
-        <Query query={GET_ALL_CUSTOMERS}>
+        <Query query={GET_ALL_AUTHORIZERS}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -187,7 +187,7 @@ const AllAuthorizerList = () => {
 };
 
 
-const GET_ALL_CUSTOMERS = gql`
+const GET_ALL_AUTHORIZERS = gql`
 {
     allAuthorizers {
         id
