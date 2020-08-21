@@ -1,13 +1,15 @@
 import React, {Component, useState} from 'react'
-import { Table, Button, Modal } from 'antd';
 import { CheckCircleTwoTone } from '@ant-design/icons';
-import OrderDetail from './order-detail';
+import { Table, Button, Modal, Tooltip, Input } from 'antd';
+import {EditOutlined, KeyOutlined, UserOutlined, MinusOutlined} from '@ant-design/icons';
 
-import './order.css'
+
+import '../order/order.css'
 import {gql} from "apollo-boost";
-import {Query} from "react-apollo";
+import {Query, Mutation} from "react-apollo";
 import Error from "../shared/Error";
 import Loading from "../shared/loading";
+import AddOrder from "./add-order"
 
 
 const columns = [
@@ -63,12 +65,34 @@ const columns = [
       title: 'هزینه',
       dataIndex: 'cost',
     },
+    {
+      title: 'ویرایش / پاک کردن',
+      dataIndex: 'editDelete',
+    }
 ];
 
-const OrderList = ({customer}) => {
-    const title = () => 'سفارش‌های ثبت شده';
+const AllOrderList = () => {
+    const title = () => (
+        <div>
+
+            <Button type="primary" size="large" onClick = {() => setVisibleAdd(true)} style = {{position: 'absolute', up:0, left:1}}>
+                اضافه کردن
+            </Button>
+
+            <p>
+                لیست سفارشات
+            </p>
+
+
+            <AddOrder visible = {visibleAdd} setVisible = {setVisibleAdd}/>
+
+        </div>
+    );
 
     const [visible, setVisible] = useState(false);
+    const [visibleEdit, setVisibleEdit] = useState(false);
+    const [visibleAdd, setVisibleAdd] = useState(false);
+    const [orderClone, setOrderClone] = useState(null);
 
 
     const state = {
@@ -86,19 +110,39 @@ const OrderList = ({customer}) => {
         bottom: 'bottomRight',
       };
 
-    
+    const handleEdit = (order) => {
+        console.log(driver);
+        setOrderClone(driver);
+        setVisibleEdit(true);
+    };
+
+    const handleDelete = (event, deleteOrder) => {
+        event.preventDefault();
+        deleteOrder();
+    };
+
+
+
     const allInfo = [];
+
+    function info(message, content) {
+      Modal.info({
+        title: message,
+        content: content,
+        onOk() {},
+      });
+    }
 
 
 
     return (
-        <Query query={GET_CUSTOMER_ORDERS} variables={{"id": customer.id}}>
+        <Query query={GET_ORDERS} >
             {({data, loading, error}) => {
                 if (loading) return <Loading/>;
 
 
                 {
-                    data.customerOrders.map(order => {
+                    data.allOrders.map(order => {
                         allInfo.push(
                             {
                                 key: order.id,
@@ -107,6 +151,38 @@ const OrderList = ({customer}) => {
                                 address: order.destinationAddress,
                                 cost: order.transportationCost,
                                 status: order.orderStatus === "A_1" ? "ثبت شده" : order.orderStatus === "A_2" ? "در حال بارگذاری" : order.orderStatus === "A_3" ? "در حال ارسال":  order.orderStatus === "A_4" ? "ارسال شده" : "",
+                                editDelete:
+                                <div>
+                                    <Tooltip placement="top" title='ویرایش'>
+
+                                        <Button key={4* order.id + 2} shape="circle" onClick={() => handleEdit(order)}>
+                                            <EditOutlined />
+                                        </Button>
+
+                                    </Tooltip>
+                                    <Mutation mutation={REMOVE_MUTATION}
+                                      variables={
+                                          {
+                                              "id" : order.id
+                                          }
+                                      }
+                                      onCompleted={() => {
+                                          info("سفارش با موفقیت حذف شد")
+                                      }}
+                                    >{(deleteOrder, deleteData) => {
+                                        return (
+
+                                            <Tooltip placement="top" title= {deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
+                                                <Button key={4* order.id + 3} shape="circle" onClick={event => handleDelete(event, deleteOrder)} disabled = {deleteData.loading}>
+                                                    <MinusOutlined />
+                                                </Button>
+                                                {deleteData.error && <Error error={deleteData.error} />}
+                                            </Tooltip>
+                                        )
+                                    }}
+                                    </Mutation>
+                                </div>
+
                             }
                         );
                         console.log(allInfo);
@@ -122,6 +198,7 @@ const OrderList = ({customer}) => {
                             dataSource={allInfo}
                         />
                         {error && <Error error={error} />}
+
                     </div>
 
                 );
@@ -130,9 +207,9 @@ const OrderList = ({customer}) => {
     )
 };
 
-const GET_CUSTOMER_ORDERS = gql`
-query ($id : ID!){
-    customerOrders(id : $id) {
+const GET_ORDERS = gql`
+{
+    allOrders {
         id,
         owner{
             user{
@@ -154,5 +231,14 @@ query ($id : ID!){
 }
 `;
 
+const REMOVE_MUTATION = gql`
+mutation($id: ID!){
+    deleteOrder (id:$id){
+        id
+    }
+}
+`;
 
-export default (OrderList)
+
+
+export default (AllOrderList)

@@ -7,6 +7,8 @@ import Error from "./components/shared/Error";
 import AllDriversList from "./components/admin/all-driver-list";
 import AllCustomersList from "./components/admin/all-customers-list";
 import AllAuthorizersList from "./components/admin/all-authorizer";
+import AllOrdersList from "./components/admin/all-orders-list";
+
 import Install from "./components/shared/install";
 
 
@@ -36,6 +38,10 @@ const AdminRoot = ({isLoggedIn, currentUser}) => {
 
                 <Route exact path="/admin/allAuthorizersList" render={() => (
                     <Nav isLoggedIn={isLoggedIn} content={<AllAuthorizersList/>} currentUser = {currentUser}/>
+                )}/>
+
+                <Route exact path="/admin/allOrdersList" render={() => (
+                    <Nav isLoggedIn={isLoggedIn} content={<AllOrdersList/>} currentUser = {currentUser}/>
                 )}/>
 
             </Switch>

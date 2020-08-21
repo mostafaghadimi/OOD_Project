@@ -43,10 +43,6 @@ const CustomerRoot = ({isLoggedIn, currentUser}) => {
                                      currentUser={currentUser}/>
                             )}/>
 
-                            <Route exact path="/customer/:id/addOrder" render={() => (
-                                <Nav isLoggedIn={isLoggedIn} content={<AddOrder customer={customer}/>}
-                                     currentUser={currentUser}/>
-                            )}/>
 
                             <Route exact path="/customer/:id/orderDetail" render={() => (
                                 <Nav isLoggedIn={isLoggedIn} content={<OrderDetail customer={customer}/>}

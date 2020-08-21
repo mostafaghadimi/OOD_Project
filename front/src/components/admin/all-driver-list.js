@@ -10,7 +10,6 @@ import {Mutation, Query} from "react-apollo";
 import {gql} from "apollo-boost";
 import {UserType} from "../shared/user-type-enum";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import Nav from "../../admin-root";
 import EditDriver from "./edit-driver";
 import AddDriver from "./add-driver";
 

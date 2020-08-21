@@ -51,14 +51,6 @@ const Sidebar = (props) => {
                         : <div></div>
                     }
 
-                    {props.isLoggedIn[UserType["Customer"]] ?
-                        <Menu.Item key="3">
-                            <Link to={`/customer/${props.currentUser.id}}/addOrder`}>
-                                ثبت سفارش
-                            </Link>
-                        </Menu.Item>
-                        : <div></div>
-                    }
 
                     {props.isLoggedIn[UserType["Customer"]] ?
                         <Menu.Item key="4">
@@ -210,6 +202,15 @@ const Sidebar = (props) => {
                         <Menu.Item key="23">
                             <Link to={`/admin/allDriversList`}>
                                 لیست راننده‌ها
+                            </Link>
+                        </Menu.Item>
+                        : <div></div>
+                    }
+
+                    {props.isLoggedIn[UserType["Admin"]] ?
+                        <Menu.Item key="23">
+                            <Link to={`/admin/allOrdersList`}>
+                                لیست سفارشات
                             </Link>
                         </Menu.Item>
                         : <div></div>
