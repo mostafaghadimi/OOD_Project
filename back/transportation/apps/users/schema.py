@@ -1,9 +1,10 @@
 import graphene
-
+from graphql import GraphQLError
 from graphene import Mutation, ObjectType, InputObjectType
+from graphene_django.types import DjangoObjectType
+
 from .models import Driver, Authorizer, Customer, Usermodel
 from apps.orders.models import Order
-from graphene_django.types import DjangoObjectType
 
 
 class UserType(DjangoObjectType):
@@ -70,26 +71,26 @@ class Query(ObjectType):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         try:
             customer = Usermodel.objects.get(pk=id).customer
         except:
-            raise Exception("Invalid User/Customer ID")
+            raise GraphQLError("Invalid User/Customer ID")
 
         if user.is_superuser or user==customer.user:
             return customer
         
-        raise Exception("You are not allowed to do this operation")
+        raise GraphQLError("You are not allowed to do this operation")
 
     def resolve_all_customers(self, info):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if not user.is_superuser:
-            raise Exception("You are not allowed to do this action")
+            raise GraphQLError("You are not allowed to do this action")
         
         return Customer.objects.all()
 
@@ -98,19 +99,19 @@ class Query(ObjectType):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if user.is_superuser or user.is_authorizer:
             return Driver.objects.filter(is_verified=False).all()
 
-        raise Exception("You are not allowed to do this action")
+        raise GraphQLError("You are not allowed to do this action")
 
 
     def resolve_me(self, info, **kwargs):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception('You need to login first!')
+            raise GraphQLError('You need to login first!')
         
         return user
 
@@ -119,7 +120,7 @@ class Query(ObjectType):
         user = info.context.user
 
         if not user.is_superuser:
-            raise Exception("You are not allowed to do this action")
+            raise GraphQLError("You are not allowed to do this action")
 
         return Driver.objects.all()
 
@@ -130,12 +131,12 @@ class Query(ObjectType):
         try:
             driver = Usermodel.objects.get(pk=id).driver
         except:
-            raise Exception("Invalid User/Driver ID")
+            raise GraphQLError("Invalid User/Driver ID")
 
         if user == driver.user or user.is_superuser:
             return driver
 
-        raise Exception("You are not allowed to do this action")
+        raise GraphQLError("You are not allowed to do this action")
 
 
     def resolve_authorizer(self, info, id):
@@ -144,22 +145,22 @@ class Query(ObjectType):
         try:
             authorizer = Usermodel.objects.get(pk=id).authorizer
         except:
-            raise Exception("Invalid User/Authorizer ID")
+            raise GraphQLError("Invalid User/Authorizer ID")
 
         if user == authorizer.user or user.is_superuser:
             return authorizer
         
-        raise Exception("You are not allowed to do this action")
+        raise GraphQLError("You are not allowed to do this action")
 
 
     def resolve_all_authorizers(self, info, **kwargs):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if not user.is_superuser:
-            raise Exception("You are not allowed to do this action")
+            raise GraphQLError("You are not allowed to do this action")
 
         return Authorizer.objects.all()
 
@@ -169,12 +170,12 @@ class Query(ObjectType):
         try:
             customer = Usermodel.objects.get(pk=id).customer
         except:
-            raise Exception("Invalid User ID")
+            raise GraphQLError("Invalid User ID")
         
         if user == customer.user or user.is_superuser:
             return Driver.objects.filter(orders__owner=customer)
         
-        raise Exception("You are not allowed to do this action")
+        raise GraphQLError("You are not allowed to do this action")
 
 class UserInput(InputObjectType):
     first_name = graphene.String()
@@ -243,10 +244,10 @@ class UpdateDriver(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
         
         if not user.is_superuser:
-            raise Exception("You are not allowed to do this action")
+            raise GraphQLError("You are not allowed to do this action")
 
         driver = Driver.objects.get(pk=id)
 
@@ -275,7 +276,7 @@ class DeleteDriver(Mutation):
     def mutate(self, info, id):
         user = info.context.user
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         elif user.is_authorizer or user.is_superuser:
             
@@ -285,7 +286,7 @@ class DeleteDriver(Mutation):
             Usermodel.objects.get(pk=user_id).delete()
             return DeleteDriver(id=id)
             
-        raise Exception("You are not allowed to do this action")
+        raise GraphQLError("You are not allowed to do this action")
 
 class VerifyDriver(Mutation):
     driver = graphene.Field(DriverType)
@@ -296,7 +297,7 @@ class VerifyDriver(Mutation):
     def mutate(self, info, id):
         user = info.context.user
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         elif user.is_authorizer or user.is_superuser:
             driver = Driver.objects.get(pk=id)
@@ -305,7 +306,7 @@ class VerifyDriver(Mutation):
             return VerifyDriver(driver=driver)
         
         else:
-            raise Exception("You are not allowed to do this action")
+            raise GraphQLError("You are not allowed to do this action")
 
 
 class CreateAuthorizer(Mutation):
@@ -317,7 +318,7 @@ class CreateAuthorizer(Mutation):
     def mutate(self, info, authorizer_data=None):
         current_user = info.context.user
         if not current_user.is_superuser:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
         user = Usermodel (
             first_name=authorizer_data.user.first_name,
@@ -350,7 +351,7 @@ class UpdateAuthorizer(Mutation):
         authorizer = Authorizer.objects.get(pk=id)
         user = info.context.user
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
         
         print(user.username, user.is_superuser)
         print(authorizer.user.username)
@@ -366,7 +367,7 @@ class UpdateAuthorizer(Mutation):
 
             return UpdateAuthorizer(authorizer=authorizer)
         else:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
 
 class DeleteAuthorizer(Mutation):
@@ -379,10 +380,10 @@ class DeleteAuthorizer(Mutation):
         user = info.context.user
         
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if not user.is_superuser:
-            raise Exception("You are not allowed to do this action")
+            raise GraphQLError("You are not allowed to do this action")
 
         authorizer = Authorizer.objects.get(pk=id)
         authorizer.delete()
@@ -430,7 +431,7 @@ class UpdateCustomer(Mutation):
     
         current_user = info.context.user
         if current_user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if customer == current_user or current_user.is_superuser:
             customer.user.first_name = customer_data.user.first_name
@@ -441,7 +442,7 @@ class UpdateCustomer(Mutation):
             customer.save()
             return UpdateCustomer(customer=customer)
         
-        raise Exception("You are not allowed to do this operation")
+        raise GraphQLError("You are not allowed to do this operation")
 
 class DeleteCustomer(Mutation):
     class Arguments:
@@ -454,13 +455,13 @@ class DeleteCustomer(Mutation):
         customer = Customer.objects.get(pk=id)
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if user == customer.user or user.is_superuser:
             Usermodel.objects.get(pk=id).delete()
             return DeleteCustomer(id=id)
         
-        raise Exception("You are not allowed to do this operation")
+        raise GraphQLError("You are not allowed to do this operation")
         
         
         
@@ -475,10 +476,10 @@ class UpdateDriverStatus(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         elif not user.is_superuser:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
         driver = Driver.objects.get(pk=driver_id)
         driver.driver_status = driver_status

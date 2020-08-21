@@ -46,7 +46,7 @@ const AddOrder = ({visible, setVisible}) => {
         setOwnerId(value);
         setOwnerIdState(true);
         console.log(ownerId);
-    }
+    };
 
 
     // const normFile = e => {
