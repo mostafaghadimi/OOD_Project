@@ -51,7 +51,7 @@ const AllAuthorizerList = () => {
     const title = () => (
         <div>
             <p>
-                لیست راننده‌ها
+                لیست مدیران احراز هویت
             </p>
             <Search
                 placeholder="جست‌وجو در لیست مدیران احراز هویت"
