@@ -1,7 +1,7 @@
 import React, {Component, useState} from 'react'
 import { CheckCircleTwoTone } from '@ant-design/icons';
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
-import {EditOutlined, KeyOutlined, UserOutlined, MinusOutlined} from '@ant-design/icons';
+import {PlusOutlined, MinusOutlined} from '@ant-design/icons';
 
 
 import '../order/order.css'
@@ -10,6 +10,8 @@ import {Query, Mutation} from "react-apollo";
 import Error from "../shared/Error";
 import Loading from "../shared/loading";
 import AddOrder from "./add-order"
+import EditCustomer from "./all-customers-list";
+import OrderAddDriver from "./order-add-driver";
 
 
 const columns = [
@@ -24,18 +26,6 @@ const columns = [
     {
       title: 'آدرس',
       dataIndex: 'address',
-      filters: [
-        {
-          text: 'تهران',
-          value: 'Tehran',
-        },
-        {
-          text: 'شیراز',
-          value: 'Shiraz',
-        },
-      ],
-      // TODO: make it work
-      onFilter: (value, record) => record.address.indexOf(value) === 0,
     },
     {
       title: 'وضعیت',
@@ -66,8 +56,8 @@ const columns = [
       dataIndex: 'cost',
     },
     {
-      title: 'ویرایش / پاک کردن',
-      dataIndex: 'editDelete',
+      title: 'پاک کردن',
+      dataIndex: 'delete',
     }
 ];
 
@@ -90,7 +80,7 @@ const AllOrderList = () => {
     );
 
     const [visible, setVisible] = useState(false);
-    const [visibleEdit, setVisibleEdit] = useState(false);
+    const [visibleAddDriver, setVisibleAddDriver] = useState(false);
     const [visibleAdd, setVisibleAdd] = useState(false);
     const [orderClone, setOrderClone] = useState(null);
 
@@ -110,10 +100,10 @@ const AllOrderList = () => {
         bottom: 'bottomRight',
       };
 
-    const handleEdit = (order) => {
-        console.log(driver);
-        setOrderClone(driver);
-        setVisibleEdit(true);
+    const handleAddDriver = (order) => {
+        console.log(order);
+        setOrderClone(order);
+        setVisibleAddDriver(true);
     };
 
     const handleDelete = (event, deleteOrder) => {
@@ -147,23 +137,25 @@ const AllOrderList = () => {
                             {
                                 key: order.id,
                                 orderer: order.owner ? order.owner.user.firstName + " " + order.owner.user.lastName : "",
-                                deliverer: order.driver ? order.driver.user.firstName + " " + order.driver.user.lastName : "",
+                                deliverer:
+                                    <div>
+                                        <span>{order.driver ? order.driver.user.firstName + " " + order.driver.user.lastName : ""}</span>
+                                        <Tooltip placement="top" title= {"اضافه کردن راننده"}>
+                                            <Button key={2 * order.id} shape="circle" onClick={() => handleAddDriver(order)} disabled = {!(order.orderStatus === "A_1")} style = {{position: 'relative', right : 2}}>
+                                                <PlusOutlined />
+                                            </Button>
+                                        </Tooltip>
+                                    </div>,
                                 address: order.destinationAddress,
                                 cost: order.transportationCost,
                                 status: order.orderStatus === "A_1" ? "ثبت شده" : order.orderStatus === "A_2" ? "در حال بارگذاری" : order.orderStatus === "A_3" ? "در حال ارسال":  order.orderStatus === "A_4" ? "ارسال شده" : "",
-                                editDelete:
+                                delete:
                                 <div>
-                                    <Tooltip placement="top" title='ویرایش'>
 
-                                        <Button key={4* order.id + 2} shape="circle" onClick={() => handleEdit(order)}>
-                                            <EditOutlined />
-                                        </Button>
-
-                                    </Tooltip>
                                     <Mutation mutation={REMOVE_MUTATION}
                                       variables={
                                           {
-                                              "id" : order.id
+                                              "orderId" : order.id
                                           }
                                       }
                                       onCompleted={() => {
@@ -173,7 +165,7 @@ const AllOrderList = () => {
                                         return (
 
                                             <Tooltip placement="top" title= {deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
-                                                <Button key={4* order.id + 3} shape="circle" onClick={event => handleDelete(event, deleteOrder)} disabled = {deleteData.loading}>
+                                                <Button key={2 * order.id + 1} shape="circle" onClick={event => handleDelete(event, deleteOrder)} disabled = {deleteData.loading}>
                                                     <MinusOutlined />
                                                 </Button>
                                                 {deleteData.error && <Error error={deleteData.error} />}
@@ -185,11 +177,8 @@ const AllOrderList = () => {
 
                             }
                         );
-                        console.log(allInfo);
-
                     })
                 }
-                console.log(allInfo);
                 return (
                     <div className="order-container">
                         <Table
@@ -198,6 +187,7 @@ const AllOrderList = () => {
                             dataSource={allInfo}
                         />
                         {error && <Error error={error} />}
+                        {orderClone && <OrderAddDriver order = {orderClone} visible = {visibleAddDriver} setVisible = {setVisibleAddDriver}/>}
 
                     </div>
 
@@ -212,6 +202,7 @@ const GET_ORDERS = gql`
     allOrders {
         id,
         owner{
+            id
             user{
                 firstName,
                 lastName
@@ -232,8 +223,8 @@ const GET_ORDERS = gql`
 `;
 
 const REMOVE_MUTATION = gql`
-mutation($id: ID!){
-    deleteOrder (id:$id){
+mutation($orderId: ID!){
+    deleteOrder (orderId:$orderId){
         id
     }
 }

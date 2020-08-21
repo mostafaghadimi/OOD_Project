@@ -191,6 +191,7 @@ class AssignVehicleLoad(Mutation):
             raise GraphQLError("Invalid order ID")
 
         vehicle.vehicle_status = '2'
+        vehicle.duty_no += 1
         order.vehicle = vehicle
 
         order.save()
@@ -237,8 +238,8 @@ class AssignDriverLoad(Mutation):
 
 class EditOrder(Mutation):
     class Arguments:
-        order_data = OrderInput(required=True)
         order_id = graphene.ID(required=True)
+        owner_id = graphene.ID()
         order_code = graphene.String()
         driver_id = graphene.ID()
         vehicle_id = graphene.ID()
@@ -250,7 +251,7 @@ class EditOrder(Mutation):
 
     order = graphene.Field(OrderType)
 
-    def mutate(self, info, order_id, order_code, is_load, order_status, destination_address, transportation_cost):
+    def mutate(self, info, order_id, **kwargs):
 
         user = info.context.user
 
@@ -263,6 +264,12 @@ class EditOrder(Mutation):
         order = Order.objects.get(pk=order_id)
         driver_id = kwargs.get('driver_id')
         vehicle_id = kwargs.get('vehicle_id')
+        owner_id = kwargs.get('owner_id')
+        order_code = kwargs.get('order_code')
+        is_load = kwargs.get('is_load')
+        order_status = kwargs.get('order_status')
+        destination_address = kwargs.get('destination_address')
+        transportation_cost = kwargs.get('transportation_cost')
         
         if driver_id:
             try:
@@ -278,13 +285,22 @@ class EditOrder(Mutation):
                 order.vehicle = vehicle
                 
             except:
+
                 raise GraphQLError("Invalid Vehicle ID")
 
-        order.is_load = is_load
-        order.order_code = order_code
-        order.order_status = order_status
-        order.destination_address = destination_address 
-        order.transportation_cost = transportation_cost
+        if owner_id:
+            try:
+                owner = Customer.objects.get(pk=owner_id)
+                order.owner = owner
+            
+            except:
+                raise Exception("Invalid Owner ID")
+
+        order.is_load = is_load or order.is_load
+        order.order_code = order_code or order.order_code
+        order.order_status = order_status or order.order_status
+        order.destination_address = destination_address or order.destination_address
+        order.transportation_cost = transportation_cost or order.transportation_cost
         order.save()
 
         return EditOrder(order=order)

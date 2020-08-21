@@ -67,6 +67,28 @@ class CreateVehicle(Mutation):
         vehicle.save()
         return CreateVehicle(vehicle=vehicle)
 
+
+class DeleteVehicle(Mutation):
+    class Arguments:
+        vehicle_id = graphene.ID()
+
+    id = graphene.ID()
+
+    def mutate(self, info, order_id):
+        user = info.context.user
+
+        if user.is_anonymous:
+            raise Exception("You need to login first!")
+
+        if not user.is_superuser:
+            raise Exception("You are not allowed to do this operation")
+
+        vehicle = Vehicle.objects.get(pk=order_id)
+        vehicle.delete()
+
+        return DeleteVehicle(id=vehicle_id)
+
 class Mutation(ObjectType):
     create_vehicle = CreateVehicle.Field()
+    delete_vehicle = DeleteVehicle.Field()
     

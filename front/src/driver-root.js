@@ -57,10 +57,10 @@ const DriverRoot = ({isLoggedIn, currentUser}) => {
                             )}/>
 
 
-                            <Route exact path="/driver/:id/addVehicle" render={() => (
-                                <Nav isLoggedIn={isLoggedIn} content={<AddVehicle driver={driver}/>}
-                                     currentUser={currentUser}/>
-                            )}/>
+                            {/*<Route exact path="/driver/:id/addVehicle" render={() => (*/}
+                                {/*<Nav isLoggedIn={isLoggedIn} content={<AddVehicle driver={driver}/>}*/}
+                                     {/*currentUser={currentUser}/>*/}
+                            {/*)}/>*/}
                         </Switch>
                         {error && <Error error={error} />}
                     </UserContext.Provider>
