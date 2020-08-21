@@ -54,10 +54,10 @@ export default class AddVehicle extends Component {
                         </Form.Item>
                         <Form.Item style={{'width':'10%'}}>
                             <Select placeholder="حرف" style={{'width':'100%'}}>
-                                <Option value="trailer">تریلر</Option>
-                                <Option value="truck">کامیون</Option>
-                                <Option value="khavar">خاور</Option>
-                                <Option value="vanet">وانت</Option>
+                                <Option value="trailer">ع</Option>
+                                <Option value="truck">ب</Option>
+                                <Option value="khavar">الف</Option>
+                                <Option value="vanet">خ</Option>
                             </Select>
                         </Form.Item>
                         <Form.Item style={{'width':'30%'}}>

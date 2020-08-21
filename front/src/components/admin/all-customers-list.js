@@ -56,10 +56,10 @@ const AllCustomersList = () => {
     const title = () => (
         <div>
             <p>
-                لیست راننده‌ها
+                لیست صاحبان بار
             </p>
             <Search
-                placeholder="جست‌وجو در لیست راننده‌ها"
+                placeholder="جست‌وجو در لیست صاحبان بار"
                 onSearch={value => console.log(value)}
                 enterButton
                 style={{width:400}}

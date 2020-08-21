@@ -42,7 +42,7 @@ const EditAuthorizer = ({authorizer, visible, setVisible}) => {
         event.preventDefault();
         updateAuthorizer();
         setVisible(false);
-        info("اطلاعات با موفیقت تغییر کرد!", "")
+        info("اطلاعات با موفقیت تغییر کرد!", "")
 
     };
 
