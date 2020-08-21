@@ -1,7 +1,7 @@
 import React, {Component, useState} from 'react'
 import { CheckCircleTwoTone } from '@ant-design/icons';
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
-import {PlusOutlined, MinusOutlined} from '@ant-design/icons';
+import {PlusOutlined, MinusOutlined, CheckOutlined} from '@ant-design/icons';
 
 
 import '../order/order.css'
@@ -12,6 +12,9 @@ import Loading from "../shared/loading";
 import AddOrder from "./add-order"
 import EditCustomer from "./all-customers-list";
 import OrderAddDriver from "./order-add-driver";
+import VerifyDeliveryOrder from "./verify-delivery-order";
+import OrderAddVehicle from "./order-add-vehicle";
+
 
 
 const columns = [
@@ -22,6 +25,10 @@ const columns = [
     {
       title: 'راننده',
       dataIndex: 'deliverer',
+    },
+    {
+      title: 'ماشین',
+      dataIndex: 'vehicle',
     },
     {
       title: 'آدرس',
@@ -58,6 +65,10 @@ const columns = [
     {
       title: 'پاک کردن',
       dataIndex: 'delete',
+    },
+    {
+      title: 'تایید ارسال',
+      dataIndex: 'verifyDelivery',
     }
 ];
 
@@ -81,8 +92,16 @@ const AllOrderList = () => {
 
     const [visible, setVisible] = useState(false);
     const [visibleAddDriver, setVisibleAddDriver] = useState(false);
+    const [visibleAddVehicle, setVisibleAddVehicle] = useState(false);
+
+    const [visibleVerifyDelivery, setVisibleVerifyDelivery] = useState(false);
     const [visibleAdd, setVisibleAdd] = useState(false);
     const [orderClone, setOrderClone] = useState(null);
+
+
+    function plateNoConverter(plateNo) {
+        return plateNo.substr(0,2)+plateNo.substr(7,1) +plateNo.substr(2,3) + "-" + plateNo.substr(5,2)
+    }
 
 
     const state = {
@@ -104,6 +123,18 @@ const AllOrderList = () => {
         console.log(order);
         setOrderClone(order);
         setVisibleAddDriver(true);
+    };
+
+    const handleVerifyDelivery = (order) => {
+        console.log(order);
+        setOrderClone(order);
+        setVisibleVerifyDelivery(true);
+    };
+
+    const handleAddVehicle = (order) => {
+        console.log(order);
+        setOrderClone(order);
+        setVisibleAddVehicle(true);
     };
 
     const handleDelete = (event, deleteOrder) => {
@@ -141,7 +172,16 @@ const AllOrderList = () => {
                                     <div>
                                         <span>{order.driver ? order.driver.user.firstName + " " + order.driver.user.lastName : ""}</span>
                                         <Tooltip placement="top" title= {"اضافه کردن راننده"}>
-                                            <Button key={2 * order.id} shape="circle" onClick={() => handleAddDriver(order)} disabled = {!(order.orderStatus === "A_1")} style = {{position: 'relative', right : 2}}>
+                                            <Button key={4 * order.id} shape="circle" onClick={() => handleAddDriver(order)} disabled = {!(order.orderStatus === "A_1")} style = {{position: 'relative', right : 2}}>
+                                                <PlusOutlined />
+                                            </Button>
+                                        </Tooltip>
+                                    </div>,
+                                vehicle:
+                                    <div>
+                                        <span>{order.vehicle ? plateNoConverter(order.vehicle.plateNo): ""}</span>
+                                        <Tooltip placement="top" title= {"اضافه کردن ماشین"}>
+                                            <Button key={4 * order.id + 3} shape="circle" onClick={() => handleAddVehicle(order)} disabled = {!!(order.vehicle)} style = {{position: 'relative', right : 2}}>
                                                 <PlusOutlined />
                                             </Button>
                                         </Tooltip>
@@ -165,7 +205,7 @@ const AllOrderList = () => {
                                         return (
 
                                             <Tooltip placement="top" title= {deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
-                                                <Button key={2 * order.id + 1} shape="circle" onClick={event => handleDelete(event, deleteOrder)} disabled = {deleteData.loading}>
+                                                <Button key={3 * order.id + 1} shape="circle" onClick={event => handleDelete(event, deleteOrder)} disabled = {deleteData.loading}>
                                                     <MinusOutlined />
                                                 </Button>
                                                 {deleteData.error && <Error error={deleteData.error} />}
@@ -173,7 +213,15 @@ const AllOrderList = () => {
                                         )
                                     }}
                                     </Mutation>
-                                </div>
+                                </div>,
+                                verifyDelivery:
+                                    <div>
+                                        <Tooltip placement="top" title= {"تایید ارسال"}>
+                                            <Button key={3 * order.id + 2} shape="circle" onClick={() => handleVerifyDelivery(order)} disabled = {!(order.orderStatus === "A_3")}>
+                                                <CheckOutlined/>
+                                            </Button>
+                                        </Tooltip>
+                                    </div>,
 
                             }
                         );
@@ -188,6 +236,9 @@ const AllOrderList = () => {
                         />
                         {error && <Error error={error} />}
                         {orderClone && <OrderAddDriver order = {orderClone} visible = {visibleAddDriver} setVisible = {setVisibleAddDriver}/>}
+                        {orderClone && <VerifyDeliveryOrder order = {orderClone} visible = {visibleVerifyDelivery} setVisible = {setVisibleVerifyDelivery}/>}
+                        {orderClone && <OrderAddVehicle order = {orderClone} visible = {visibleAddVehicle} setVisible = {setVisibleAddVehicle}/>}
+
 
                     </div>
 
@@ -201,6 +252,10 @@ const GET_ORDERS = gql`
 {
     allOrders {
         id,
+        vehicle {
+            id
+            plateNo
+        }
         owner{
             id
             user{

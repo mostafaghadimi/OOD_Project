@@ -101,8 +101,8 @@ const OrderAddDriver = ({order, visible, setVisible}) => {
                                                     name="edit driver"
                                                     {...editItemLayout}
                                                 >
-                                                    <Form.Item label="نام سفارش دهنده">
-                                                        <Select placeholder="سفارش دهنده" onChange={handleChange}>
+                                                    <Form.Item label="نام راننده">
+                                                        <Select placeholder="راننده" onChange={handleChange}>
                                                             {getDrivers.data.allDrivers.map(driver => {
                                                                 return (
                                                                     <Option value={driver.id}>
