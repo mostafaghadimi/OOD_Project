@@ -294,7 +294,7 @@ class EditOrder(Mutation):
                 order.owner = owner
             
             except:
-                raise Exception("Invalid Owner ID")
+                raise GraphQLError("Invalid Owner ID")
 
         order.is_load = is_load or order.is_load
         order.order_code = order_code or order.order_code
