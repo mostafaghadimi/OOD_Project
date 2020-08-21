@@ -251,8 +251,7 @@ class UpdateDriver(Mutation):
 
         driver = Driver.objects.get(pk=id)
 
-        user_id = driver.user.id
-        user = Usermodel.objects.get(pk=user_id)
+        user = driver.user
         user.first_name = driver_data.user.first_name
         user.last_name = driver_data.user.last_name
         user.email = driver_data.user.email
