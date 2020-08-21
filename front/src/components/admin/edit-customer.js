@@ -41,6 +41,7 @@ const EditCustomer = ({customer, visible, setVisible}) => {
         console.log("In the handleSubmit");
         event.preventDefault();
         updateCustomer();
+        info("اطلاعات با موفیقت تغییر کرد!", "")
         setVisible(false);
     };
 
@@ -98,10 +99,6 @@ const EditCustomer = ({customer, visible, setVisible}) => {
                             <Form
                                 name="edit customer"
                                 {...editItemLayout}
-                                onComplete = {
-                                    () => info("اطلاعات با موفیقت تغییر کرد!", "")
-                                }
-
                             >
                                 <Form.Item label="نام">
                                 <Input
@@ -203,8 +200,8 @@ const EditCustomer = ({customer, visible, setVisible}) => {
 export default (EditCustomer);
 
 const UPDATE_CUSTOMER = gql`
- mutation ($id : ID!, $customerData: CustomerInput!) {
-  updateCustomer(id: $id, customerData: $customerData) {
+ mutation ($customerId : ID!, $customerData: CustomerInput!) {
+  updateCustomer(customerId: $customerId, customerData: $customerData) {
     customer{
        user{
         firstName

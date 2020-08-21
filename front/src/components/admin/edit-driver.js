@@ -44,6 +44,7 @@ const EditDriver = ({driver, visible, setVisible}) => {
         console.log("In the handleSubmit");
         event.preventDefault();
         updateDriver();
+        info("اطلاعات با موفیقت تغییر کرد!", "");
         setVisible(false);
     };
 
@@ -112,10 +113,6 @@ const EditDriver = ({driver, visible, setVisible}) => {
                             <Form
                                 name="edit driver"
                                 {...editItemLayout}
-                                onComplete = {
-                                    () => info("اطلاعات با موفیقت تغییر کرد!", "")
-                                }
-
                             >
                                 <Form.Item label="نام">
                                 <Input
