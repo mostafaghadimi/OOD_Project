@@ -78,10 +78,10 @@ class DeleteVehicle(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if not user.is_superuser:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
         vehicle = Vehicle.objects.get(pk=order_id)
         vehicle.delete()
