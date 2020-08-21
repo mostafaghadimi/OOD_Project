@@ -368,7 +368,7 @@ class VerifyDelivery(Mutation):
         if user.is_anonymous:
             raise GraphQLError("You need to login first!")
         
-        if not user.is_customer:
+        if not (user.is_customer or user.is_superuser):
             raise GraphQLError("You are not allowed to do this operation")
         
         try:
@@ -376,7 +376,7 @@ class VerifyDelivery(Mutation):
         except:
             raise GraphQLError("Invalid Order ID")
 
-        if not user == order.owner.user:
+        if not (user == order.owner.user or user.is_superuser):
             raise GraphQLError("You are not allowed to do this operation")
 
 
@@ -394,7 +394,8 @@ class VerifyDelivery(Mutation):
 
         if rate:
             order.rating = rate
-            driver.rating = driver.orders.filter(order_status='4').aggregate(Avg('rating'))
+            order.save()
+            driver.rating = driver.orders.filter(order_status='4').aggregate(Avg('rating'))['rating__avg']
 
         vehicle.save()
         driver.save()
