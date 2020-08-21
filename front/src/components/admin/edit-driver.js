@@ -10,8 +10,8 @@ import {KeyOutlined, UploadOutlined} from '@ant-design/icons';
 import '../user/user.css'
 import {gql} from "@apollo/client";
 import {Mutation, Query} from "react-apollo";
-import Error from "../shared/Error";
 import moment from 'moment';
+import handleError from "../shared/util";
 
 const editItemLayout = {
     labelCol: { span: 5 },
@@ -87,6 +87,7 @@ const EditDriver = ({driver, visible, setVisible}) => {
                     "id" : driver.id
                 }
             }
+            onError={handleError}
         >
             {(updateDriver, {loading, error}) => {
                 return (
@@ -235,7 +236,7 @@ const EditDriver = ({driver, visible, setVisible}) => {
                                 {/*</Button>*/}
                                 {/*</Upload>*/}
                             {/*</Form.Item>*/}
-                                {error && <Error error = {error}/>}
+                                {/*{error && <Error error = {error}/>}*/}
                             </Form>
 
                    </Modal>

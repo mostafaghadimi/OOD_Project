@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import { Table } from 'antd';
 import {Query} from "react-apollo";
 import {gql} from "apollo-boost";
-import Error from "../shared/Error";
+// import Error from "../shared/Error";
 import Loading from "../shared/loading";
+import handleError from "../shared/util";
 
 
 const columns = [
@@ -49,7 +50,7 @@ const DriverHistory = ({driver}) => {
 
 
     return (
-        <Query query={GET_DRIVER_ORDERS} variables={{"id": driver.id}}>
+        <Query query={GET_DRIVER_ORDERS} variables={{"id": driver.id}} onError={handleError}>
             {({data, loading, error}) => {
                 if(loading) return <Loading/>;
                 console.log(data);
@@ -75,7 +76,7 @@ const DriverHistory = ({driver}) => {
                             dataSource={allInfo}
                         />
                         {/* Error Handling */}
-                        {error && <Error error={error} />}
+                        {/*{error && <Error error={error} />}*/}
                     </div>
                 )
             }}

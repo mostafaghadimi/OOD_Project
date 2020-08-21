@@ -8,6 +8,8 @@ import { gql, useQuery } from '@apollo/client';
 import {UserType} from "../shared/user-type-enum";
 import Error from "../shared/Error";
 import { ApolloConsumer } from "react-apollo";
+import {onError} from "@apollo/client/link/error";
+import handleError from "../shared/util";
 // import { Query } from "react-apollo";
 // import CheckUserType from "./check-user-type"
 
@@ -32,10 +34,12 @@ const Login = (props) => {
     };
 
 
+
     const handleSubmit = async (event, tokenAuth, client) => {
         event.preventDefault();
         const res = await tokenAuth();
-        localStorage.setItem("authToken", res.data.tokenAuth.token);
+        if(res) localStorage.setItem("authToken", res.data.tokenAuth.token);
+        else return;
 
         const key = UserType[props.type];
         if (userType[key]) {
@@ -66,7 +70,9 @@ const Login = (props) => {
 
     return (
 
-        <Mutation mutation={LOGIN_MUTATION} variables={{"username": username, "password": password}}>
+        <Mutation mutation={LOGIN_MUTATION} variables={{"username": username, "password": password}}
+        onError={handleError}
+        >
             {(tokenAuth, {loading, error, called, client}) => {
 
                 const titles = [
@@ -75,6 +81,8 @@ const Login = (props) => {
                     "ورود مدیراحراز هویت به سامانه",
                     "ورود مدیر به سامانه",
                 ];
+
+
 
                 return (
 
@@ -105,7 +113,7 @@ const Login = (props) => {
                             </p>
 
                         </Modal>
-                        {error && <Error error={error} />}
+                        {/*{error && <Error error={error} />}*/}
 
 
                     </div>

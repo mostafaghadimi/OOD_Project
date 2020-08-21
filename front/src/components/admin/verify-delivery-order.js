@@ -10,9 +10,10 @@ import {KeyOutlined, UploadOutlined} from '@ant-design/icons';
 import '../user/user.css'
 import {gql} from "@apollo/client";
 import {Mutation, Query} from "react-apollo";
-import Error from "../shared/Error";
+// import Error from "../shared/Error";
 import moment from 'moment';
 import Loading from "./add-order";
+import handleError from "../shared/util";
 
 
 const editItemLayout = {
@@ -54,6 +55,7 @@ const VerifyDeliveryOrder= ({order, visible, setVisible}) => {
                     "orderId" : order.id,
                 }
             }
+            onError={handleError}
         >
             {(verifyDelivery, {loading, error}) => {
                 return (
@@ -84,7 +86,7 @@ const VerifyDeliveryOrder= ({order, visible, setVisible}) => {
                             </Form.Item>
 
                         </Form>
-                        {error && <Error error={error}/>}
+                        {/*{error && <Error error={error}/>}*/}
 
 
                     </Modal>

@@ -10,9 +10,10 @@ import {KeyOutlined, UploadOutlined} from '@ant-design/icons';
 import '../user/user.css'
 import {gql} from "@apollo/client";
 import {Mutation, Query} from "react-apollo";
-import Error from "../shared/Error";
+// import Error from "../shared/Error";
 import moment from 'moment';
 import Loading from "./add-order";
+import handleError from "../shared/util";
 
 const editItemLayout = {
     labelCol: { span: 5 },
@@ -62,6 +63,7 @@ const OrderAddDriver = ({order, visible, setVisible}) => {
                     "orderId" : order.id,
                 }
             }
+            onError={handleError}
         >
             {(assignDriverLoad, {loading, error}) => {
                 return (
@@ -73,10 +75,11 @@ const OrderAddDriver = ({order, visible, setVisible}) => {
                                 "orderId": order.id,
                             }
                         }
+                        onError={handleError}
                     >
                         {(updateDriver, updateData) => {
                             return (
-                                <Query query={GET_ALL_DRIVERS}>
+                                <Query query={GET_ALL_DRIVERS} onError={handleError}>
                                     {(getDrivers) => {
 
                                         if (getDrivers.loading) return <Loading/>;
@@ -113,9 +116,9 @@ const OrderAddDriver = ({order, visible, setVisible}) => {
                                                         </Select>
                                                     </Form.Item>
                                                 </Form>
-                                                {error && <Error error={error}/>}
-                                                {updateData.error && <Error error={updateData.error}/>}
-                                                {getDrivers.error && <Error error={getDrivers.error}/>}
+                                                {/*{error && <Error error={error}/>}*/}
+                                                {/*{updateData.error && <Error error={updateData.error}/>}*/}
+                                                {/*{getDrivers.error && <Error error={getDrivers.error}/>}*/}
 
 
                                             </Modal>

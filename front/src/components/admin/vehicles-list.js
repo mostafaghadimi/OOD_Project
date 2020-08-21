@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
 import {EditOutlined, KeyOutlined, UserOutlined, MinusOutlined} from '@ant-design/icons';
-import Error from "../shared/Error";
 import Loading from "../shared/loading"
 
 
@@ -11,7 +10,7 @@ import {gql} from "apollo-boost";
 import {UserType} from "../shared/user-type-enum";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import AddVehicle from "./add-vehicle";
-
+import handleError from "../shared/util";
 
 
 const columns = [
@@ -150,7 +149,7 @@ const AllVehiclesList = () => {
 
     return (
 
-        <Query query={GET_ALL_VEHICLES}>
+        <Query query={GET_ALL_VEHICLES} onError={handleError}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -177,77 +176,90 @@ const AllVehiclesList = () => {
             const crashesInfo = [];
 
 
-            {data.allVehicles.map( vehicle => {
-                {vehicle.orders.map( order=> {
-                    orderInfo.push({orderLocation: "(" + order.latitude+ ", " + order.longitude + ")"});
-                })}
+            if(data) {
+                {data.allVehicles.map(vehicle => {
+                        {
+                            vehicle.orders.map(order => {
+                                orderInfo.push({orderLocation: "(" + order.latitude + ", " + order.longitude + ")"});
+                            })
+                        }
 
-                {vehicle.crash.map( crash=> {
-                    crashesInfo.push({Driver: crash.driver.user.firstName+ " " + crash.driver.user.lastName, crashDate: crash.crashDate});
-                })}
+                        {
+                            vehicle.crash.map(crash => {
+                                crashesInfo.push({
+                                    Driver: crash.driver.user.firstName + " " + crash.driver.user.lastName,
+                                    crashDate: crash.crashDate
+                                });
+                            })
+                        }
 
-                allInfo.push({
-                    key: vehicle.id,
-                    id: vehicle.id,
-                    vehicleType:
-                        <div className="vehicle-type">
+                        allInfo.push({
+                            key: vehicle.id,
+                            id: vehicle.id,
+                            vehicleType:
+                                <div className="vehicle-type">
                             <span>
                                 {vehicle.vehicleType === "A_1" ? "ماشین سنگین" : vehicle.vehicleType === "A_2" ? "ماشین سبک" : ""}
                             </span>
-                        </div>,
-                    plateNo:
-                        plateNoConverter(vehicle.plateNo),
-                    status:
-                        <div className="vehicle-status">
+                                </div>,
+                            plateNo:
+                                plateNoConverter(vehicle.plateNo),
+                            status:
+                                <div className="vehicle-status">
                             <span>
                                 {vehicle.vehicleStatus === "A_1" ? "آزاد" : vehicle.vehicleStatus === "A_2" ? "مشغول" : vehicle.vehicleStatus === "A_3" ? "تصادف کرده" : ""}
                             </span>
-                        </div>,
-                    history:
-                        <div>
-                            <Button key={4*vehicle.id + 1} onClick={() =>
-                                info("نمایش تاریخچه ماشین",
-                                    <Table
-                                    columns={orderColumns}
-                                    dataSource={orderInfo}/>)} >
-                                مشاهده تاریخچه
-                            </Button>
-                        </div>,
-                    crashes:
-                        <div>
-                            <Button key={4*vehicle.id + 1} onClick={() =>
-                                info("نمایش تصادفات ماشین",
-                                    <Table
-                                    columns={crashesColumns}
-                                    dataSource={crashesInfo}/>)} >
-                                مشاهده تصادفات ماشین
-                            </Button>
-                        </div>,
-                    delete:
-                        <Mutation mutation={REMOVE_MUTATION}
-                          variables={
-                              {
-                                  "vehicleId" : vehicle.id
-                              }
-                          }
-                          onCompleted={() => {
-                              info("ماشین با موفقیت حذف شد")
-                          }}
-                        >{(deleteVehicle, deleteData) => {
-                            return (
-
-                                <Tooltip placement="top" title= {deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
-                                    <Button key={4* vehicle.id + 3} shape="circle" onClick={event => handleDelete(event, deleteVehicle)} disabled = {deleteData.loading}>
-                                        <MinusOutlined />
+                                </div>,
+                            history:
+                                <div>
+                                    <Button key={4 * vehicle.id + 1} onClick={() =>
+                                        info("نمایش تاریخچه ماشین",
+                                            <Table
+                                                columns={orderColumns}
+                                                dataSource={orderInfo}/>)}>
+                                        مشاهده تاریخچه
                                     </Button>
-                                    {deleteData.error && <Error error={deleteData.error} />}
-                                </Tooltip>
-                            )
-                        }}
-                        </Mutation>
-                });
+                                </div>,
+                            crashes:
+                                <div>
+                                    <Button key={4 * vehicle.id + 1} onClick={() =>
+                                        info("نمایش تصادفات ماشین",
+                                            <Table
+                                                columns={crashesColumns}
+                                                dataSource={crashesInfo}/>)}>
+                                        مشاهده تصادفات ماشین
+                                    </Button>
+                                </div>,
+                            delete:
+                                <Mutation mutation={REMOVE_MUTATION}
+                                          variables={
+                                              {
+                                                  "vehicleId": vehicle.id
+                                              }
+                                          }
+                                          onCompleted={() => {
+                                              info("ماشین با موفقیت حذف شد")
+                                          }}
+                                          onError={handleError}
+                                >{(deleteVehicle, deleteData) => {
+                                    return (
 
-            })}
+                                        <Tooltip placement="top"
+                                                 title={deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
+                                            <Button key={4 * vehicle.id + 3} shape="circle"
+                                                    onClick={event => handleDelete(event, deleteVehicle)}
+                                                    disabled={deleteData.loading}>
+                                                <MinusOutlined/>
+                                            </Button>
+                                            {/*{deleteData.error && <Error error={deleteData.error} />}*/}
+                                        </Tooltip>
+                                    )
+                                }}
+                                </Mutation>
+                        });
+
+                    })}
+            }
             console.log(!!vehicleClone);
             return (
                 <div className="order-container">
@@ -259,7 +271,7 @@ const AllVehiclesList = () => {
                         columns={columns}
                         dataSource={allInfo}
                     />
-                    {error && <Error error = {error}/>}
+                    {/*{error && <Error error = {error}/>}*/}
                     {/*{!!vehicleClone && <EditVehicle vehicle = {vehicleClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}*/}
 
                 </div>

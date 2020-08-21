@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
 import {EditOutlined, KeyOutlined, UserOutlined, MinusOutlined} from '@ant-design/icons';
-import Error from "../shared/Error";
+// import Error from "../shared/Error";
 import Loading from "../shared/loading"
 
 
@@ -13,6 +13,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Nav from "../../admin-root";
 import EditAuthorizer from "./edit-authorizer"
 import AddAuthorizer from "./add-authorizer";
+import handleError from "../shared/util";
 
 
 
@@ -110,7 +111,7 @@ const AllAuthorizerList = () => {
 
     return (
 
-        <Query query={GET_ALL_AUTHORIZERS}>
+        <Query query={GET_ALL_AUTHORIZERS} onError={handleError}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -122,51 +123,57 @@ const AllAuthorizerList = () => {
                 },
             ];
 
+            if(data) {
+                {data.allAuthorizers.map(authorizer => {
+                        allInfo.push({
+                            key: authorizer.id,
+                            firstName:
+                            authorizer.user.firstName,
+                            lastName:
+                            authorizer.user.lastName,
+                            username:
+                            authorizer.user.username,
+                            editDelete:
+                                <div>
+                                    <Tooltip placement="top" title='ویرایش'>
 
-            {data.allAuthorizers.map( authorizer => {
-                allInfo.push({
-                    key: authorizer.id,
-                    firstName:
-                        authorizer.user.firstName,
-                    lastName:
-                        authorizer.user.lastName,
-                    username:
-                        authorizer.user.username,
-                    editDelete:
-                    <div>
-                        <Tooltip placement="top" title='ویرایش'>
+                                        <Button key={4 * authorizer.id + 2} shape="circle"
+                                                onClick={() => handleEdit(authorizer)}>
+                                            <EditOutlined/>
+                                        </Button>
 
-                            <Button key={4* authorizer.id + 2} shape="circle" onClick={() => handleEdit(authorizer)}>
-                                <EditOutlined />
-                            </Button>
+                                    </Tooltip>
+                                    <Mutation mutation={REMOVE_MUTATION}
+                                              variables={
+                                                  {
+                                                      "id": authorizer.id
+                                                  }
+                                              }
+                                              onCompleted={() => {
+                                                  info("مشتری با موفقیت حذف شد")
+                                              }}
+                                              onError={handleError}
+                                    >{(deleteAuthorizer, deleteData) => {
+                                        return (
 
-                        </Tooltip>
-                        <Mutation mutation={REMOVE_MUTATION}
-                          variables={
-                              {
-                                  "id" : authorizer.id
-                              }
-                          }
-                          onCompleted={() => {
-                              info("مشتری با موفقیت حذف شد")
-                          }}
-                        >{(deleteAuthorizer, deleteData) => {
-                            return (
+                                            <Tooltip placement="top"
+                                                     title={deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
+                                                <Button key={4 * authorizer.id + 3} shape="circle"
+                                                        onClick={event => handleDelete(event, deleteAuthorizer)}
+                                                        disabled={deleteData.loading}>
+                                                    <MinusOutlined/>
+                                                </Button>
+                                                {/*{deleteData.error && <Error error={deleteData.error} />}*/}
+                                            </Tooltip>
+                                        )
+                                    }}
+                                    </Mutation>
+                                </div>
 
-                                <Tooltip placement="top" title= {deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
-                                    <Button key={4* authorizer.id + 3} shape="circle" onClick={event => handleDelete(event, deleteAuthorizer)} disabled = {deleteData.loading}>
-                                        <MinusOutlined />
-                                    </Button>
-                                    {deleteData.error && <Error error={deleteData.error} />}
-                                </Tooltip>
-                            )
-                        }}
-                        </Mutation>
-                    </div>
+                        });
 
-                });
-
-            })}
+                    })}
+            }
             return (
                 <div className="order-container">
 
@@ -177,7 +184,7 @@ const AllAuthorizerList = () => {
                         columns={columns}
                         dataSource={allInfo}
                     />
-                    {error && <Error error = {error}/>}
+                    {/*{error && <Error error = {error}/>}*/}
                     {authorizerClone && <EditAuthorizer authorizer = {authorizerClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}
                 </div>
             )

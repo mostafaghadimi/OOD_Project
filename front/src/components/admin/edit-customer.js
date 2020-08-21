@@ -10,7 +10,8 @@ import {KeyOutlined, UploadOutlined} from '@ant-design/icons';
 import '../user/user.css'
 import {gql} from "@apollo/client";
 import {Mutation, Query} from "react-apollo";
-import Error from "../shared/Error";
+// import Error from "../shared/Error";
+import handleError from "../shared/util";
 import moment from 'moment';
 
 const editItemLayout = {
@@ -74,6 +75,7 @@ const EditCustomer = ({customer, visible, setVisible}) => {
                     "customerId" : customer.id
                 }
             }
+            onError={handleError}
         >
             {(updateCustomer, {loading, error}) => {
                 return (
@@ -186,7 +188,7 @@ const EditCustomer = ({customer, visible, setVisible}) => {
                                         defaultValue={birthDay? moment(birthDay, "YYYY-MM-DD") : ""}
                                     />
                                 </Form.Item>
-                                {error && <Error error = {error}/>}
+                                {/*{error && <Error error = {error}/>}*/}
                             </Form>
 
                    </Modal>

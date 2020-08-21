@@ -10,7 +10,7 @@ import {KeyOutlined, UploadOutlined} from '@ant-design/icons';
 import '../user/user.css'
 import {gql} from "@apollo/client";
 import {Mutation, Query} from "react-apollo";
-import Error from "../shared/Error";
+import handleError from "../shared/util";
 import moment from 'moment';
 
 const editItemLayout = {
@@ -86,6 +86,7 @@ const AddDriver = ({visible, setVisible}) => {
                     }
                 }
             }
+            onError={handleError}
         >
             {(createDriver, {loading, error}) => {
                 return (
@@ -220,20 +221,7 @@ const AddDriver = ({visible, setVisible}) => {
                                     />
                                 </Form.Item>
 
-
-                            {/*<Form.Item*/}
-                                {/*name="عکس پرسنلی"*/}
-                                {/*label="عکس پرسنلی"*/}
-                                {/*valuePropName="fileList"*/}
-                                {/*getValueFromEvent={normFile}*/}
-                            {/*>*/}
-                                {/*<Upload name="logo" action="/upload.do" listType="picture">*/}
-                                {/*<Button>*/}
-                                    {/*<UploadOutlined /> عکس خود را انتخاب کنید*/}
-                                {/*</Button>*/}
-                                {/*</Upload>*/}
-                            {/*</Form.Item>*/}
-                                {error && <Error error = {error}/>}
+                                {/*{error && <Error error = {error}/>}*/}
                             </Form>
 
                    </Modal>
