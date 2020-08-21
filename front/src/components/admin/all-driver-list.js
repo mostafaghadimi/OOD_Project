@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
 import {EditOutlined, KeyOutlined, UserOutlined, MinusOutlined} from '@ant-design/icons';
-import Error from "../shared/Error";
-import Loading from "../shared/loading"
+// import Error from "../shared/Error";
+import Loading from "../shared/loading";
 
 
 import '../user/user.css'
@@ -12,6 +12,7 @@ import {UserType} from "../shared/user-type-enum";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import EditDriver from "./edit-driver";
 import AddDriver from "./add-driver";
+import handleError from "../shared/util";
 
 
 
@@ -134,7 +135,7 @@ const AllDriversList = () => {
 
     return (
 
-        <Query query={GET_ALL_DRIVERS}>
+        <Query query={GET_ALL_DRIVERS} onError={handleError}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -148,70 +149,78 @@ const AllDriversList = () => {
 
             const orderInfo = [];
 
-
-            {data.allDrivers.map( driver => {
-                {driver.orders.map( order=> {
-                    orderInfo.push({orderLocation: "(" + order.latitude+ ", " + order.longitude + ")"})
-                })}
-                allInfo.push({
-                    key: driver.id,
-                    firstName:
-                        driver.user.firstName,
-                    lastName:
-                        driver.user.lastName,
-                    status:
-                        <div className="driver-status">
+            if(data) {
+                {data.allDrivers.map(driver => {
+                        {
+                            driver.orders.map(order => {
+                                orderInfo.push({orderLocation: "(" + order.latitude + ", " + order.longitude + ")"})
+                            })
+                        }
+                        allInfo.push({
+                            key: driver.id,
+                            firstName:
+                            driver.user.firstName,
+                            lastName:
+                            driver.user.lastName,
+                            status:
+                                <div className="driver-status">
                             <span>
                                 {driver.driverStatus === "A_1" ? "آزاد" : driver.driverStatus === "A_2" ? "در ماموریت" : driver.driverStatus === "A_3" ? "تصادف کرده" : ""}
                             </span>
-                        </div>,
-                    location: <Button key={4*driver.id} >مشاهده روی نقشه</Button>,
-                    history:
-                        <div>
-                            <Button key={4*driver.id + 1} onClick={() =>
-                                info("نمایش تاریخچه راننده",
-                                    <Table
-                                    columns={orderColumns}
-                                    dataSource={orderInfo}/>)} >
-                                مشاهده تاریخچه
-                            </Button>
-                        </div>,
-                    score: driver.rating,
-                    editDelete:
-                    <div>
-                        <Tooltip placement="top" title='ویرایش'>
-
-                            <Button key={4* driver.id + 2} shape="circle" onClick={() => handleEdit(driver)}>
-                                <EditOutlined />
-                            </Button>
-
-                        </Tooltip>
-                        <Mutation mutation={REMOVE_MUTATION}
-                          variables={
-                              {
-                                  "id" : driver.user.id
-                              }
-                          }
-                          onCompleted={() => {
-                              info("راننده با موفقیت حذف شد")
-                          }}
-                        >{(deleteDriver, deleteData) => {
-                            return (
-
-                                <Tooltip placement="top" title= {deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
-                                    <Button key={4* driver.id + 3} shape="circle" onClick={event => handleDelete(event, deleteDriver)} disabled = {deleteData.loading}>
-                                        <MinusOutlined />
+                                </div>,
+                            location: <Button key={4 * driver.id}>مشاهده روی نقشه</Button>,
+                            history:
+                                <div>
+                                    <Button key={4 * driver.id + 1} onClick={() =>
+                                        info("نمایش تاریخچه راننده",
+                                            <Table
+                                                columns={orderColumns}
+                                                dataSource={orderInfo}/>)}>
+                                        مشاهده تاریخچه
                                     </Button>
-                                    {deleteData.error && <Error error={deleteData.error} />}
-                                </Tooltip>
-                            )
-                        }}
-                        </Mutation>
-                    </div>
+                                </div>,
+                            score: driver.rating,
+                            editDelete:
+                                <div>
+                                    <Tooltip placement="top" title='ویرایش'>
 
-                });
+                                        <Button key={4 * driver.id + 2} shape="circle"
+                                                onClick={() => handleEdit(driver)}>
+                                            <EditOutlined/>
+                                        </Button>
 
-            })}
+                                    </Tooltip>
+                                    <Mutation mutation={REMOVE_MUTATION}
+                                              variables={
+                                                  {
+                                                      "id": driver.user.id
+                                                  }
+                                              }
+                                              onCompleted={() => {
+                                                  info("راننده با موفقیت حذف شد")
+                                              }}
+                                              onError={handleError}
+                                    >{(deleteDriver, deleteData) => {
+                                        return (
+
+                                            <Tooltip placement="top"
+                                                     title={deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
+                                                <Button key={4 * driver.id + 3} shape="circle"
+                                                        onClick={event => handleDelete(event, deleteDriver)}
+                                                        disabled={deleteData.loading}>
+                                                    <MinusOutlined/>
+                                                </Button>
+                                                {/*{deleteData.error && <Error error={deleteData.error} />}*/}
+                                            </Tooltip>
+                                        )
+                                    }}
+                                    </Mutation>
+                                </div>
+
+                        });
+
+                    })}
+            }
             console.log(!!driverClone);
             return (
                 <div className="order-container">
@@ -223,7 +232,7 @@ const AllDriversList = () => {
                         columns={columns}
                         dataSource={allInfo}
                     />
-                    {error && <Error error = {error}/>}
+                    {/*{error && <Error error = {error}/>}*/}
                     {!!driverClone && <EditDriver driver = {driverClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}
                     {/*<AddDriver visible = {visibleAdd} setVisible = {setVisibleAdd}/>*/}
 

@@ -6,8 +6,9 @@ import OrderDetail from './order-detail';
 import './order.css'
 import {gql} from "apollo-boost";
 import {Query} from "react-apollo";
-import Error from "../shared/Error";
+// import Error from "../shared/Error";
 import Loading from "../shared/loading";
+import handleError from "../shared/util";
 
 
 const columns = [
@@ -92,26 +93,25 @@ const OrderList = ({customer}) => {
 
 
     return (
-        <Query query={GET_CUSTOMER_ORDERS} variables={{"id": customer.id}}>
+        <Query query={GET_CUSTOMER_ORDERS} variables={{"id": customer.id}} onError={handleError}>
             {({data, loading, error}) => {
                 if (loading) return <Loading/>;
 
+                if(data) {
+                    {data.customerOrders.map(order => {
+                            allInfo.push(
+                                {
+                                    key: order.id,
+                                    orderer: order.owner ? order.owner.user.firstName + " " + order.owner.user.lastName : "",
+                                    deliverer: order.driver ? order.driver.user.firstName + " " + order.driver.user.lastName : "",
+                                    address: order.destinationAddress,
+                                    cost: order.transportationCost,
+                                    status: order.orderStatus === "A_1" ? "ثبت شده" : order.orderStatus === "A_2" ? "در حال بارگذاری" : order.orderStatus === "A_3" ? "در حال ارسال" : order.orderStatus === "A_4" ? "ارسال شده" : "",
+                                }
+                            );
+                            console.log(allInfo);
 
-                {
-                    data.customerOrders.map(order => {
-                        allInfo.push(
-                            {
-                                key: order.id,
-                                orderer: order.owner ? order.owner.user.firstName + " " + order.owner.user.lastName : "",
-                                deliverer: order.driver ? order.driver.user.firstName + " " + order.driver.user.lastName : "",
-                                address: order.destinationAddress,
-                                cost: order.transportationCost,
-                                status: order.orderStatus === "A_1" ? "ثبت شده" : order.orderStatus === "A_2" ? "در حال بارگذاری" : order.orderStatus === "A_3" ? "در حال ارسال":  order.orderStatus === "A_4" ? "ارسال شده" : "",
-                            }
-                        );
-                        console.log(allInfo);
-
-                    })
+                        })}
                 }
                 console.log(allInfo);
                 return (
@@ -121,7 +121,7 @@ const OrderList = ({customer}) => {
                             columns={columns}
                             dataSource={allInfo}
                         />
-                        {error && <Error error={error} />}
+                        {/*{error && <Error error={error} />}*/}
                     </div>
 
                 );

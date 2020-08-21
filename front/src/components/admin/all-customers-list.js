@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
 import {EditOutlined, KeyOutlined, UserOutlined, MinusOutlined} from '@ant-design/icons';
-import Error from "../shared/Error";
+// import Error from "../shared/Error";
 import Loading from "../shared/loading"
+import handleError from "../shared/util"
 
 
 import '../user/user.css'
@@ -115,7 +116,7 @@ const AllCustomersList = () => {
 
     return (
 
-        <Query query={GET_ALL_CUSTOMERS}>
+        <Query query={GET_ALL_CUSTOMERS} onError={handleError}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -129,65 +130,73 @@ const AllCustomersList = () => {
 
             const orderInfo = [];
 
-
-            {data.allCustomers.map( customer => {
-                {customer.orders.map( order=> {
-                    orderInfo.push({orderLocation: "(" + order.latitude+ ", " + order.longitude + ")"})
-                })}
-                allInfo.push({
-                    key: customer.id,
-                    firstName:
-                        customer.user.firstName,
-                    lastName:
-                        customer.user.lastName,
-                    birthday:
-                        customer.birthday,
-                    location: <Button key={4*customer.id} >مشاهده روی نقشه</Button>,
-                    history:
-                        <div>
-                            <Button key={4*customer.id + 1} onClick={() =>
-                                info("نمایش تاریخچه راننده",
-                                    <Table
-                                    columns={orderColumns}
-                                    dataSource={orderInfo}/>)} >
-                                مشاهده تاریخچه
-                            </Button>
-                        </div>,
-                    editDelete:
-                    <div>
-                        <Tooltip placement="top" title='ویرایش'>
-
-                            <Button key={4* customer.id + 2} shape="circle" onClick={() => handleEdit(customer)}>
-                                <EditOutlined />
-                            </Button>
-
-                        </Tooltip>
-                        <Mutation mutation={REMOVE_MUTATION}
-                          variables={
-                              {
-                                  "id" : customer.id
-                              }
-                          }
-                          onCompleted={() => {
-                              info("مشتری با موفقیت حذف شد")
-                          }}
-                        >{(deleteCustomer, deleteData) => {
-                            return (
-
-                                <Tooltip placement="top" title= {deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
-                                    <Button key={4* customer.id + 3} shape="circle" onClick={event => handleDelete(event, deleteCustomer)} disabled = {deleteData.loading}>
-                                        <MinusOutlined />
+            if(data) {
+                {data.allCustomers.map(customer => {
+                        {
+                            customer.orders.map(order => {
+                                orderInfo.push({orderLocation: "(" + order.latitude + ", " + order.longitude + ")"})
+                            })
+                        }
+                        allInfo.push({
+                            key: customer.id,
+                            firstName:
+                            customer.user.firstName,
+                            lastName:
+                            customer.user.lastName,
+                            birthday:
+                            customer.birthday,
+                            location: <Button key={4 * customer.id}>مشاهده روی نقشه</Button>,
+                            history:
+                                <div>
+                                    <Button key={4 * customer.id + 1} onClick={() =>
+                                        info("نمایش تاریخچه راننده",
+                                            <Table
+                                                columns={orderColumns}
+                                                dataSource={orderInfo}/>)}>
+                                        مشاهده تاریخچه
                                     </Button>
-                                    {deleteData.error && <Error error={deleteData.error} />}
-                                </Tooltip>
-                            )
-                        }}
-                        </Mutation>
-                    </div>
+                                </div>,
+                            editDelete:
+                                <div>
+                                    <Tooltip placement="top" title='ویرایش'>
 
-                });
+                                        <Button key={4 * customer.id + 2} shape="circle"
+                                                onClick={() => handleEdit(customer)}>
+                                            <EditOutlined/>
+                                        </Button>
 
-            })}
+                                    </Tooltip>
+                                    <Mutation mutation={REMOVE_MUTATION}
+                                              variables={
+                                                  {
+                                                      "id": customer.id
+                                                  }
+                                              }
+                                              onCompleted={() => {
+                                                  info("مشتری با موفقیت حذف شد")
+                                              }}
+                                              onError={handleError}
+                                    >{(deleteCustomer, deleteData) => {
+                                        return (
+
+                                            <Tooltip placement="top"
+                                                     title={deleteData.loading ? "در حال پاک کردن..." : "پاک کردن"}>
+                                                <Button key={4 * customer.id + 3} shape="circle"
+                                                        onClick={event => handleDelete(event, deleteCustomer)}
+                                                        disabled={deleteData.loading}>
+                                                    <MinusOutlined/>
+                                                </Button>
+                                                {/*{deleteData.error && <Error error={deleteData.error} />}*/}
+                                            </Tooltip>
+                                        )
+                                    }}
+                                    </Mutation>
+                                </div>
+
+                        });
+
+                    })}
+            }
             return (
                 <div className="order-container">
 
@@ -198,7 +207,7 @@ const AllCustomersList = () => {
                         columns={columns}
                         dataSource={allInfo}
                     />
-                    {error && <Error error = {error}/>}
+                    {/*{error && <Error error = {error}/>}*/}
                     {customerClone && <EditCustomer customer = {customerClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}
                 </div>
             )

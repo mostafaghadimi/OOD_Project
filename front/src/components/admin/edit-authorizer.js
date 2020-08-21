@@ -10,8 +10,9 @@ import {KeyOutlined, UploadOutlined} from '@ant-design/icons';
 import '../user/user.css'
 import {gql} from "@apollo/client";
 import {Mutation, Query} from "react-apollo";
-import Error from "../shared/Error";
+// import Error from "../shared/Error";
 import moment from 'moment';
+import handleError from "../shared/util"
 
 const editItemLayout = {
     labelCol: { span: 5 },
@@ -75,6 +76,7 @@ const EditAuthorizer = ({authorizer, visible, setVisible}) => {
                     "id" : authorizer.id
                 }
             }
+            onError={handleError}
         >
             {(updateAuthorizer, {loading, error}) => {
                 return (
@@ -188,7 +190,7 @@ const EditAuthorizer = ({authorizer, visible, setVisible}) => {
                                         defaultValue={birthDay? moment(birthDay, "YYYY-MM-DD") : ""}
                                     />
                                 </Form.Item>
-                                {error && <Error error = {error}/>}
+                                {/*{error && <Error error = {error}/>}*/}
                             </Form>
 
                    </Modal>

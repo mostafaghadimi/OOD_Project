@@ -10,8 +10,9 @@ import {KeyOutlined, UploadOutlined} from '@ant-design/icons';
 import '../user/user.css'
 import {gql} from "@apollo/client";
 import {Mutation, Query} from "react-apollo";
-import Error from "../shared/Error";
 import moment from 'moment';
+import handleError from "../shared/util";
+
 
 const editItemLayout = {
     labelCol: { span: 5 },
@@ -83,6 +84,7 @@ const AddCustomer = ({visible, setVisible}) => {
                     }
                 }
             }
+            onError={handleError}
         >
             {(createCustomer, {loading, error}) => {
                 return (
@@ -199,20 +201,7 @@ const AddCustomer = ({visible, setVisible}) => {
                                     />
                                 </Form.Item>
 
-
-                            {/*<Form.Item*/}
-                                {/*name="عکس پرسنلی"*/}
-                                {/*label="عکس پرسنلی"*/}
-                                {/*valuePropName="fileList"*/}
-                                {/*getValueFromEvent={normFile}*/}
-                            {/*>*/}
-                                {/*<Upload name="logo" action="/upload.do" listType="picture">*/}
-                                {/*<Button>*/}
-                                    {/*<UploadOutlined /> عکس خود را انتخاب کنید*/}
-                                {/*</Button>*/}
-                                {/*</Upload>*/}
-                            {/*</Form.Item>*/}
-                                {error && <Error error = {error}/>}
+                                {/*{error && <Error error = {error}/>}*/}
                             </Form>
 
                    </Modal>

@@ -11,9 +11,9 @@ import {KeyOutlined, UploadOutlined} from '@ant-design/icons';
 import '../user/user.css'
 import {gql} from "@apollo/client";
 import {Mutation, Query} from "react-apollo";
-import Error from "../shared/Error";
 import Loading from "../shared/loading";
 import moment from 'moment';
+import handleError from "../shared/util";
 
 const editItemLayout = {
     labelCol: { span: 5 },
@@ -78,10 +78,11 @@ const AddOrder = ({visible, setVisible}) => {
                     "orderCode" : orderCode
                 }
             }
+            onError={handleError}
         >
         {(createOrder, {loading, error}) => {
             return(
-                <Query query={GET_ALL_CUSTOMERS}>
+                <Query query={GET_ALL_CUSTOMERS} onError={handleError}>
                     {(getCustomers) => {
 
                     if(getCustomers.loading) return <Loading/>;
@@ -151,8 +152,8 @@ const AddOrder = ({visible, setVisible}) => {
                                     </Form.Item>
 
 
-                                    {error && <Error error = {error}/>}
-                                    {getCustomers.error && <Error error = {getCustomers.error}/>}
+                                    {/*{error && <Error error = {error}/>}*/}
+                                    {/*{getCustomers.error && <Error error = {getCustomers.error}/>}*/}
 
                                 </Form>
 

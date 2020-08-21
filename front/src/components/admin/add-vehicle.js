@@ -10,8 +10,9 @@ import {KeyOutlined, UploadOutlined} from '@ant-design/icons';
 import '../user/user.css'
 import {gql} from "@apollo/client";
 import {Mutation, Query} from "react-apollo";
-import Error from "../shared/Error";
 import moment from 'moment';
+import handleError from "../shared/util";
+
 
 const editItemLayout = {
     labelCol: { span: 7 },
@@ -93,6 +94,7 @@ const AddVehicle = ({visible, setVisible}) => {
                     }
                 }
             }
+            onError={handleError}
         >
             {(createVehicle, {loading, error}) => {
                 return (
@@ -193,7 +195,7 @@ const AddVehicle = ({visible, setVisible}) => {
                                     <Input placeholder="20"/>
                                 </Form.Item>
 
-                                {error && <Error error = {error}/>}
+                                {/*{error && <Error error = {error}/>}*/}
                             </Form>
 
                    </Modal>

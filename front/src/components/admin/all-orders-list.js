@@ -7,13 +7,14 @@ import {PlusOutlined, MinusOutlined, CheckOutlined} from '@ant-design/icons';
 import '../order/order.css'
 import {gql} from "apollo-boost";
 import {Query, Mutation} from "react-apollo";
-import Error from "../shared/Error";
 import Loading from "../shared/loading";
 import AddOrder from "./add-order"
 import EditCustomer from "./all-customers-list";
 import OrderAddDriver from "./order-add-driver";
 import VerifyDeliveryOrder from "./verify-delivery-order";
 import OrderAddVehicle from "./order-add-vehicle";
+import handleError from "../shared/util";
+
 
 
 
@@ -157,13 +158,12 @@ const AllOrderList = () => {
 
 
     return (
-        <Query query={GET_ORDERS} >
+        <Query query={GET_ORDERS} onError={handleError}>
             {({data, loading, error}) => {
                 if (loading) return <Loading/>;
 
-
-                {
-                    data.allOrders.map(order => {
+                if(data) {
+                    {data.allOrders.map(order => {
                         allInfo.push(
                             {
                                 key: order.id,
@@ -201,6 +201,7 @@ const AllOrderList = () => {
                                       onCompleted={() => {
                                           info("سفارش با موفقیت حذف شد")
                                       }}
+                                      onError={handleError}
                                     >{(deleteOrder, deleteData) => {
                                         return (
 
@@ -208,7 +209,7 @@ const AllOrderList = () => {
                                                 <Button key={3 * order.id + 1} shape="circle" onClick={event => handleDelete(event, deleteOrder)} disabled = {deleteData.loading}>
                                                     <MinusOutlined />
                                                 </Button>
-                                                {deleteData.error && <Error error={deleteData.error} />}
+                                                {/*{deleteData.error && <Error error={deleteData.error} />}*/}
                                             </Tooltip>
                                         )
                                     }}
@@ -225,7 +226,7 @@ const AllOrderList = () => {
 
                             }
                         );
-                    })
+                    })}
                 }
                 return (
                     <div className="order-container">
@@ -234,7 +235,7 @@ const AllOrderList = () => {
                             columns={columns}
                             dataSource={allInfo}
                         />
-                        {error && <Error error={error} />}
+                        {/*{error && <Error error={error} />}*/}
                         {orderClone && <OrderAddDriver order = {orderClone} visible = {visibleAddDriver} setVisible = {setVisibleAddDriver}/>}
                         {orderClone && <VerifyDeliveryOrder order = {orderClone} visible = {visibleVerifyDelivery} setVisible = {setVisibleVerifyDelivery}/>}
                         {orderClone && <OrderAddVehicle order = {orderClone} visible = {visibleAddVehicle} setVisible = {setVisibleAddVehicle}/>}
@@ -284,7 +285,5 @@ mutation($orderId: ID!){
     }
 }
 `;
-
-
 
 export default (AllOrderList)

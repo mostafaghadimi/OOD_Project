@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { Table, Button, Modal, Tooltip, Input } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
-import Error from "../shared/Error";
-import Loading from "../shared/loading"
+// import Error from "../shared/Error";
+import Loading from "../shared/loading";
+import handleError from "../shared/util";
 
 
 import './user.css'
@@ -119,7 +120,7 @@ const DriverList = ({customer}) => {
 
 
     return (
-        <Query query={GET_CUSTOMER_DRIVERS} variables={{"id": customer.user.id}}>
+        <Query query={GET_CUSTOMER_DRIVERS} variables={{"id": customer.user.id}} onError={handleError}>
         {({data, loading, error}) => {
             if(loading) return <Loading/>;
             console.log(data);
@@ -133,38 +134,40 @@ const DriverList = ({customer}) => {
 
             const orderInfo = [];
 
-
-            {data.customerDrivers.map( driver => {
-                {driver.orders.map( order=> {
-                    orderInfo.push({orderLocation: "(" + order.latitude+ ", " + order.longitude + ")"})
-                })}
-                allInfo.push({
-                    key: driver.id,
-                    driver: driver.user.firstName + " " + driver.user.lastName,
-                    status:
-                        <div className="driver-status">
+            if(data) {
+                {
+                    data.customerDrivers.map(driver => {
+                        {
+                            driver.orders.map(order => {
+                                orderInfo.push({orderLocation: "(" + order.latitude + ", " + order.longitude + ")"})
+                            })
+                        }
+                        allInfo.push({
+                            key: driver.id,
+                            driver: driver.user.firstName + " " + driver.user.lastName,
+                            status:
+                                <div className="driver-status">
                             <span>
                                 {driver.driverStatus === "A_1" ? "آزاد" : driver.driverStatus === "A_2" ? "در ماموریت" : driver.driverStatus === "A_3" ? "تصادف کرده" : ""}
                             </span>
-                        </div>,
-                    location: <Button key={driver.id}>مشاهده روی نقشه</Button>,
-                    history:
-                        <div>
-                            <Button key={driver.id} onClick={() =>
-                                info("نمایش تاریخچه راننده",
-                                    <Table
-                                    columns={orderColumns}
-                                    dataSource={orderInfo}/>)} >
-                                مشاهده تاریخچه
-                            </Button>
+                                </div>,
+                            location: <Button key={driver.id}>مشاهده روی نقشه</Button>,
+                            history:
+                                <div>
+                                    <Button key={driver.id} onClick={() =>
+                                        info("نمایش تاریخچه راننده",
+                                            <Table
+                                                columns={orderColumns}
+                                                dataSource={orderInfo}/>)}>
+                                        مشاهده تاریخچه
+                                    </Button>
+                                </div>,
+                            score: driver.rating
+                        });
 
-
-
-                        </div>,
-                    score: driver.rating
-                });
-
-            })}
+                    })
+                }
+            }
             return (
                 <div className="order-container">
                     <Table
@@ -172,7 +175,7 @@ const DriverList = ({customer}) => {
                         columns={columns}
                         dataSource={allInfo}
                     />
-                    {error && <Error error = {error}/>}
+                    {/*{error && <Error error = {error}/>}*/}
                 </div>
             )
         }}

@@ -1,27 +1,30 @@
 import React, { useState } from "react";
 import {Modal} from "antd";
+import { onError } from "@apollo/client/link/error";
 
 const Error = ({ error }) => {
-  const [visible, setVisible] = useState(true);
+    const [visible, setVisible] = useState(true);
+    var errorMessage = "";
 
-  return (
-   <Modal
-        title = "خطا به وجود آمده است"
-        visible={visible}
-        onOk = {() => {
-            setVisible(false);
-          }
-        }
-        cancelButtonProps={{ type: "text"}}
-        okText="تایید"
-        cancelText=" "
+    return (
+
+        <Modal
+            title="لیست خطا ها"
+            visible={visible}
+            onOk={() => {
+                setVisible(false);
+            }
+            }
+            cancelButtonProps={{type: "text"}}
+            okText="تایید"
+            cancelText=" "
         >
-       <p>
-           متن خطا:
-           {error.message}
-       </p>
-   </Modal>
-  )
+            <div>
+
+                {error.message}
+            </div>
+        </Modal>
+    )
 };
 
 

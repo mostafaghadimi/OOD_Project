@@ -8,6 +8,7 @@ import { Mutation } from "react-apollo";
 import './user.css'
 import Error from "../shared/Error";
 import Loading from "../shared/loading";
+import handleError from "../shared/util";
 
 
 const columns = [
@@ -73,70 +74,76 @@ const AuthorizeDrivers = ({currentUser}) => {
     const [modalRejectTitle, setModalRejectTitle] = useState("");
 
     return(
-        <Query query={GET_DRIVERS}>
+        <Query query={GET_DRIVERS} onError={handleError}>
             {({data, loading, error}) => {
                 if(loading) return <Loading/>;
                 // if (error) return <div> is error </div>;
+                if(data) {
+                    {data.unverifiedDrivers.map(driver => {
+                            // setModalConfirmTitle("هویت ".concat(driver.firstName).concat(" تایید شد"));
+                            // setModalRejectTitle(driver.firstName.concat(" رد شد"));
 
-                {data.unverifiedDrivers.map( driver => {
-                    // setModalConfirmTitle("هویت ".concat(driver.firstName).concat(" تایید شد"));
-                    // setModalRejectTitle(driver.firstName.concat(" رد شد"));
+                            allInfo.push({
+                                key: driver.id,
+                                firstName: driver.user.firstName,
+                                lastName: driver.user.lastName,
+                                username: driver.user.username,
+                                email: driver.user.email,
+                                phoneNo: driver.user.phoneNo,
+                                nationalId: driver.nationalId,
+                                verifyRemove:
+                                    <div className="driver-status">
+                                        <Mutation mutation={AUTHORIZE_MUTATION}
+                                                  variables={
+                                                      {
+                                                          "id": driver.user.id
+                                                      }
+                                                  }
+                                                  onCompleted={() => {
+                                                      info("هویت راننده تایید شد")
+                                                  }}
+                                                  onError={handleError}
+                                        >{(verifyDriver, authorizeData) => {
+                                            return (
+                                                <div>
+                                                    <Button
+                                                        onClick={event => handleSubmitAuthorize(event, verifyDriver, driver.id)}
+                                                        disabled={authorizeData.loading}>
+                                                        {authorizeData.loading ? "در حال تایید کردن..." : "تایید"}
+                                                    </Button>
+                                                    {/*{authorizeData.error && <Error error={authorizeData.error}/>}*/}
+                                                </div>
+                                            )
+                                        }}
+                                        </Mutation>
+                                        <Mutation mutation={REMOVE_MUTATION}
+                                                  variables={
+                                                      {
+                                                          "id": driver.user.id
+                                                      }
+                                                  }
+                                                  onCompleted={() => {
+                                                      info("هویت راننده رد شد")
+                                                  }}
+                                        >{(deleteDriver, deleteData) => {
+                                            return (
+                                                <div>
+                                                    <Button
+                                                        onClick={event => handleSubmitDelete(event, deleteDriver, driver.id)}
+                                                        disabled={deleteData.loading}>
+                                                        {deleteData.loading ? "در حال رد کردن..." : "رد"}
+                                                    </Button>
+                                                    {/* Error Handling */}
+                                                    {deleteData.error && <Error error={deleteData.error}/>}
+                                                </div>
+                                            )
+                                        }}
+                                        </Mutation>
+                                    </div>
 
-                    allInfo.push({
-                        key: driver.id,
-                        firstName: driver.user.firstName,
-                        lastName: driver.user.lastName,
-                        username: driver.user.username,
-                        email: driver.user.email,
-                        phoneNo: driver.user.phoneNo,
-                        nationalId: driver.nationalId,
-                        verifyRemove:
-                            <div className="driver-status">
-                                <Mutation mutation={AUTHORIZE_MUTATION}
-                                          variables={
-                                              {
-                                              "id" : driver.user.id
-                                              }
-                                          }
-                                          onCompleted={() => {
-                                              info("هویت راننده تایید شد")
-                                          }}
-                                    >{(verifyDriver, authorizeData) => {
-                                        return (
-                                            <div>
-                                                <Button onClick={event => handleSubmitAuthorize(event, verifyDriver, driver.id)} disabled = {authorizeData.loading}>
-                                                    {authorizeData.loading ? "در حال تایید کردن..." : "تایید"}
-                                                </Button>
-                                                {authorizeData.error && <Error error={authorizeData.error} />}
-                                            </div>
-                                        )
-                                }}
-                                </Mutation>
-                                <Mutation mutation={REMOVE_MUTATION}
-                                          variables={
-                                              {
-                                                  "id" : driver.user.id
-                                              }
-                                          }
-                                          onCompleted={() => {
-                                              info("هویت راننده رد شد")
-                                          }}
-                                    >{(deleteDriver, deleteData) => {
-                                        return (
-                                            <div>
-                                                <Button onClick={event => handleSubmitDelete(event, deleteDriver, driver.id)} disabled = {deleteData.loading}>
-                                                    {deleteData.loading ? "در حال رد کردن..." : "رد"}
-                                                </Button>
-                                                {/* Error Handling */}
-                                                {deleteData.error && <Error error={deleteData.error} />}
-                                            </div>
-                                        )
-                                    }}
-                                </Mutation>
-                            </div>
-
-                    })
-                })}
+                            })
+                        })}
+                }
 
                 return (
 
@@ -149,7 +156,7 @@ const AuthorizeDrivers = ({currentUser}) => {
                             // scroll={this.scroll}
                         />
                         {/* Error Handling */}
-                        {error && <Error error={error} />}
+                        {/*{error && <Error error={error} />}*/}
                     </div>
 
                 );

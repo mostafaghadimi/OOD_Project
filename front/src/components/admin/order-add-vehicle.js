@@ -13,6 +13,7 @@ import {Mutation, Query} from "react-apollo";
 import Error from "../shared/Error";
 import moment from 'moment';
 import Loading from "./add-order";
+import handleError from "../shared/util";
 
 const editItemLayout = {
     labelCol: { span: 5 },
@@ -57,11 +58,11 @@ const OrderAddVehicle = ({order, visible, setVisible}) => {
                     "orderId" : order.id,
                 }
             }
+            onError={handleError}
         >
-
             {(assignVehicleLoad, {loading, error}) => {
                 return (
-                    <Query query={GET_ALL_VEHICLES}>
+                    <Query query={GET_ALL_VEHICLES} onError={handleError}>
                         {(getVehicles) => {
 
                             if (getVehicles.loading) return <Loading/>;
@@ -98,8 +99,8 @@ const OrderAddVehicle = ({order, visible, setVisible}) => {
                                             </Select>
                                         </Form.Item>
                                     </Form>
-                                    {error && <Error error={error}/>}
-                                    {getVehicles.error && <Error error={getVehicles.error}/>}
+                                    {/*{error && <Error error={error}/>}*/}
+                                    {/*{getVehicles.error && <Error error={getVehicles.error}/>}*/}
 
 
                                 </Modal>

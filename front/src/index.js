@@ -21,7 +21,7 @@ import AdminRoot from './admin-root';
 import { ApolloProvider, Query } from "react-apollo";
 import ApolloClient, { gql } from "apollo-boost";
 import DriverRegister from './components/user/driver-register';
-
+import handleError from "./components/shared/util";
 
 
 
@@ -62,7 +62,7 @@ const App = () =>{
     console.log(UserType["Admin"]);
     console.log(localStorage.getItem("userType") === UserType["Admin"]);
     return (
-        <Query query={IS_LOGGED_IN_QUERY} >
+        <Query query={IS_LOGGED_IN_QUERY} onError={handleError}>
             {({ data , loading, error}) => {
 
                 if (loading) return <div> loading </div>;
@@ -95,7 +95,7 @@ const App = () =>{
                     )
                 }
                 return(
-                    <Query query={ME_QUERY} >
+                    <Query query={ME_QUERY} onError={handleError}>
                              {(meData) => {
                                  if (meData.loading) return <Loading/>;
                                  if (meData.error) return <Error error = {meData.error}/>;
