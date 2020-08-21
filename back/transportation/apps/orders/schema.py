@@ -189,6 +189,7 @@ class AssignVehicleLoad(Mutation):
             raise Exception("Invalid order ID")
 
         vehicle.vehicle_status = '2'
+        vehicle.duty_no += 1
         order.vehicle = vehicle
 
         order.save()
