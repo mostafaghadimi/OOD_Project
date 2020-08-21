@@ -81,7 +81,7 @@ class DeleteVehicle(Mutation):
         if not user.is_superuser:
             raise Exception("You are not allowed to do this operation")
 
-        vehicle = Vehicle.objects.get(pk=order_id)
+        vehicle = Vehicle.objects.get(pk=vehicle_id)
         vehicle.delete()
 
         return DeleteVehicle(id=vehicle_id)
