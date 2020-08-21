@@ -11,9 +11,8 @@ import {gql} from "apollo-boost";
 import {UserType} from "../shared/user-type-enum";
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import Nav from "../../admin-root";
-// import EditAuthorizer from "./edit-authorizer"
-// import AddAuthorizer from "./add-authorizer";
-import AddDriver from "./all-driver-list";
+import EditAuthorizer from "./edit-authorizer"
+import AddAuthorizer from "./add-authorizer";
 
 
 
@@ -66,7 +65,7 @@ const AllAuthorizerList = () => {
                     اضافه کردن
                 </Button>
 
-                {/*<AddAuthorizer visible = {visibleAdd} setVisible = {setVisibleAdd}/>*/}
+                <AddAuthorizer visible = {visibleAdd} setVisible = {setVisibleAdd}/>
         </div>
     );
 
@@ -179,7 +178,7 @@ const AllAuthorizerList = () => {
                         dataSource={allInfo}
                     />
                     {error && <Error error = {error}/>}
-                    {/*{authorizerClone && <EditAuthorizer authorizer = {authorizerClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}*/}
+                    {authorizerClone && <EditAuthorizer authorizer = {authorizerClone} visible = {visibleEdit} setVisible = {setVisibleEdit}/>}
                 </div>
             )
         }}
