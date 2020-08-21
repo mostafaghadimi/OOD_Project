@@ -146,7 +146,7 @@ const AllCustomersList = () => {
                     history:
                         <div>
                             <Button key={4*customer.id + 1} onClick={() =>
-                                info("نمایش تاریخچه راننده",
+                                info("نمایش تاریخچه صاحب بار",
                                     <Table
                                     columns={orderColumns}
                                     dataSource={orderInfo}/>)} >
