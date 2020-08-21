@@ -1,10 +1,12 @@
 import graphene
+from graphql import GraphQLError
 from graphene import ObjectType, Mutation, InputObjectType
 from graphene_django.types import DjangoObjectType
 
 from .models import Crash
 from apps.users.models import Driver, Usermodel
 from apps.vehicles.models import Vehicle
+
 
 class CrashType(DjangoObjectType):
     class Meta:
@@ -26,17 +28,17 @@ class ReportCrash(Mutation):
         user = info.context.user
         
         if user.is_anonymous:
-            raise Exception('Login is needed for reporting crash')
+            raise GraphQLError('Login is needed for reporting crash')
         
         try:
             driver = Usermodel.objects.get(pk=id).driver
         except:
-            raise Exception("Invalid Driver/User ID")
+            raise GraphQLError("Invalid Driver/User ID")
 
         try:
             vehicle = Vehicle.objects.get(pk=vehicle_id)
         except:
-            raise Exception("Invalid Vehicle ID")
+            raise GraphQLError("Invalid Vehicle ID")
 
 
         if (user.is_driver and user == driver.user) or user.is_superuser:
@@ -56,7 +58,7 @@ class ReportCrash(Mutation):
             return ReportCrash(crash=crash)
         
         else:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
 
 class Query(ObjectType):
@@ -73,12 +75,12 @@ class Query(ObjectType):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
         
         try:
             crash = Crash.objects.get(pk=id)
         except:
-            raise Exception("Invalid Crash ID")
+            raise GraphQLError("Invalid Crash ID")
 
         if user.is_superuser:
             return crash
@@ -87,13 +89,13 @@ class Query(ObjectType):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if user.is_superuser:
             return Crash.objects.all()
 
         
-        raise Exception("You are not allowed to do this operation")
+        raise GraphQLError("You are not allowed to do this operation")
 
 
 class Mutations(ObjectType):

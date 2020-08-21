@@ -1,7 +1,9 @@
+import graphene
+from graphql import GraphQLError
 from graphene import Mutation, ObjectType, InputObjectType
 from graphene_django.types import DjangoObjectType
+
 from .models import Vehicle
-import graphene
 
 
 class VehicleType(DjangoObjectType):
@@ -35,10 +37,10 @@ class Query(ObjectType):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         elif not user.is_superuser:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
         return Vehicle.objects.all()
 
@@ -54,10 +56,10 @@ class CreateVehicle(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         elif not user.is_superuser:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
         vehicle = Vehicle(
             **vehicle_data

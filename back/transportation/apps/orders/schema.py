@@ -1,12 +1,14 @@
 from graphene import ObjectType, Mutation, InputObjectType
 import graphene
-from .models import Order
+from django.db.models import Avg
 from graphene_django.types import DjangoObjectType
+from graphql import GraphQLError
+
+from .models import Order
 from apps.vehicles.schema import VehicleType, VehicleInput
 from apps.users.schema import CustomerInput
 from apps.users.models import Customer, Driver
 from apps.vehicles.models import Vehicle
-from django.db.models import Avg
 
 
 class OrderType(DjangoObjectType):
@@ -57,18 +59,18 @@ class Query(ObjectType):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
         
         try:
             order = Order.objects.get(pk=id)
         
         except: 
-            raise Exception("Invalid Order ID")
+            raise GraphQLError("Invalid Order ID")
 
         if user.is_superuser or user == order.owner:
             return order
         
-        raise Exception("You are not allowed to do this operation")
+        raise GraphQLError("You are not allowed to do this operation")
 
     def resolve_driver_load(self, info, id):
         user = info.context.user
@@ -77,10 +79,10 @@ class Query(ObjectType):
             driver = Driver.objects.get(pk=id)
 
         except:
-            raise Exception("Driver not found")
+            raise GraphQLError("Driver not found")
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
         
         elif user == driver.user or user.is_superuser:
             return driver.orders.all()
@@ -89,7 +91,7 @@ class Query(ObjectType):
         user = info.context.user
         
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
         
         try:
             order = Order.objects.get(pk=id)
@@ -97,18 +99,18 @@ class Query(ObjectType):
                 return order
 
             else:
-                raise Exception("You are not allowed to do this operation")
+                raise GraphQLError("You are not allowed to do this operation")
         except:
-            raise Exception("Order_id is not valid")
+            raise GraphQLError("Order_id is not valid")
 
     def resolve_all_orders(self, info):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if not user.is_superuser:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
         
         return Order.objects.all()
 
@@ -119,10 +121,10 @@ class Query(ObjectType):
             customer = Customer.objects.get(pk=id)
 
         except:
-            raise Exception("Customer not found")
+            raise GraphQLError("Customer not found")
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
         
         elif user == customer.user or user.is_superuser:
             return customer.orders.all()
@@ -139,14 +141,14 @@ class CreateOrder(Mutation):
         user = info.context.user
         
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         elif user.is_superuser:
             owner_id = order_data.owner_id
             try:
                 owner = Customer.objects.get(pk=owner_id)
             except:
-                raise Exception("Invalid owner")
+                raise GraphQLError("Invalid owner")
 
             
             order = Order(owner=owner)
@@ -157,7 +159,7 @@ class CreateOrder(Mutation):
             return CreateOrder(order=order)
 
         else:
-            raise Exception("Alchohol test required")
+            raise GraphQLError("Alchohol test required")
 
 class AssignVehicleLoad(Mutation):
     class Arguments:
@@ -171,22 +173,22 @@ class AssignVehicleLoad(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         elif not user.is_superuser:
-            raise Exception("You are not allowed to do this opertaion")
+            raise GraphQLError("You are not allowed to do this opertaion")
 
         
         try:
             vehicle = Vehicle.objects.get(pk=vehicle_id)
 
         except:
-            raise Exception("Invalid vehicle ID")
+            raise GraphQLError("Invalid vehicle ID")
 
         try:
             order = Order.objects.get(pk=order_id)
         except:
-            raise Exception("Invalid order ID")
+            raise GraphQLError("Invalid order ID")
 
         vehicle.vehicle_status = '2'
         order.vehicle = vehicle
@@ -207,21 +209,21 @@ class AssignDriverLoad(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         elif not user.is_superuser:
-            raise Exception("You are not allowed to do this opertaion")
+            raise GraphQLError("You are not allowed to do this opertaion")
 
         
         try:
             driver = Driver.objects.get(pk=driver_id)
         except:
-            raise Exception("Invalid driver ID")
+            raise GraphQLError("Invalid driver ID")
 
         try:
             order = Order.objects.get(pk=order_id)
         except:
-            raise Exception("Invalid order ID")
+            raise GraphQLError("Invalid order ID")
 
         
         driver.driver_status = '2'
@@ -253,10 +255,10 @@ class EditOrder(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if not user.is_superuser:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
         
         order = Order.objects.get(pk=order_id)
         driver_id = kwargs.get('driver_id')
@@ -268,7 +270,7 @@ class EditOrder(Mutation):
                 order.driver = driver
 
             except:
-                raise Exception("Invalid owner ID")
+                raise GraphQLError("Invalid owner ID")
         
         if vehicle_id:
             try:
@@ -276,7 +278,7 @@ class EditOrder(Mutation):
                 order.vehicle = vehicle
                 
             except:
-                raise Exception("Invalid Vehicle ID")
+                raise GraphQLError("Invalid Vehicle ID")
 
         order.is_load = is_load
         order.order_code = order_code
@@ -297,10 +299,10 @@ class DeleteOrder(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
 
         if not user.is_superuser:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
         order = Order.objects.get(pk=order_id)
         order.delete()
@@ -319,12 +321,12 @@ class UpdateOrderLocation(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first")
+            raise GraphQLError("You need to login first")
 
         try:
             order = Order.objects.get(pk=order_id)
         except:
-            raise Exception("Invalid order id")
+            raise GraphQLError("Invalid order id")
 
         if user == order.owner:
             order.longitude = longitude
@@ -334,7 +336,7 @@ class UpdateOrderLocation(Mutation):
             return UpdateOrderLocation(order=order)
         
         else:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
 
 class VerifyDelivery(Mutation):
@@ -348,22 +350,22 @@ class VerifyDelivery(Mutation):
         user = info.context.user
 
         if user.is_anonymous:
-            raise Exception("You need to login first!")
+            raise GraphQLError("You need to login first!")
         
         if not user.is_customer:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
         
         try:
             order = Order.objects.get(pk=order_id)
         except:
-            raise Exception("Invalid Order ID")
+            raise GraphQLError("Invalid Order ID")
 
         if not user == order.owner.user:
-            raise Exception("You are not allowed to do this operation")
+            raise GraphQLError("You are not allowed to do this operation")
 
 
         if not order.order_status == '3':
-            raise Exception("You cannot verify this order")
+            raise GraphQLError("You cannot verify this order")
 
         order.order_status = '4'
 
