@@ -16,6 +16,10 @@ import AddVehicle from "./add-vehicle";
 
 const columns = [
     {
+      title: 'مشخصه',
+      dataIndex: 'id',
+    },
+    {
       title: 'نوع ماشین',
       dataIndex: 'vehicleType',
       filters: [
@@ -80,6 +84,9 @@ const AllVehiclesList = () => {
     const [vehicleClone, setVehicleClone] = useState(null);
     const [visibleCrashes, setVisibleCrashes] = useState(false);
 
+    function plateNoConverter(plateNo) {
+        return plateNo.substr(0,2)+plateNo.substr(7,1) +plateNo.substr(2,3) + "-" + plateNo.substr(5,2)
+    }
 
     const title = () => (
         <div>
@@ -181,6 +188,7 @@ const AllVehiclesList = () => {
 
                 allInfo.push({
                     key: vehicle.id,
+                    id: vehicle.id,
                     vehicleType:
                         <div className="vehicle-type">
                             <span>
@@ -188,7 +196,7 @@ const AllVehiclesList = () => {
                             </span>
                         </div>,
                     plateNo:
-                        vehicle.plateNo,
+                        plateNoConverter(vehicle.plateNo),
                     status:
                         <div className="vehicle-status">
                             <span>
