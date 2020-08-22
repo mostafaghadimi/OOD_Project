@@ -4,6 +4,7 @@ import { EditOutlined } from '@ant-design/icons';
 // import Error from "../shared/Error";
 import Loading from "../shared/loading";
 import handleError from "../shared/util";
+import SimpleMap from "../map/map"
 
 
 import './user.css'
@@ -151,7 +152,11 @@ const DriverList = ({customer}) => {
                                 {driver.driverStatus === "A_1" ? "آزاد" : driver.driverStatus === "A_2" ? "در ماموریت" : driver.driverStatus === "A_3" ? "تصادف کرده" : ""}
                             </span>
                                 </div>,
-                            location: <Button key={driver.id}>مشاهده روی نقشه</Button>,
+                            location: <Button key={driver.id}onClick={() =>
+                                info("موقعیت مکانی",
+                                            <SimpleMap lat={driver.latitude} lng={driver.longitude}/>)
+                            }>
+                            مشاهده روی نقشه</Button>,
                             history:
                                 <div>
                                     <Button key={driver.id} onClick={() =>

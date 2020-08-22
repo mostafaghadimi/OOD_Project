@@ -13,6 +13,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import EditDriver from "./edit-driver";
 import AddDriver from "./add-driver";
 import handleError from "../shared/util";
+import SimpleMap from "../map/map"
 
 
 
@@ -168,7 +169,11 @@ const AllDriversList = () => {
                                 {driver.driverStatus === "A_1" ? "آزاد" : driver.driverStatus === "A_2" ? "در ماموریت" : driver.driverStatus === "A_3" ? "تصادف کرده" : ""}
                             </span>
                                 </div>,
-                            location: <Button key={4 * driver.id}>مشاهده روی نقشه</Button>,
+                            location: <Button key={4 * driver.id} onClick={() =>
+                                info("موقعیت مکانی",
+                                            <SimpleMap lat={driver.latitude} lng={driver.longitude}/>)
+                            }>
+                            مشاهده روی نقشه</Button>,
                             history:
                                 <div>
                                     <Button key={4 * driver.id + 1} onClick={() =>
